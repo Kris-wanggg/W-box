@@ -1,13 +1,19 @@
-// Shared password-strength badge component used by login and register pages.
+'use client'
 
-const RULES = [
-  { key: 'len',    label: '8 個字元以上', test: (v: string) => v.length >= 8 },
-  { key: 'letter', label: '包含字母',     test: (v: string) => /[a-zA-Z]/.test(v) },
-  { key: 'number', label: '包含數字',     test: (v: string) => /[0-9]/.test(v) },
-  { key: 'symbol', label: '包含符號',     test: (v: string) => /[^a-zA-Z0-9]/.test(v) },
-]
+import { useI18n } from './I18nProvider'
+
+export function usePasswordRules() {
+  const { t } = useI18n()
+  return [
+    { key: 'len',    label: t.ruleLen,    test: (v: string) => v.length >= 8 },
+    { key: 'letter', label: t.ruleLetter, test: (v: string) => /[a-zA-Z]/.test(v) },
+    { key: 'number', label: t.ruleNumber, test: (v: string) => /[0-9]/.test(v) },
+    { key: 'symbol', label: t.ruleSymbol, test: (v: string) => /[^a-zA-Z0-9]/.test(v) },
+  ]
+}
 
 export function PasswordStrengthBadges({ value }: { value: string }) {
+  const rules = usePasswordRules()
   if (!value) return null
   return (
     <div
@@ -16,7 +22,7 @@ export function PasswordStrengthBadges({ value }: { value: string }) {
       aria-live="polite"
       aria-label="密碼強度規則"
     >
-      {RULES.map((r) => {
+      {rules.map((r) => {
         const ok = r.test(value)
         return (
           <span
