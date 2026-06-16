@@ -1,28 +1,36 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "W-BOX 會員後台",
-  description: "W-BOX 會員後台登入系統",
-};
+  title: 'W-Box',
+  description: 'W-Box Login',
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="zh-TW" suppressHydrationWarning>
-      {/* Prevent flash of wrong theme */}
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`,
+            __html: `
+              try {
+                const theme = localStorage.getItem('theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                }
+              } catch(e) {}
+            `,
           }}
         />
       </head>
-      <body className={`${inter.variable} min-h-screen`}>{children}</body>
+      <body className={inter.className}>{children}</body>
     </html>
-  );
+  )
 }

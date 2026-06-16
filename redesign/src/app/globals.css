@@ -1,6 +1,7 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* ── Light theme (default) ── */
 :root {
   --bg: #F5F4FA;
   --card: #FFFFFF;
@@ -8,16 +9,10 @@
   --text: #13111E;
   --muted: #6B697E;
   --primary: #F97316;
-  --primary-hover: #EA6C0D;
   --success: #22C55E;
   --error: #EF4444;
-  --input-bg: #FFFFFF;
-  --input-border: #D1CFDF;
-  --divider: #E4E2F0;
-  --line-green: #06C755;
 }
 
-/* ── Dark theme ── */
 .dark {
   --bg: #13111E;
   --card: #1E1C2E;
@@ -25,37 +20,12 @@
   --text: #F8F8F8;
   --muted: #8B8AA0;
   --primary: #F97316;
-  --primary-hover: #FB923C;
   --success: #22C55E;
   --error: #EF4444;
-  --input-bg: #13111E;
-  --input-border: #2E2B3F;
-  --divider: #2E2B3F;
-  --line-green: #06C755;
-}
-
-@theme inline {
-  --color-brand: var(--primary);
-  --color-brand-hover: var(--primary-hover);
-  --color-success: var(--success);
-  --color-danger: var(--error);
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  height: 100%;
-  -webkit-font-smoothing: antialiased;
 }
 
 body {
-  min-height: 100%;
   background-color: var(--bg);
   color: var(--text);
-  font-family: "Inter", "Noto Sans TC", system-ui, sans-serif;
   transition: background-color 0.2s, color 0.2s;
 }
