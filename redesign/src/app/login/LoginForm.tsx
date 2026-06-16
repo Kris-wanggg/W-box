@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import ThemeToggle from '@/components/ThemeToggle'
+import { PasswordStrengthBadges } from '@/components/PasswordStrengthBadges'
 
 export default function LoginForm() {
   const searchParams = useSearchParams()
@@ -99,6 +100,7 @@ export default function LoginForm() {
                 密碼錯誤
               </p>
             )}
+            <PasswordStrengthBadges value={password} />
           </div>
 
           <div className="text-right mb-6">
