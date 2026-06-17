@@ -3,6 +3,11 @@
 
 export const cssVariables = `
 :root {
+  /* Status — shared across both themes */
+  --color-status-error:   #ef4444;
+  --color-status-success: #22c55e;
+  --color-status-warning: #f59e0b;
+
   /* Font */
   --font-family-base: Inter, sans-serif;
 

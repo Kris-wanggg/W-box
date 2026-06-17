@@ -54,6 +54,12 @@ export const colors = {
     placeholder:      '#6b697e',
     divider:          '#e4e2f0',
   },
+  // ── Status — shared across both themes ───────────────────────────────
+  status: {
+    error:   '#ef4444',  // from Dark/Login-Error frame — input border + error text
+    success: '#22c55e',
+    warning: '#f59e0b',
+  },
 } as const;
 
 export type ColorTheme = 'dark' | 'light';
