@@ -8,6 +8,21 @@ export const cssVariables = `
   --color-status-success: #22c55e;
   --color-status-warning: #f59e0b;
 
+  /* Shared cross-theme */
+  --color-text-subdued:    #8b8aa0;
+  --color-text-on-primary: #ffffff;
+
+  /* Toggle */
+  --color-toggle-knob: #ffffff;
+
+  /* Tab */
+  --color-tab-bg-dark:           #13111e;
+  --color-tab-bg-light:          #fdfbf7;
+  --color-tab-active-dark:       #f97316;
+  --color-tab-active-light:      #cc7e5e;
+  --color-tab-inactive-text-dark:  #8b8aa0;
+  --color-tab-inactive-text-light: #6b697e;
+
   /* Font */
   --font-family-base: Inter, sans-serif;
 
@@ -25,6 +40,7 @@ export const cssVariables = `
 }
 
 [data-theme="dark"] {
+  --color-toggle-track: #f97316;
   --color-background:      #13111e;
   --color-surface:         #1e1c2e;
   --color-surface-alt:     #1a1625;
@@ -40,6 +56,7 @@ export const cssVariables = `
 }
 
 [data-theme="light"] {
+  --color-toggle-track: #e4e2f0;
   --color-background:      #fdfbf7;
   --color-surface:         #ffffff;
   --color-surface-alt:     #ffffff;

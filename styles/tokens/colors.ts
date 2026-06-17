@@ -54,6 +54,29 @@ export const colors = {
     placeholder:      '#6b697e',
     divider:          '#e4e2f0',
   },
+  // ── Shared cross-theme tokens ────────────────────────────────────────
+  shared: {
+    textSubdued:   '#8b8aa0',  // used in Light/Register footer, Dark secondary text
+    textOnPrimary: '#ffffff',  // white text on brand-colored surfaces
+  },
+
+  // ── Component — Toggle ───────────────────────────────────────────────
+  toggle: {
+    trackOnDark:   '#f97316',  // active track, dark theme
+    trackOffLight: '#e4e2f0',  // inactive track, light theme
+    knob:          '#ffffff',
+  },
+
+  // ── Component — Tab ──────────────────────────────────────────────────
+  tab: {
+    backgroundDark:    '#13111e',
+    backgroundLight:   '#fdfbf7',
+    activeDark:        '#f97316',
+    activeLight:       '#cc7e5e',
+    inactiveTextDark:  '#8b8aa0',
+    inactiveTextLight: '#6b697e',
+  },
+
   // ── Status — shared across both themes ───────────────────────────────
   status: {
     error:   '#ef4444',  // from Dark/Login-Error frame — input border + error text
