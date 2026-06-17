@@ -83,12 +83,16 @@ export const colors = {
     success: '#22c55e',
     warning: '#f59e0b',
 
-    // Password strength badge — transparent fill/border
+    // Password strength / input state badge — transparent fill/border
     badge: {
       successFill:   'rgba(34, 197, 94, 0.15)',
       successBorder: 'rgba(34, 197, 94, 0.30)',
-      errorFill:     'rgba(239, 68, 68, 0.15)',   // previously missing
-      errorBorder:   'rgba(239, 68, 68, 0.30)',   // previously missing
+      errorFill:     'rgba(239, 68, 68, 0.15)',
+      errorBorder:   'rgba(239, 68, 68, 0.30)',
+      focusedFill:   'rgba(249, 115, 22, 0.15)',  // focused/typing state badge
+      focusedBorder: 'rgba(249, 115, 22, 0.35)',
+      neutralFill:   'rgba(139, 138, 160, 0.15)', // neutral/default badge (dark)
+      neutralBorder: 'rgba(139, 138, 160, 0.35)',
       defaultLight:  'rgba(228, 226, 240, 0.80)',
       defaultDark:   'rgba(46, 43, 63, 0.80)',
     },

@@ -8,6 +8,18 @@ export const cssVariables = `
   --color-status-success: #22c55e;
   --color-status-warning: #f59e0b;
 
+  /* Badge fill/border variants */
+  --color-badge-success-fill:   rgba(34, 197, 94, 0.15);
+  --color-badge-success-border: rgba(34, 197, 94, 0.30);
+  --color-badge-error-fill:     rgba(239, 68, 68, 0.15);
+  --color-badge-error-border:   rgba(239, 68, 68, 0.30);
+  --color-badge-focused-fill:   rgba(249, 115, 22, 0.15);
+  --color-badge-focused-border: rgba(249, 115, 22, 0.35);
+  --color-badge-neutral-fill:   rgba(139, 138, 160, 0.15);
+  --color-badge-neutral-border: rgba(139, 138, 160, 0.35);
+  --color-badge-default-light:  rgba(228, 226, 240, 0.80);
+  --color-badge-default-dark:   rgba(46, 43, 63, 0.80);
+
   /* Shared cross-theme */
   --color-text-subdued:    #8b8aa0;
   --color-text-on-primary: #ffffff;
