@@ -59,6 +59,16 @@ export const colors = {
     error:   '#ef4444',  // from Dark/Login-Error frame — input border + error text
     success: '#22c55e',
     warning: '#f59e0b',
+
+    // Password strength badge — transparent fill/border
+    badge: {
+      successFill:   'rgba(34, 197, 94, 0.15)',
+      successBorder: 'rgba(34, 197, 94, 0.30)',
+      errorFill:     'rgba(239, 68, 68, 0.15)',   // previously missing
+      errorBorder:   'rgba(239, 68, 68, 0.30)',   // previously missing
+      defaultLight:  'rgba(228, 226, 240, 0.80)',
+      defaultDark:   'rgba(46, 43, 63, 0.80)',
+    },
   },
 } as const;
 
