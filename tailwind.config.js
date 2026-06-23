@@ -2,13 +2,17 @@
  * Tailwind CSS configuration
  *
  * Design tokens generated from Figma:
- * "FJ會員後台 — 登入介面設計" › Color Variables + Typography
+ * "FJ會員後台 — 登入介面設計"
  * https://www.figma.com/design/C9EZHW6LDMqUM5s8jQVDtf
  *
- * Token naming mirrors the Figma variable groups (Primary, Surface, Text,
- * Border, Tab, Status, Toggle). Dark / Light theme pairs are exposed as
- * `*-dark` / `*-light` so they can be selected via the `dark:` variant or
- * directly by class name.
+ * Source of truth = the semantic Figma variable collections:
+ *   • "🎨 Color Tokens"  (15 vars, Light / Dark modes)
+ *   • "⬡ Border Radius"  (5 vars)
+ *   • Text styles        (7 typography presets)
+ *
+ * Colors are wired to CSS custom properties (see ./tokens.css). The Light
+ * values live in :root, the Dark values in .dark — toggled via the
+ * `darkMode: 'class'` strategy. This mirrors the two Figma variable modes.
  */
 
 /** @type {import('tailwindcss').Config} */
@@ -21,66 +25,48 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Primary / brand
-        primary: {
-          DEFAULT: '#F97316', // Primary/Dark
-          dark: '#F97316',    // Primary/Dark
-          light: '#CC7E5E',   // Primary/Light
-        },
-
-        // Surfaces / backgrounds
+        // color/background
+        background: 'var(--color-background)',
+        // color/surface + color/surface-alt
         surface: {
-          dark: '#1E1C2E',     // Surface/Dark
-          'alt-dark': '#1A1625', // Surface/Alt-Dark
+          DEFAULT: 'var(--color-surface)',
+          alt: 'var(--color-surface-alt)',
         },
-
-        // Text
+        // color/border + color/divider
+        border: 'var(--color-border)',
+        divider: 'var(--color-divider)',
+        // color/primary
+        primary: 'var(--color-primary)',
+        // color/text-*
         text: {
-          'on-primary': '#FFFFFF',   // Text/On-Primary
-          subdued: '#8B8AA0',        // Text/Subdued
-          'primary-dark': '#F8F8F8', // Text/Primary-Dark
-          'primary-light': '#13111E',// Text/Primary-Light
-          'muted-dark': '#E4E2F0',   // Text/Muted-Dark
-          'muted-light': '#767676',  // Text/Muted-Light
-          'placeholder-light': '#6B697E', // Text/Placeholder-Light
+          primary: 'var(--color-text-primary)',
+          secondary: 'var(--color-text-secondary)',
+          muted: 'var(--color-text-muted)',
         },
-
-        // Borders
-        border: {
-          'input-dark': '#2E2B3F',  // Border/Input-Dark
-          'input-light': '#D1CFDF', // Border/Input-Light
+        // color/placeholder
+        placeholder: 'var(--color-placeholder)',
+        // color/input-*
+        input: {
+          bg: 'var(--color-input-bg)',
+          border: 'var(--color-input-border)',
         },
-
-        // Tabs
-        tab: {
-          'active-dark': '#D4600A',         // Tab/Active-Dark
-          'active-light': '#CC7E5E',        // Tab/Active-Light
-          'background-dark': '#13111E',     // Tab/Background-Dark
-          'background-light': '#FDFBF7',    // Tab/Background-Light
-          'inactive-text-light': '#6B697E', // Tab/Inactive-Text-Light
-        },
-
-        // Toggle
-        toggle: {
-          knob: '#FFFFFF',          // Toggle/Knob
-          'track-off-light': '#E4E2F0', // Toggle/Track-Off-Light
-        },
-
-        // Status / badges
+        // color/status-*  (identical in both modes)
         status: {
-          success: '#22C55E', // Status/Success
-          error: '#EF4444',   // Status/Error-Dark-Border
-          'badge-default-dark': '#2E2B3F',  // Status/Badge-Default-Dark
-          'badge-default-light': '#E4E2F0', // Status/Badge-Default-Light
-          'badge-neutral-fill': '#8B8AA0',  // Status/Badge-Neutral-Fill
-          'badge-neutral-border': '#8B8AA0',// Status/Badge-Neutral-Border
-          'badge-focused-fill': '#F97316',  // Status/Badge-Focused-Fill
-          'badge-focused-border': '#F97316',// Status/Badge-Focused-Border
-          'badge-success-fill': '#22C55E',  // Status/Badge-Success-Fill
-          'badge-success-border': '#22C55E',// Status/Badge-Success-Border
-          'badge-error-fill': '#EF4444',    // Status/Badge-Error-Fill
-          'badge-error-border': '#EF4444',  // Status/Badge-Error-Border
+          error: 'var(--color-status-error)',
+          success: 'var(--color-status-success)',
+          warning: 'var(--color-status-warning)',
         },
+      },
+
+      // ⬡ Border Radius collection.
+      // NOTE: sm/md/lg/xl intentionally override Tailwind defaults to match
+      // the design system; `pill` is an added token.
+      borderRadius: {
+        sm: '10px',   // radius/sm
+        md: '12px',   // radius/md
+        lg: '16px',   // radius/lg
+        xl: '20px',   // radius/xl
+        pill: '100px',// radius/pill
       },
 
       fontFamily: {
@@ -90,20 +76,13 @@ module.exports = {
       // Typography presets from Figma text styles.
       // Format: [fontSize, { lineHeight, fontWeight, letterSpacing }]
       fontSize: {
-        // Heading/H1 — Inter Semi Bold 24
-        'heading-h1': ['24px', { lineHeight: '1', fontWeight: '600', letterSpacing: '0' }],
-        // Button/Primary — Inter Semi Bold 16
-        'button-primary': ['16px', { lineHeight: '1', fontWeight: '600', letterSpacing: '0' }],
-        // Body/Base — Inter Regular 14
-        'body-base': ['14px', { lineHeight: '1', fontWeight: '400', letterSpacing: '0' }],
-        // Body/Small — Inter Regular 13
-        'body-small': ['13px', { lineHeight: '1', fontWeight: '400', letterSpacing: '0' }],
-        // Label/Medium — Inter Medium 13
-        'label-medium': ['13px', { lineHeight: '1', fontWeight: '500', letterSpacing: '0' }],
-        // Link/SemiBold — Inter Semi Bold 13
-        'link-semibold': ['13px', { lineHeight: '1', fontWeight: '600', letterSpacing: '0' }],
-        // Caption — Inter Medium 12
-        'caption': ['12px', { lineHeight: '1', fontWeight: '500', letterSpacing: '0' }],
+        'heading-h1': ['24px', { lineHeight: '1', fontWeight: '600', letterSpacing: '0' }], // Heading/H1
+        'button-primary': ['16px', { lineHeight: '1', fontWeight: '600', letterSpacing: '0' }], // Button/Primary
+        'body-base': ['14px', { lineHeight: '1', fontWeight: '400', letterSpacing: '0' }], // Body/Base
+        'body-small': ['13px', { lineHeight: '1', fontWeight: '400', letterSpacing: '0' }], // Body/Small
+        'label-medium': ['13px', { lineHeight: '1', fontWeight: '500', letterSpacing: '0' }], // Label/Medium
+        'link-semibold': ['13px', { lineHeight: '1', fontWeight: '600', letterSpacing: '0' }], // Link/SemiBold
+        'caption': ['12px', { lineHeight: '1', fontWeight: '500', letterSpacing: '0' }], // Caption
       },
     },
   },
