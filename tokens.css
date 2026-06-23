@@ -1,0 +1,51 @@
+/**
+ * Design token CSS variables
+ *
+ * Generated from the Figma "🎨 Color Tokens" variable collection
+ * (Light / Dark modes) of file C9EZHW6LDMqUM5s8jQVDtf.
+ *
+ * :root  = Light mode
+ * .dark  = Dark mode  (toggled via Tailwind `darkMode: 'class'`)
+ *
+ * Import this once, e.g. in your global stylesheet:
+ *   @import './tokens.css';
+ *   @tailwind base;
+ *   @tailwind components;
+ *   @tailwind utilities;
+ */
+
+:root {
+  --color-background: #FDFBF7;
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #FFFFFF;
+  --color-border: #E4E2F0;
+  --color-divider: #E4E2F0;
+  --color-primary: #CC7E5E;
+  --color-text-primary: #13111E;
+  --color-text-secondary: #6B697E;
+  --color-text-muted: #767676;
+  --color-placeholder: #6B697E;
+  --color-input-bg: #FFFFFF;
+  --color-input-border: #D1CFDF;
+  --color-status-error: #EF4444;
+  --color-status-success: #22C55E;
+  --color-status-warning: #F59E0B;
+}
+
+.dark {
+  --color-background: #13111E;
+  --color-surface: #1E1C2E;
+  --color-surface-alt: #1A1625;
+  --color-border: #2E2B3F;
+  --color-divider: #2E2B3F;
+  --color-primary: #F97316;
+  --color-text-primary: #F8F8F8;
+  --color-text-secondary: #8B8AA0;
+  --color-text-muted: #E4E2F0;
+  --color-placeholder: #8B8AA0;
+  --color-input-bg: #13111E;
+  --color-input-border: #2E2B3F;
+  --color-status-error: #EF4444;
+  --color-status-success: #22C55E;
+  --color-status-warning: #F59E0B;
+}
