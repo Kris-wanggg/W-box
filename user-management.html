@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F-系統架構/使用者管理</title>
+<style>
+  :root {
+    --ink: #12171c;
+    --ink-soft: #404040;
+    --ink-mid: #4d4d4d;
+    --ink-badge: #595959;
+    --gray-text: #6b7380;
+    --gray-666: #666;
+    --border: #c7ccd6;
+    --border-soft: #d9d9d9;
+    --border-btn: #bfbfbf;
+    --bg-page: #f8fafc;
+    --bg-batch: #ededed;
+    --bg-row-edit: #edf0f2;
+    --sidebar-w: 240px;
+    --topbar-h: 57px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', 'Noto Sans TC', ui-sans-serif, system-ui, sans-serif;
+    background: #fff;
+    color: var(--ink);
+  }
+
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ---------- Layout ---------- */
+  .layout { min-height: 100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: var(--sidebar-w);
+    background: var(--bg-page);
+    padding: 20px 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    z-index: 30;
+  }
+  .sidebar .logo {
+    padding: 8px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink-mid);
+  }
+  .nav-groups { display: flex; flex-direction: column; gap: 12px; }
+  .nav-group { display: flex; flex-direction: column; }
+  .nav-group:last-child { padding-bottom: 40px; }
+  .nav-group-title {
+    padding: 4px 0;
+    font-size: 12px;
+    color: var(--gray-text);
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 8px;
+    border-radius: 8px;
+    font-size: 15px;
+    color: var(--ink-badge);
+    text-decoration: none;
+  }
+  .nav-item:hover { background: #eef1f5; }
+  .nav-item span { flex: 1; }
+  .nav-count {
+    background: #1a1a1a;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Sidebar overlay (mobile / tablet) */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(18, 23, 28, 0.4);
+    z-index: 25;
+  }
+  #nav-toggle { display: none; }
+
+  /* ---------- Topbar ---------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    margin-left: var(--sidebar-w);
+    background: var(--bg-page);
+    border-bottom: 1px solid var(--border-soft);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 40px;
+    z-index: 20;
+  }
+  .hamburger {
+    display: none;
+    background: none;
+    border: 0;
+    padding: 4px;
+    flex-shrink: 0;
+  }
+  .hamburger svg { display: block; }
+  .page-tabs {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    overflow-x: auto;
+    min-width: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+  .page-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--gray-text);
+    white-space: nowrap;
+    background: none;
+    border: 0;
+    flex-shrink: 0;
+  }
+  .page-tab.is-active {
+    background: #fff;
+    border: 2px solid var(--border);
+  }
+  .page-tab .x { font-size: 12px; line-height: 1; color: var(--gray-text); }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-shrink: 0;
+  }
+  .topbar-right .bell { font-size: 18px; line-height: 1; background: none; border: 0; }
+  .account {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--gray-666);
+  }
+  .avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gray-666);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Main ---------- */
+  .main {
+    margin-left: var(--sidebar-w);
+    padding: 27px 20px 40px;
+  }
+  .panel {
+    background: #fff;
+    border-radius: 4px;
+    max-width: 1160px;
+  }
+
+  /* ---------- Toolbar ---------- */
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+  }
+  .toolbar .search {
+    flex: 1 1 220px;
+    max-width: 220px;
+    min-width: 160px;
+  }
+  .field {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: #fff;
+    font-size: 12px;
+    color: var(--gray-text);
+    white-space: nowrap;
+  }
+  .toolbar .sp { flex: 1 0 auto; }
+  .btn-primary {
+    background: var(--ink-mid);
+    color: #fff;
+    border: 0;
+    border-radius: 4px;
+    padding: 9px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ---------- Batch bar ---------- */
+  .batch-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 24px;
+    background: var(--bg-batch);
+  }
+  .batch-bar .count { font-size: 12px; font-weight: 600; }
+  .batch-bar .names { font-size: 11px; color: var(--ink-soft); }
+  .batch-bar .sp { flex: 1 0 auto; }
+  .btn-ghost {
+    background: none;
+    border: 1px solid var(--border-btn);
+    border-radius: 4px;
+    padding: 7px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-mid);
+    white-space: nowrap;
+  }
+
+  /* ---------- Table ---------- */
+  .table-wrap { padding: 4px 24px 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  col.c-select { width: 40px; }
+  col.c-name   { width: 190px; }
+  col.c-acct   { width: 170px; }
+  col.c-dept   { width: 150px; }
+  col.c-tags   { width: auto; }
+  col.c-status { width: 60px; }
+  col.c-ops    { width: 72px; }
+
+  th, td { padding: 8px; text-align: left; vertical-align: middle; }
+  thead th { font-size: 11px; font-weight: 700; white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr.is-editing { background: var(--bg-row-edit); border-bottom: 0; border-radius: 4px; }
+
+  td.name { font-size: 12px; font-weight: 600; }
+  td.acct { font-size: 11px; color: var(--gray-text); }
+  td.dept { font-size: 11px; }
+  td.status { font-size: 11px; font-weight: 600; white-space: nowrap; }
+  tr.is-muted td.name, tr.is-muted td.dept { color: var(--gray-text); }
+  tr.is-muted td.status { font-weight: 400; color: var(--gray-text); }
+  tr.is-editing td.status { font-weight: 400; }
+
+  input[type="checkbox"] {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    background: #fff;
+    cursor: pointer;
+    display: block;
+  }
+  thead input[type="checkbox"] { border-color: var(--ink); }
+  input[type="checkbox"]:checked { background: var(--ink-mid); border-color: var(--ink-mid); }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    background: var(--ink-badge);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .btn-edit {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  /* Card labels — hidden on desktop */
+  td .cell-label { display: none; }
+
+  /* ---------- Footer ---------- */
+  .panel-footer {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 24px 20px;
+  }
+  .rules { flex: 1; font-size: 11px; color: var(--gray-text); line-height: 1.5; }
+  .pagination { display: flex; gap: 6px; flex-shrink: 0; }
+  .page-btn {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 11px;
+    color: var(--ink);
+  }
+  .page-btn.is-current { background: var(--ink-mid); border-color: var(--ink-mid); color: #fff; }
+
+  /* ================================================================
+     Tablet ≤ 1024px — sidebar becomes off-canvas; table scrolls
+     ================================================================ */
+  @media (max-width: 1024px) {
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+      box-shadow: 2px 0 12px rgba(18, 23, 28, 0.12);
+    }
+    #nav-toggle:checked ~ .sidebar { transform: translateX(0); }
+    #nav-toggle:checked ~ .sidebar-backdrop { display: block; }
+
+    .topbar { margin-left: 0; padding: 12px 20px; }
+    .hamburger { display: block; }
+    .main { margin-left: 0; }
+
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { min-width: 860px; }
+  }
+
+  /* ================================================================
+     Mobile ≤ 640px — filters stack; table rows become cards
+     ================================================================ */
+  @media (max-width: 640px) {
+    .topbar { padding: 10px 16px; gap: 8px; }
+    .topbar-right { gap: 12px; }
+    .account .account-text { display: none; }
+
+    .main { padding: 16px 0 32px; }
+
+    .toolbar { padding: 12px 16px; }
+    .toolbar .search { flex: 1 1 100%; max-width: none; }
+    .toolbar .field:not(.search) { flex: 1 1 calc(50% - 4px); justify-content: space-between; }
+    .toolbar .sp { display: none; }
+    .btn-primary { flex: 1 1 100%; padding: 11px 16px; }
+
+    .batch-bar { padding: 10px 16px; }
+    .batch-bar .sp { display: none; }
+    .batch-bar .names { flex: 1 1 100%; order: 1; }
+    .batch-bar .btn-ghost { order: 2; flex: 1 1 calc(50% - 5px); }
+
+    /* Table → cards */
+    .table-wrap { padding: 4px 16px 0; overflow-x: visible; }
+    table, tbody, tr, td { display: block; min-width: 0; }
+    table { min-width: 0; }
+    thead { display: none; }
+    colgroup { display: none; }
+
+    tbody tr {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 12px 12px 44px;
+      margin-bottom: 12px;
+    }
+    tbody tr.is-editing { border-color: var(--border); }
+
+    td { padding: 2px 0; }
+    td.select {
+      position: absolute;
+      left: 14px;
+      top: 16px;
+      padding: 0;
+    }
+    td.name { font-size: 14px; padding-bottom: 0; }
+    td.acct { padding-bottom: 6px; }
+    td.dept, td.status {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 12px;
+      padding: 3px 0;
+    }
+    td.tags-cell { padding: 6px 0; }
+    td .cell-label {
+      display: inline-block;
+      font-size: 11px;
+      color: var(--gray-text);
+      flex-shrink: 0;
+    }
+    td.ops { padding-top: 10px; }
+    .btn-edit { width: 100%; padding: 10px 12px; }
+
+    .panel-footer {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      padding: 12px 16px 20px;
+    }
+    .pagination { justify-content: center; }
+    .page-btn { padding: 8px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <input type="checkbox" id="nav-toggle" aria-hidden="true">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" aria-label="主選單">
+    <div class="logo">LOGO</div>
+    <div class="nav-groups">
+      <div class="nav-group">
+        <div class="nav-group-title">日常營運</div>
+        <a class="nav-item" href="#"><span>總覽</span></a>
+        <a class="nav-item" href="#"><span>行事曆</span></a>
+        <a class="nav-item" href="#"><span>報名紀錄</span></a>
+        <a class="nav-item" href="#"><span>部門標籤</span></a>
+        <a class="nav-item" href="#"><span>推播通知</span></a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">資料建檔</div>
+        <a class="nav-item" href="#"><span>學員管理</span></a>
+        <a class="nav-item" href="#"><span>師資管理</span></a>
+        <a class="nav-item" href="#"><span>課程與方案</span></a>
+        <a class="nav-item" href="#"><span>空間與器材</span></a>
+        <a class="nav-item" href="#"><span>錄影排程</span></a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">班務管理</div>
+        <a class="nav-item" href="#"><span>智慧排課</span></a>
+        <a class="nav-item" href="#"><span>點名系統</span></a>
+        <a class="nav-item" href="#"><span>請假補課</span></a>
+        <a class="nav-item" href="#"><span>數位聯絡簿</span></a>
+        <a class="nav-item" href="#"><span>問班追蹤</span><span class="nav-count">12</span></a>
+        <a class="nav-item" href="#"><span>問卷表單</span></a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">財務報表</div>
+        <a class="nav-item" href="#"><span>收費引擎</span></a>
+        <a class="nav-item" href="#"><span>催費與退費</span><span class="nav-count">8</span></a>
+        <a class="nav-item" href="#"><span>薪資結算</span></a>
+        <a class="nav-item" href="#"><span>採購單</span><span class="nav-count">2</span></a>
+        <a class="nav-item" href="#"><span>點數儲值</span></a>
+        <a class="nav-item" href="#"><span>訂餐管理</span><span class="nav-count">16</span></a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">數據分析</div>
+        <a class="nav-item" href="#"><span>經營儀表板</span></a>
+        <a class="nav-item" href="#"><span>成績分析</span></a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">系統權限</div>
+        <a class="nav-item" href="#"><span>使用者管理</span></a>
+        <a class="nav-item" href="#"><span>分校與部門</span></a>
+        <a class="nav-item" href="#"><span>權限設定</span></a>
+        <a class="nav-item" href="#"><span>稽核日誌</span></a>
+        <a class="nav-item" href="#"><span>設定中心</span></a>
+      </div>
+    </div>
+  </nav>
+  <label class="sidebar-backdrop" for="nav-toggle" aria-hidden="true"></label>
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <label class="hamburger" for="nav-toggle" aria-label="開啟選單">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4d4d4d" stroke-width="2" stroke-linecap="round">
+        <line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/>
+      </svg>
+    </label>
+    <div class="page-tabs">
+      <button class="page-tab">權限設定 <span class="x">✕</span></button>
+      <button class="page-tab">稽核日誌 <span class="x">✕</span></button>
+      <button class="page-tab is-active">使用者管理 <span class="x">✕</span></button>
+    </div>
+    <div class="topbar-right">
+      <button class="bell" aria-label="通知">🔔</button>
+      <div class="account">
+        <span class="avatar">👤</span>
+        <span class="account-text">系統-最高權限<br>ABC</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main class="main">
+    <section class="panel" aria-label="使用者管理資料建檔">
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="field search">⌕&nbsp; 查詢使用者名稱</div>
+        <div class="field">部門:全部 ▾</div>
+        <div class="field">校區:文理A校 ▾</div>
+        <div class="field">權限標籤:全部 ▾</div>
+        <div class="field">狀態:啟用 ▾</div>
+        <div class="sp"></div>
+        <button class="btn-primary">＋ 新增使用者</button>
+      </div>
+
+      <!-- Batch bar (選取後顯示) -->
+      <div class="batch-bar">
+        <span class="count">已選 3 人</span>
+        <span class="names">賴建名、朗格洛、工程師</span>
+        <div class="sp"></div>
+        <button class="btn-ghost">批次指派標籤</button>
+        <button class="btn-ghost">批次移除標籤</button>
+        <button class="btn-ghost">批次停用</button>
+        <button class="btn-ghost">取消選取</button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <table>
+          <colgroup>
+            <col class="c-select"><col class="c-name"><col class="c-acct">
+            <col class="c-dept"><col class="c-tags"><col class="c-status"><col class="c-ops">
+          </colgroup>
+          <thead>
+            <tr>
+              <th><input type="checkbox" aria-label="全選"></th>
+              <th>姓名</th>
+              <th>帳號</th>
+              <th>校區 / 部門</th>
+              <th>權限標籤(可多選)</th>
+              <th>狀態</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="select"><input type="checkbox" aria-label="選取 李依芸"></td>
+              <td class="name">李依芸 Sammi</td>
+              <td class="acct">sammi</td>
+              <td class="dept"><span class="cell-label">校區 / 部門</span>A校 · 行政</td>
+              <td class="tags-cell"><div class="tags">
+                <span class="badge">行政櫃檯</span><span class="badge">採購</span>
+                <span class="badge">老師</span><span class="badge">年度行事曆</span>
+              </div></td>
+              <td class="status"><span class="cell-label">狀態</span>啟用</td>
+              <td class="ops"><button class="btn-edit">編輯</button></td>
+            </tr>
+            <tr>
+              <td class="select"><input type="checkbox" checked aria-label="選取 賴建名"></td>
+              <td class="name">賴建名 Jimmy.Lai</td>
+              <td class="acct">jimmy.lai</td>
+              <td class="dept"><span class="cell-label">校區 / 部門</span>A校 · 文理</td>
+              <td class="tags-cell"><div class="tags"><span class="badge">最高權限</span></div></td>
+              <td class="status"><span class="cell-label">狀態</span>啟用</td>
+              <td class="ops"><button class="btn-edit">編輯</button></td>
+            </tr>
+            <tr>
+              <td class="select"><input type="checkbox" checked aria-label="選取 朗格洛"></td>
+              <td class="name">朗格洛 Louis</td>
+              <td class="acct">louis</td>
+              <td class="dept"><span class="cell-label">校區 / 部門</span>A＋B校 · 美語</td>
+              <td class="tags-cell"><div class="tags">
+                <span class="badge">老師</span><span class="badge">兼任-跨校區</span>
+              </div></td>
+              <td class="status"><span class="cell-label">狀態</span>啟用</td>
+              <td class="ops"><button class="btn-edit">編輯</button></td>
+            </tr>
+            <tr class="is-editing">
+              <td class="select"><input type="checkbox" aria-label="選取 丁明月"></td>
+              <td class="name">丁明月 Cynthia</td>
+              <td class="acct">cynthia</td>
+              <td class="dept"><span class="cell-label">校區 / 部門</span>A校 · 行政</td>
+              <td class="tags-cell"><div class="tags">
+                <span class="badge">行政櫃檯</span><span class="badge">採購</span><span class="badge">年度行事曆</span>
+              </div></td>
+              <td class="status"><span class="cell-label">狀態</span>未啟用</td>
+              <td class="ops"><button class="btn-edit">編輯</button></td>
+            </tr>
+            <tr>
+              <td class="select"><input type="checkbox" aria-label="選取 梁安娜"></td>
+              <td class="name">梁安娜 Anna</td>
+              <td class="acct">anna</td>
+              <td class="dept"><span class="cell-label">校區 / 部門</span>總部 · 帳務</td>
+              <td class="tags-cell"><div class="tags"><span class="badge">帳務</span></div></td>
+              <td class="status"><span class="cell-label">狀態</span>啟用</td>
+              <td class="ops"><button class="btn-edit">編輯</button></td>
+            </tr>
+            <tr class="is-muted">
+              <td class="select"><input type="checkbox" checked aria-label="選取 工程師"></td>
+              <td class="name">工程師 Engineer</td>
+              <td class="acct">engineer</td>
+              <td class="dept"><span class="cell-label">校區 / 部門</span>總部 · 系統</td>
+              <td class="tags-cell"><div class="tags">
+                <span class="badge">工程測試權限</span><span class="badge">專任老師</span>
+              </div></td>
+              <td class="status"><span class="cell-label">狀態</span>停用</td>
+              <td class="ops"><button class="btn-edit">編輯</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer -->
+      <div class="panel-footer">
+        <p class="rules">規則:刪除需二次確認並寫入稽核日誌(W5);「人員永久刪除」為獨立高風險權限(現制無人持有),一般刪除僅停用帳號。標籤異動即時生效並記錄異動人。</p>
+        <div class="pagination">
+          <button class="page-btn">‹</button>
+          <button class="page-btn is-current">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">›</button>
+        </div>
+      </div>
+
+    </section>
+  </main>
+</div>
+<script>
+  // 讓頂部分頁列初始就能看到目前作用中的分頁(小螢幕時分頁列可橫向捲動)
+  document.querySelector('.page-tab.is-active')
+    ?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+</script>
+</body>
+</html>
