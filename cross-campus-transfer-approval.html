@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G-03 Overlay / 跨校區調師簽核(簽核者視角)</title>
+<style>
+  :root {
+    /* Greyscale wireframe tokens (matched to Figma G-03 overlay) */
+    --ink:        #262626;
+    --ink-soft:   #333333;
+    --ink-mid:    #404040;
+    --gray:       #808080;
+    --line:       #e6e6e6;
+    --line-soft:  #ededed;
+    --line-input: #d1d1d1;
+    --fill-soft:  #f7f7f7;
+    --fill-tag:   #e0e0e0;
+    --fill-dark:  #4d4d4d;
+    --fill-mid:   #8c8c8c;
+    --track:      #d9d9d9;
+    --page:       #eceef1;
+
+    /* Restrained status tints — used only on the two result states so the
+       outcome (rejected / approved) reads at a glance while the rest of the
+       wireframe stays greyscale. */
+    --reject-bg:   #fbecec;
+    --reject-line: #e2b4b4;
+    --reject-ink:  #97302f;
+    --approve-bg:   #eaf5ee;
+    --approve-line: #b3d7bf;
+    --approve-ink:  #2c6b41;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', 'Noto Sans TC', ui-sans-serif, system-ui, sans-serif;
+    background: var(--page);
+    color: var(--ink);
+    padding: 40px 24px 64px;
+  }
+
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ---------- Page header ---------- */
+  .page-head { max-width: 720px; margin: 0 auto 12px; }
+  .page-head h1 { font-size: 18px; font-weight: 600; color: var(--ink); }
+  .page-head p  { font-size: 13px; color: var(--gray); margin-top: 6px; line-height: 1.6; }
+
+  /* ---------- State gallery ---------- */
+  .gallery {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    margin-top: 28px;
+  }
+  .state { width: 100%; max-width: 720px; }
+  .state-label {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding-left: 2px;
+  }
+  .state-label .no {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--fill-dark);
+    color: #fff;
+    font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .state-label .name { font-size: 14px; font-weight: 600; color: var(--ink-soft); }
+  .state-label .flag {
+    font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 20px;
+    background: var(--fill-tag); color: var(--ink-soft);
+  }
+  .state-label .flag.new { background: var(--ink); color: #fff; }
+
+  /* ================================================================
+     Overlay card  (720px modal reproduced from Figma node 489:23)
+     ================================================================ */
+  .oc {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    overflow: hidden;
+  }
+
+  /* Header */
+  .oc-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 24px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .oc-head .head-text { display: flex; flex-direction: column; gap: 3px; }
+  .oc-title-row { display: flex; align-items: center; gap: 8px; }
+  .oc-title { font-size: 17px; font-weight: 600; color: var(--ink); }
+  .tag {
+    font-size: 10px; font-weight: 500;
+    padding: 3px 8px; border-radius: 12px;
+    background: var(--fill-dark); color: #fff;
+    white-space: nowrap;
+  }
+  .tag.reject  { background: var(--reject-bg);  color: var(--reject-ink);  border: 1px solid var(--reject-line); }
+  .tag.approve { background: var(--approve-bg); color: var(--approve-ink); border: 1px solid var(--approve-line); }
+  .oc-sub { font-size: 11px; color: var(--gray); }
+  .oc-head .sp { flex: 1; }
+  .oc-close { font-size: 14px; color: var(--gray); background: none; border: 0; }
+
+  /* Tabs */
+  .oc-tabs { display: flex; padding: 0 24px; border-bottom: 1px solid var(--line); }
+  .tab {
+    padding: 10px 12px;
+    font-size: 13px; color: var(--gray);
+    background: none; border: 0;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+  .tab.active { color: var(--ink); font-weight: 500; border-bottom-color: var(--ink-soft); }
+  .tab .dot { color: var(--reject-ink); }
+
+  /* Body */
+  .oc-body { display: flex; flex-direction: column; gap: 16px; padding: 18px 24px; }
+
+  /* Teacher card */
+  .teacher {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--fill-soft);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--track); flex-shrink: 0;
+  }
+  .teacher-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .teacher-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .teacher-name { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .mini-tag {
+    font-size: 10px; font-weight: 500;
+    padding: 3px 8px; border-radius: 12px;
+    background: var(--fill-tag); color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .teacher-path { font-size: 11px; color: var(--gray); }
+
+  /* Detail card */
+  .detail { border: 1px solid var(--line); border-radius: 8px; padding: 0 14px; }
+  .detail-row { display: flex; gap: 24px; padding: 8px 0; }
+  .detail-row.reason { border-top: 1px solid var(--line-soft); flex-direction: column; gap: 3px; }
+  .detail-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .lbl { font-size: 10px; color: var(--gray); }
+  .val { font-size: 12px; font-weight: 500; color: var(--ink); }
+
+  /* Info banner (schedule check + result banners) */
+  .banner {
+    display: flex; align-items: flex-start; gap: 8px;
+    background: var(--line-soft);
+    border: 1px dashed var(--gray);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 11px; color: var(--ink-mid);
+    line-height: 1.5;
+  }
+  .banner .ic { flex-shrink: 0; font-weight: 500; }
+
+  /* Result banners (only on states 2 & 3) */
+  .result-banner {
+    display: flex; align-items: flex-start; gap: 10px;
+    border-radius: 8px;
+    padding: 12px 14px;
+    line-height: 1.55;
+  }
+  .result-banner .ic {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0; color: #fff;
+  }
+  .result-banner .rb-title { font-size: 13px; font-weight: 600; }
+  .result-banner .rb-desc  { font-size: 12px; margin-top: 2px; }
+  .result-banner.reject  { background: var(--reject-bg);  border: 1px solid var(--reject-line);  color: var(--reject-ink); }
+  .result-banner.reject .ic  { background: #b8514f; }
+  .result-banner.approve { background: var(--approve-bg); border: 1px solid var(--approve-line); color: var(--approve-ink); }
+  .result-banner.approve .ic { background: #4f9a68; }
+
+  /* Section titles */
+  .sec-title { font-size: 12px; font-weight: 600; color: var(--ink-soft); }
+
+  /* Stepper */
+  .stepper { display: flex; align-items: flex-start; }
+  .step { width: 120px; display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; }
+  .step-circle {
+    width: 24px; height: 24px; border-radius: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500;
+  }
+  .step-circle.done    { background: var(--fill-dark); color: #fff; }
+  .step-circle.current { background: var(--fill-mid);  color: #fff; }
+  .step-circle.future  { background: #fff; color: var(--gray); border: 1px solid var(--line-input); }
+  .step-circle.reject  { background: #b8514f; color: #fff; }
+  .step-circle.halt    { background: #fff; color: var(--gray); border: 1px dashed var(--line-input); }
+  .step-label { font-size: 10px; color: var(--gray); }
+  .step-label.strong { color: var(--ink); font-weight: 600; }
+  .step-tag {
+    font-size: 10px; font-weight: 500;
+    padding: 3px 8px; border-radius: 12px;
+    background: var(--fill-tag); color: var(--ink-soft);
+  }
+  .step-tag.reject { background: var(--reject-bg); color: var(--reject-ink); }
+  .connector { flex: 1; height: 2px; background: var(--track); margin-top: 11px; min-width: 12px; }
+  .connector.done { background: var(--fill-dark); }
+  .connector.halt { background: repeating-linear-gradient(90deg, var(--track) 0 4px, transparent 4px 8px); }
+
+  /* Decision (radios) — only on state 1 */
+  .decision { display: flex; gap: 20px; align-items: center; }
+  .radio { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--ink-mid); }
+  .radio .ring {
+    width: 15px; height: 15px; border-radius: 50%;
+    border: 1.5px solid var(--gray); display: inline-block; position: relative;
+  }
+  .radio.on .ring { border-color: var(--ink-soft); }
+  .radio.on .ring::after {
+    content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--ink-soft);
+  }
+
+  .comment {
+    border: 1px solid var(--line-input); border-radius: 6px;
+    min-height: 52px; padding: 9px 12px;
+    font-size: 12px; color: var(--gray);
+  }
+
+  /* Result detail block (state 3 — schedule enabled) */
+  .result-block {
+    border: 1px solid var(--approve-line);
+    background: var(--approve-bg);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .result-block .rb-h { font-size: 12px; font-weight: 600; color: var(--approve-ink); }
+  .result-block .rb-b { font-size: 12px; color: var(--ink-mid); line-height: 1.55; }
+
+  /* Reject reason block (state 2) */
+  .reason-block {
+    border: 1px solid var(--line); border-radius: 8px; padding: 0 14px;
+  }
+  .reason-block .detail-row.reason:first-child { border-top: 0; }
+
+  /* Footer */
+  .oc-foot {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 24px 20px;
+    border-top: 1px solid var(--line);
+  }
+  .oc-foot .sp { flex: 1; }
+  .link { font-size: 12px; color: var(--gray); text-decoration: underline; background: none; border: 0; }
+  .btn {
+    border: 1px solid var(--line-input); background: #fff;
+    border-radius: 6px; padding: 9px 18px;
+    font-size: 13px; font-weight: 500; color: var(--ink-mid);
+    white-space: nowrap;
+  }
+  .btn.primary { background: var(--fill-dark); border-color: var(--fill-dark); color: #fff; }
+  .btn.reject  { color: var(--ink-mid); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 640px) {
+    body { padding: 24px 12px 48px; }
+    .oc-head { flex-wrap: wrap; }
+    .detail-row { flex-direction: column; gap: 10px; }
+    .stepper { flex-wrap: wrap; gap: 8px 0; }
+    .step { width: 25%; }
+    .connector { display: none; }
+    .oc-foot { flex-wrap: wrap; }
+    .oc-foot .sp { flex-basis: 100%; height: 0; }
+    .btn { flex: 1; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="page-head">
+    <h1>G-03 Overlay / 跨校區調師簽核(簽核者視角)</h1>
+    <p>簽核者(第 ② 關 原校主任)在待簽 Overlay 上做出裁決後,補上兩個結果狀態:
+      <strong>② 駁回 → 退回發起人</strong> 與 <strong>③ 四關全核准 → 目標校區可排課</strong>。</p>
+  </div>
+
+  <div class="gallery">
+
+    <!-- ============================================================
+         STATE 1 — 待我核准(原稿 / base state)
+         ============================================================ -->
+    <section class="state">
+      <div class="state-label">
+        <span class="no">1</span>
+        <span class="name">待我核准</span>
+        <span class="flag">原稿</span>
+      </div>
+
+      <div class="oc">
+        <div class="oc-head">
+          <div class="head-text">
+            <div class="oc-title-row">
+              <span class="oc-title">調師簽核 · 待我核准</span>
+              <span class="tag">2 件待簽</span>
+            </div>
+            <span class="oc-sub">簽核者視角:台北總校 陳主任(原校區主任 · 第 ② 關)</span>
+          </div>
+          <div class="sp"></div>
+          <button class="oc-close" aria-label="關閉">✕</button>
+        </div>
+
+        <div class="oc-tabs">
+          <button class="tab active">王小明 → 板橋分校</button>
+          <button class="tab">李承翰 → 新竹分校</button>
+        </div>
+
+        <div class="oc-body">
+          <div class="teacher">
+            <span class="avatar"></span>
+            <div class="teacher-main">
+              <div class="teacher-name-row">
+                <span class="teacher-name">王小明(T-001)</span>
+                <span class="mini-tag">A 級</span>
+                <span class="mini-tag">數學</span>
+              </div>
+              <span class="teacher-path">台北總校・國中部　→　板橋分校・國中部(跨校支援)</span>
+            </div>
+          </div>
+
+          <div class="detail">
+            <div class="detail-row">
+              <div class="detail-col"><span class="lbl">支援期間</span><span class="val">2026/08/01 – 12/31</span></div>
+              <div class="detail-col"><span class="lbl">支援時段</span><span class="val">每週六 09:00–12:00</span></div>
+              <div class="detail-col"><span class="lbl">發起人</span><span class="val">王主任 · 07/10</span></div>
+            </div>
+            <div class="detail-row reason">
+              <span class="lbl">調師原因</span>
+              <span class="val">板橋分校國中數學師資短缺,商借王老師每週六支援。</span>
+            </div>
+          </div>
+
+          <div class="banner">
+            <span class="ic">✓</span>
+            <span>排課檢查:王老師原校(台北總校)週六無課,支援時段不衝突。</span>
+          </div>
+
+          <span class="sec-title">簽核進度</span>
+          <div class="stepper">
+            <div class="step">
+              <span class="step-circle done">✓</span>
+              <span class="step-label">發起</span>
+            </div>
+            <div class="connector done"></div>
+            <div class="step">
+              <span class="step-circle current">2</span>
+              <span class="step-label strong">原校主任</span>
+              <span class="step-tag">我這關</span>
+            </div>
+            <div class="connector"></div>
+            <div class="step">
+              <span class="step-circle future">3</span>
+              <span class="step-label">目標校主任</span>
+            </div>
+            <div class="connector"></div>
+            <div class="step">
+              <span class="step-circle future">4</span>
+              <span class="step-label">最高權限</span>
+            </div>
+          </div>
+
+          <span class="sec-title">我的裁決</span>
+          <div class="decision">
+            <span class="radio on"><span class="ring"></span>核准</span>
+            <span class="radio"><span class="ring"></span>駁回</span>
+          </div>
+          <div class="comment">簽核意見(選填)…核准後將進入下一關「板橋分校 林主任」。</div>
+        </div>
+
+        <div class="oc-foot">
+          <button class="link">轉簽他人</button>
+          <div class="sp"></div>
+          <button class="btn reject">駁回</button>
+          <button class="btn primary">核准並送下一關 ✓</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         STATE 2 — 駁回 → 退回發起人  (新增)
+         ============================================================ -->
+    <section class="state">
+      <div class="state-label">
+        <span class="no">2</span>
+        <span class="name">駁回 → 退回發起人</span>
+        <span class="flag new">新增</span>
+      </div>
+
+      <div class="oc">
+        <div class="oc-head">
+          <div class="head-text">
+            <div class="oc-title-row">
+              <span class="oc-title">調師簽核 · 已駁回</span>
+              <span class="tag reject">已退回發起人</span>
+            </div>
+            <span class="oc-sub">簽核者視角:台北總校 陳主任(原校區主任 · 第 ② 關)· 於 07/13 駁回</span>
+          </div>
+          <div class="sp"></div>
+          <button class="oc-close" aria-label="關閉">✕</button>
+        </div>
+
+        <div class="oc-tabs">
+          <button class="tab active">王小明 → 板橋分校 <span class="dot">●</span></button>
+          <button class="tab">李承翰 → 新竹分校</button>
+        </div>
+
+        <div class="oc-body">
+          <div class="result-banner reject">
+            <span class="ic">✕</span>
+            <div>
+              <div class="rb-title">已駁回,退回發起人</div>
+              <div class="rb-desc">本申請已於 2026/07/13 14:22 退回發起人 <strong>王主任</strong>,跨校調師流程中止;發起人可修改後重新提出。</div>
+            </div>
+          </div>
+
+          <div class="teacher">
+            <span class="avatar"></span>
+            <div class="teacher-main">
+              <div class="teacher-name-row">
+                <span class="teacher-name">王小明(T-001)</span>
+                <span class="mini-tag">A 級</span>
+                <span class="mini-tag">數學</span>
+              </div>
+              <span class="teacher-path">台北總校・國中部　→　板橋分校・國中部(跨校支援)</span>
+            </div>
+          </div>
+
+          <div class="reason-block">
+            <div class="detail-row reason">
+              <span class="lbl">駁回原因(第 ② 關 陳主任)</span>
+              <span class="val">支援時段與王老師台北總校月考監考勤務衝突,請發起人調整支援時段後重新提出。</span>
+            </div>
+            <div class="detail-row" style="border-top:1px solid var(--line-soft);">
+              <div class="detail-col"><span class="lbl">退回對象</span><span class="val">王主任(發起人)</span></div>
+              <div class="detail-col"><span class="lbl">駁回時間</span><span class="val">2026/07/13 14:22</span></div>
+              <div class="detail-col"><span class="lbl">稽核紀錄</span><span class="val">已寫入稽核日誌</span></div>
+            </div>
+          </div>
+
+          <span class="sec-title">簽核進度</span>
+          <div class="stepper">
+            <div class="step">
+              <span class="step-circle done">✓</span>
+              <span class="step-label">發起</span>
+            </div>
+            <div class="connector done"></div>
+            <div class="step">
+              <span class="step-circle reject">✕</span>
+              <span class="step-label strong">原校主任</span>
+              <span class="step-tag reject">已駁回</span>
+            </div>
+            <div class="connector halt"></div>
+            <div class="step">
+              <span class="step-circle halt">—</span>
+              <span class="step-label">目標校主任</span>
+            </div>
+            <div class="connector halt"></div>
+            <div class="step">
+              <span class="step-circle halt">—</span>
+              <span class="step-label">最高權限</span>
+            </div>
+          </div>
+
+          <div class="banner">
+            <span class="ic">ⓘ</span>
+            <span>後續兩關(目標校主任、最高權限)不再進行;發起人重新提出時將回到第 ① 關重跑簽核。</span>
+          </div>
+        </div>
+
+        <div class="oc-foot">
+          <button class="link">查看稽核日誌</button>
+          <div class="sp"></div>
+          <button class="btn primary">關閉</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         STATE 3 — 四關全核准 → 目標校區可排課  (新增)
+         ============================================================ -->
+    <section class="state">
+      <div class="state-label">
+        <span class="no">3</span>
+        <span class="name">四關全核准 → 目標校區可排課</span>
+        <span class="flag new">新增</span>
+      </div>
+
+      <div class="oc">
+        <div class="oc-head">
+          <div class="head-text">
+            <div class="oc-title-row">
+              <span class="oc-title">調師簽核 · 已核准</span>
+              <span class="tag approve">四關全數通過</span>
+            </div>
+            <span class="oc-sub">全部簽核完成 · 第 ④ 關「最高權限」於 2026/07/13 核准</span>
+          </div>
+          <div class="sp"></div>
+          <button class="oc-close" aria-label="關閉">✕</button>
+        </div>
+
+        <div class="oc-tabs">
+          <button class="tab active">王小明 → 板橋分校</button>
+          <button class="tab">李承翰 → 新竹分校</button>
+        </div>
+
+        <div class="oc-body">
+          <div class="result-banner approve">
+            <span class="ic">✓</span>
+            <div>
+              <div class="rb-title">四關全數核准,目標校區已可排課</div>
+              <div class="rb-desc">跨校調師簽核已於 2026/07/13 完成,<strong>板橋分校</strong>已取得王小明(T-001)之排課權限,可於支援期間內建立課程。</div>
+            </div>
+          </div>
+
+          <div class="teacher">
+            <span class="avatar"></span>
+            <div class="teacher-main">
+              <div class="teacher-name-row">
+                <span class="teacher-name">王小明(T-001)</span>
+                <span class="mini-tag">A 級</span>
+                <span class="mini-tag">數學</span>
+              </div>
+              <span class="teacher-path">台北總校・國中部　→　板橋分校・國中部(跨校支援)</span>
+            </div>
+          </div>
+
+          <div class="detail">
+            <div class="detail-row">
+              <div class="detail-col"><span class="lbl">支援期間</span><span class="val">2026/08/01 – 12/31</span></div>
+              <div class="detail-col"><span class="lbl">支援時段</span><span class="val">每週六 09:00–12:00</span></div>
+              <div class="detail-col"><span class="lbl">發起人</span><span class="val">王主任 · 07/10</span></div>
+            </div>
+          </div>
+
+          <span class="sec-title">簽核進度</span>
+          <div class="stepper">
+            <div class="step">
+              <span class="step-circle done">✓</span>
+              <span class="step-label">發起</span>
+            </div>
+            <div class="connector done"></div>
+            <div class="step">
+              <span class="step-circle done">✓</span>
+              <span class="step-label">原校主任</span>
+            </div>
+            <div class="connector done"></div>
+            <div class="step">
+              <span class="step-circle done">✓</span>
+              <span class="step-label">目標校主任</span>
+            </div>
+            <div class="connector done"></div>
+            <div class="step">
+              <span class="step-circle done">✓</span>
+              <span class="step-label">最高權限</span>
+            </div>
+          </div>
+
+          <span class="sec-title">結果</span>
+          <div class="result-block">
+            <span class="rb-h">目標校區(板橋分校)已開通排課</span>
+            <span class="rb-b">板橋分校・國中部已可為王小明(T-001)在支援期間內建立課程。</span>
+            <span class="rb-b">建議課程:每週六 09:00–12:00 · 國中數學 · 2026/08/01 起 · 已通過排課衝突檢查。</span>
+          </div>
+        </div>
+
+        <div class="oc-foot">
+          <button class="link">查看稽核日誌</button>
+          <div class="sp"></div>
+          <button class="btn">關閉</button>
+          <button class="btn primary">前往板橋分校排課 →</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>
