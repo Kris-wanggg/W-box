@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>補習班後台 — 畫面原型索引</title>
+<link rel="stylesheet" href="assets/tailwind.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>body{font-family:'Inter','Noto Sans TC',system-ui,-apple-system,sans-serif;}</style>
+</head>
+<body class="bg-[#fafafa] text-[#1f1f1f] min-h-screen flex items-start justify-center py-16 px-6">
+  <div class="w-full max-w-[720px]">
+    <h1 class="text-[22px] font-semibold text-[#1a1a1a]">補習班後台 — 畫面原型索引</h1>
+    <p class="mt-1.5 text-[12px] text-[#8c8c8c]">B-06 灰階視覺語言 · 自包含 HTML（本地編譯 Tailwind CSS，離線可用）· 直接以瀏覽器開啟</p>
+
+    <div class="mt-6 flex flex-col gap-3">
+      <a href="b06-course-detail.html" class="block bg-white border border-[#bfbfbf] rounded-[8px] p-5 hover:border-[#595959] transition-colors">
+        <div class="flex items-center gap-2">
+          <span class="text-[13px] font-semibold text-[#1a1a1a]">B-06 課程詳細頁 — 國二數學精修班（含排課清單）</span>
+          <span class="inline-flex items-center h-[18px] px-2 rounded-[20px] text-[10px] bg-[#595959] text-white">頁面</span>
+        </div>
+        <p class="mt-1.5 text-[11px] text-[#8c8c8c]">依 Figma 524:4146 重現，並在「授課老師」欄位新增「指派 / 更換」CTA 開啟 B-09 Modal。</p>
+      </a>
+
+      <a href="b06-course-detail.html#assign" class="block bg-white border border-[#bfbfbf] rounded-[8px] p-5 hover:border-[#595959] transition-colors">
+        <div class="flex items-center gap-2">
+          <span class="text-[13px] font-semibold text-[#1a1a1a]">B-09 指派授課老師 Modal（主授＋代課・每週可授課時間）</span>
+          <span class="inline-flex items-center h-[18px] px-2 rounded-[20px] text-[10px] bg-[#e0e0e0] text-[#333]">Modal</span>
+        </div>
+        <p class="mt-1.5 text-[11px] text-[#8c8c8c]">依 Figma 538:24 wireframe 完成之操作畫面；可授時段格線標示 ✓ 涵蓋課程時段，底部顯示衝突檢查結果。</p>
+      </a>
+
+      <a href="b06-course-detail.html#reschedule" class="block bg-white border border-[#bfbfbf] rounded-[8px] p-5 hover:border-[#595959] transition-colors">
+        <div class="flex items-center gap-2">
+          <span class="text-[13px] font-semibold text-[#1a1a1a]">調課 Modal（表格操作列「調課」）</span>
+          <span class="inline-flex items-center h-[18px] px-2 rounded-[20px] text-[10px] bg-[#e0e0e0] text-[#333]">Modal</span>
+        </div>
+        <p class="mt-1.5 text-[11px] text-[#8c8c8c]">單堂改期：調課原因、建議時段（依老師可授時間與教室空檔）、教室自動指派、衝突檢查、通知學員。</p>
+      </a>
+
+      <a href="edit-course.html" class="block bg-white border border-[#bfbfbf] rounded-[8px] p-5 hover:border-[#595959] transition-colors">
+        <div class="flex items-center gap-2">
+          <span class="text-[13px] font-semibold text-[#1a1a1a]">編輯課程</span>
+          <span class="inline-flex items-center h-[18px] px-2 rounded-[20px] text-[10px] bg-[#595959] text-white">頁面</span>
+        </div>
+        <p class="mt-1.5 text-[11px] text-[#8c8c8c]">課程藍圖設定：基本資訊、授課設定（老師人工指派）、教室「需求」（實際教室由排課逐堂指派）、名額與方案。</p>
+      </a>
+
+      <a href="smart-scheduling.html" class="block bg-white border border-[#bfbfbf] rounded-[8px] p-5 hover:border-[#595959] transition-colors">
+        <div class="flex items-center gap-2">
+          <span class="text-[13px] font-semibold text-[#1a1a1a]">智慧排課</span>
+          <span class="inline-flex items-center h-[18px] px-2 rounded-[20px] text-[10px] bg-[#595959] text-white">頁面</span>
+        </div>
+        <p class="mt-1.5 text-[11px] text-[#8c8c8c]">全中心求解視角：展開堂次 → 驗證老師可授時間與衝突 → 逐堂指派教室 → 衝突與例外報告 ＋ 本週教室使用總覽。</p>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
