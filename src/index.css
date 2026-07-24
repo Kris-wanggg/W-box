@@ -1,0 +1,41 @@
+/*
+ * Inter is the design font. We load it from Google Fonts when online; if the
+ * network blocks it, the ui-sans-serif / system-ui fallback keeps things
+ * legible. (No layout depends on Inter-exclusive metrics.)
+ * @import must precede all other statements, so it stays at the top.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #0a0a0a;
+  color: #f5f0e8;
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Noto Sans TC',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The hero photo can't be bundled from Figma (asset host is blocked), so we
+   approximate the dim, warm dining-room backdrop with a layered gradient. */
+.hero-backdrop {
+  background-color: #0a0a0a;
+  background-image:
+    radial-gradient(120% 80% at 50% 0%, rgba(201, 146, 42, 0.10) 0%, rgba(10, 8, 6, 0) 55%),
+    radial-gradient(90% 60% at 80% 100%, rgba(120, 70, 20, 0.18) 0%, rgba(10, 8, 6, 0) 60%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.86) 100%);
+}

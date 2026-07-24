@@ -1,88 +1,69 @@
 /**
  * Tailwind CSS configuration
  *
- * Design tokens generated from Figma:
- * "FJ會員後台 — 登入介面設計"
- * https://www.figma.com/design/C9EZHW6LDMqUM5s8jQVDtf
+ * Theme extracted from the Figma design:
+ *   "Restaurant Reservation system" — 第28區中餐廳 線上訂位系統
+ *   https://www.figma.com/design/f27j5bQ9NnxC6aiUPxt5Ip
  *
- * Source of truth = the semantic Figma variable collections:
- *   • "🎨 Color Tokens"  (15 vars, Light / Dark modes)
- *   • "⬡ Border Radius"  (5 vars)
- *   • Text styles        (7 typography presets)
- *
- * Colors are wired to CSS custom properties (see ./tokens.css). The Light
- * values live in :root, the Dark values in .dark — toggled via the
- * `darkMode: 'class'` strategy. This mirrors the two Figma variable modes.
+ * The restaurant flow is a dark, warm "fine-dining" theme built around a gold
+ * accent (#C9922A / #E4A93C) on near-black backgrounds with cream text.
+ * These semantic tokens mirror the raw values used across the Figma frames.
  */
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    './src/**/*.{js,ts,jsx,tsx,vue,html}',
-    './index.html',
-  ],
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        // color/background
-        background: 'var(--color-background)',
-        // color/surface + color/surface-alt
-        surface: {
-          DEFAULT: 'var(--color-surface)',
-          alt: 'var(--color-surface-alt)',
-        },
-        // color/border + color/divider
-        border: 'var(--color-border)',
-        divider: 'var(--color-divider)',
-        // color/primary
-        primary: 'var(--color-primary)',
-        // color/text-*
-        text: {
-          primary: 'var(--color-text-primary)',
-          secondary: 'var(--color-text-secondary)',
-          muted: 'var(--color-text-muted)',
-        },
-        // color/placeholder
-        placeholder: 'var(--color-placeholder)',
-        // color/input-*
-        input: {
-          bg: 'var(--color-input-bg)',
-          border: 'var(--color-input-border)',
-        },
-        // color/status-*  (identical in both modes)
-        status: {
-          error: 'var(--color-status-error)',
-          success: 'var(--color-status-success)',
-          warning: 'var(--color-status-warning)',
-        },
-      },
+        // Surfaces
+        ink: '#0A0A0A', // page background base
+        'ink-800': '#12100E', // deep panel
+        panel: 'rgba(10,8,6,0.84)', // hero / content card
+        'panel-soft': 'rgba(255,255,255,0.05)', // inset info card
+        'panel-input': 'rgba(255,255,255,0.04)', // input field bg
 
-      // ⬡ Border Radius collection.
-      // NOTE: sm/md/lg/xl intentionally override Tailwind defaults to match
-      // the design system; `pill` is an added token.
-      borderRadius: {
-        sm: '10px',   // radius/sm
-        md: '12px',   // radius/md
-        lg: '16px',   // radius/lg
-        xl: '20px',   // radius/xl
-        pill: '100px',// radius/pill
-      },
+        // Gold accent scale
+        gold: {
+          DEFAULT: '#C9922A',
+          light: '#E4A93C',
+          soft: 'rgba(201,146,42,0.15)',
+        },
 
+        // Text
+        cream: '#F5F0E8', // primary text on dark
+        'cream-dim': '#C8BFB0', // secondary text
+        muted: '#9A8C7E', // notes / captions
+
+        // Status
+        success: '#4CAF50',
+        danger: '#E5484D',
+      },
+      // Gold-tinted borders reused across cards / inputs / dividers.
+      borderColor: {
+        gold: 'rgba(201,146,42,0.4)',
+        'gold-soft': 'rgba(201,146,42,0.28)',
+        'gold-faint': 'rgba(201,146,42,0.18)',
+        'gold-line': 'rgba(201,146,42,0.22)',
+      },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
-
-      // Typography presets from Figma text styles.
-      // Format: [fontSize, { lineHeight, fontWeight, letterSpacing }]
-      fontSize: {
-        'heading-h1': ['24px', { lineHeight: '1', fontWeight: '600', letterSpacing: '0' }], // Heading/H1
-        'button-primary': ['16px', { lineHeight: '1', fontWeight: '600', letterSpacing: '0' }], // Button/Primary
-        'body-base': ['14px', { lineHeight: '1', fontWeight: '400', letterSpacing: '0' }], // Body/Base
-        'body-small': ['13px', { lineHeight: '1', fontWeight: '400', letterSpacing: '0' }], // Body/Small
-        'label-medium': ['13px', { lineHeight: '1', fontWeight: '500', letterSpacing: '0' }], // Label/Medium
-        'link-semibold': ['13px', { lineHeight: '1', fontWeight: '600', letterSpacing: '0' }], // Link/SemiBold
-        'caption': ['12px', { lineHeight: '1', fontWeight: '500', letterSpacing: '0' }], // Caption
+      borderRadius: {
+        card: '12px',
+        btn: '8px',
+        badge: '6px',
+      },
+      boxShadow: {
+        hero: '0px 8px 48px 0px rgba(0,0,0,0.6)',
+      },
+      backgroundImage: {
+        'gold-gradient':
+          'linear-gradient(172.7deg, #C9922A 0%, #E4A93C 60%, #C9922A 100%)',
+      },
+      maxWidth: {
+        content: '1280px',
       },
     },
   },
