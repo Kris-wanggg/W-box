@@ -8,6 +8,8 @@ import {
 import {
   byId,
   MENU,
+  BANQUET_BOTTLES,
+  DRINK_TOPPINGS,
   type IceOption,
   type MenuItem,
   type SugarOption,
@@ -26,15 +28,38 @@ export type SetSelection = {
   note: string;
 };
 
+/** A customized drink cup added from the 飲品 tab (choose-drink). */
+export type DrinkCartItem = {
+  uid: string; // unique per added cup
+  drinkId: string; // menu drink id
+  ice: string; // includes 熱飲
+  sugar: string;
+  toppings: string[]; // topping ids
+  note: string;
+};
+
+/** 客製化料理 — the exclusive whole-table banquet configurator. */
+export type CustomBanquet = {
+  eventType: string | null;
+  budget: number | null; // per-table budget (also the "active" trigger)
+  room: 'none' | 'need';
+  addDrinks: boolean;
+  bottles: Record<string, number>; // bottleId -> qty
+};
+
 export type Booking = {
   adults: number;
   children: number;
   date: Date | null;
   time: string | null;
-  /** simple items (單品 / 飲品 / 客製化): menu item id -> quantity */
+  /** simple items (單品): menu item id -> quantity */
   cart: Record<string, number>;
   /** customized 套餐: set id -> selection */
   setSelections: Record<string, SetSelection>;
+  /** customized 飲品 cups */
+  drinkCart: DrinkCartItem[];
+  /** 客製化料理 banquet (exclusive when active) */
+  custom: CustomBanquet;
   contact: {
     name: string;
     phone: string;
@@ -45,6 +70,14 @@ export type Booking = {
   code: string | null;
 };
 
+export const emptyCustom: CustomBanquet = {
+  eventType: null,
+  budget: null,
+  room: 'none',
+  addDrinks: false,
+  bottles: {},
+};
+
 const defaultBooking: Booking = {
   adults: 2,
   children: 0,
@@ -52,6 +85,8 @@ const defaultBooking: Booking = {
   time: null,
   cart: {},
   setSelections: {},
+  drinkCart: [],
+  custom: emptyCustom,
   contact: { name: '', phone: '', email: '', note: '' },
   code: null,
 };
@@ -103,8 +138,37 @@ export function setLineTotal(set: MenuItem, sel: SetSelection): number {
   return (set.price + setUpcharge(set, sel)) * sel.qty;
 }
 
-/** Grand subtotal: all customized sets + all simple cart items. */
+/** Price of one customized drink cup: base + topping up-charges. */
+export function drinkItemPrice(item: DrinkCartItem): number {
+  const base = byId(item.drinkId)?.price ?? 0;
+  const extra = item.toppings.reduce((s, id) => {
+    const tp = DRINK_TOPPINGS.find((t) => t.id === id);
+    return s + (tp?.upcharge ?? 0);
+  }, 0);
+  return base + extra;
+}
+
+/** 客製化料理 is "active" (and therefore exclusive) once a budget is chosen. */
+export function isCustomActive(b: Booking): boolean {
+  return b.custom.budget != null;
+}
+
+/** Whole-table banquet total: budget + any add-on bottles. */
+export function customTotal(b: Booking): number {
+  let sum = b.custom.budget ?? 0;
+  if (b.custom.addDrinks) {
+    for (const [id, qty] of Object.entries(b.custom.bottles)) {
+      const bottle = BANQUET_BOTTLES.find((x) => x.id === id);
+      if (bottle) sum += bottle.price * qty;
+    }
+  }
+  return sum;
+}
+
+/** Grand subtotal. When the banquet is active it is exclusive: sets / 單品 /
+ * 飲品 amounts are paused and the total is banquet-only. */
 export function computeSubtotal(b: Booking): number {
+  if (isCustomActive(b)) return customTotal(b);
   let sum = 0;
   for (const [id, sel] of Object.entries(b.setSelections)) {
     const set = byId(id);
@@ -114,6 +178,7 @@ export function computeSubtotal(b: Booking): number {
     const item = byId(id);
     if (item) sum += item.price * qty;
   }
+  for (const item of b.drinkCart) sum += drinkItemPrice(item);
   return sum;
 }
 
@@ -150,7 +215,8 @@ export const totalGuests = (b: Booking) => b.adults + b.children;
 
 export const cartCount = (b: Booking) =>
   Object.values(b.cart).reduce((a, n) => a + n, 0) +
-  Object.values(b.setSelections).reduce((a, s) => a + s.qty, 0);
+  Object.values(b.setSelections).reduce((a, s) => a + s.qty, 0) +
+  b.drinkCart.length;
 
 /** Silence unused-import warning while keeping MENU handy for consumers. */
 export const ALL_SETS = MENU.filter((m) => m.category === 'set');

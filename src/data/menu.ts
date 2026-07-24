@@ -54,6 +54,102 @@ export const SUGAR_OPTIONS = ['正常糖', '少糖', '半糖', '微糖', '無糖
 export type IceOption = (typeof ICE_OPTIONS)[number];
 export type SugarOption = (typeof SUGAR_OPTIONS)[number];
 
+// ── 飲品 (choose-drink) customization ──────────────────────────────
+/** drink 冰塊 options include 熱飲 (hot), unlike the set-meal drink groups. */
+export const DRINK_ICE_OPTIONS = [
+  '正常冰',
+  '少冰',
+  '微冰',
+  '去冰',
+  '熱飲',
+] as const;
+
+export type DrinkTopping = { id: string; name: string; upcharge: number };
+/** 加料 (選填・可複選) shared by every drink. */
+export const DRINK_TOPPINGS: DrinkTopping[] = [
+  { id: 'tp-pearl', name: '珍珠', upcharge: 10 },
+  { id: 'tp-coconut', name: '椰果', upcharge: 10 },
+  { id: 'tp-grass', name: '仙草凍', upcharge: 15 },
+];
+
+// ── 客製化料理 (custom banquet) ─────────────────────────────────────
+export const EVENT_TYPES = [
+  '謝師宴',
+  '節慶',
+  '公司聚餐',
+  '家庭聚會',
+  '慶生會',
+  '尾牙春酒',
+  '抓周派對',
+  '商務聚餐',
+  '其他',
+] as const;
+
+export const BUDGET_OPTIONS: { value: number; label: string }[] = [
+  { value: 6800, label: '6,800 / 桌' },
+  { value: 8800, label: '8,800 / 桌' },
+  { value: 10800, label: '10,800 / 桌' },
+  { value: 13800, label: '13,800 / 桌' },
+  { value: 15000, label: '15,000 以上 / 桌' },
+];
+
+export const ROOM_INFO =
+  '包廂低消：10 人包廂 $11,000 · 12 人包廂 $12,000 · 15 人包廂 $15,000';
+
+export type BanquetBottle = {
+  id: string;
+  name: string;
+  cat: string; // 養身飲品 / 酒 / 熱飲 / 冷飲
+  unit: string; // 壺 / 瓶
+  desc: string;
+  price: number;
+};
+
+/** 整桌加購飲品 (以壺 / 瓶為單位). */
+export const BANQUET_BOTTLES: BanquetBottle[] = [
+  {
+    id: 'bb-guiyuan',
+    name: '桂圓紅棗茶（壺）',
+    cat: '養身飲品',
+    unit: '壺',
+    desc: '養身飲品 · 約 6 杯',
+    price: 320,
+  },
+  {
+    id: 'bb-oolong',
+    name: '台灣高山烏龍（壺）',
+    cat: '熱飲',
+    unit: '壺',
+    desc: '熱飲 · 約 6 杯',
+    price: 280,
+  },
+  {
+    id: 'bb-beer',
+    name: '金牌台灣啤酒（瓶）',
+    cat: '酒',
+    unit: '瓶',
+    desc: '酒 · 冰鎮供應',
+    price: 120,
+  },
+  {
+    id: 'bb-plum',
+    name: '冰鎮酸梅湯（壺）',
+    cat: '冷飲',
+    unit: '壺',
+    desc: '冷飲 · 約 6 杯',
+    price: 260,
+  },
+];
+
+/** filter chips for the 加購飲品 list; `cat: null` = 全部. */
+export const BANQUET_FILTERS: { label: string; cat: string | null }[] = [
+  { label: '全部', cat: null },
+  { label: '養身飲品', cat: '養身飲品' },
+  { label: '酒', cat: '酒' },
+  { label: '熱飲(壺)', cat: '熱飲' },
+  { label: '冷飲', cat: '冷飲' },
+];
+
 export const MENU: MenuItem[] = [
   // ───────────────────────── 套餐 ─────────────────────────
   {
@@ -398,28 +494,52 @@ export const MENU: MenuItem[] = [
   },
   // ───────────────────────── 飲品 ─────────────────────────
   {
-    id: 'drink-tea',
+    id: 'drink-orange',
     category: 'drink',
-    name: '招牌手沖茶',
-    desc: '高山烏龍 · 無限續杯',
-    price: 150,
-    thumb: 'from-[#1a5a4a] to-[#2a8a6a]',
+    name: '鮮榨柳橙汁',
+    desc: '現榨 · 大杯 700ml · 可加珍珠',
+    price: 90,
+    thumb: 'from-[#7a4a10] to-[#a86a1a]',
   },
   {
-    id: 'drink-juice',
+    id: 'drink-ceylon',
     category: 'drink',
-    name: '鮮榨果汁',
-    desc: '當季水果 · 每日新鮮',
-    price: 130,
-    thumb: 'from-[#7a5a1a] to-[#a88a2a]',
+    name: '招牌錫蘭紅茶',
+    desc: '大杯 700ml · 無糖至全糖可調',
+    price: 60,
+    thumb: 'from-[#5a1a2a] to-[#8a2a3a]',
+  },
+  {
+    id: 'drink-oolong',
+    category: 'drink',
+    name: '冷泡烏龍青茶',
+    desc: '大杯 700ml · 建議無糖',
+    price: 80,
+    thumb: 'from-[#1a5a3a] to-[#2a7a4a]',
+  },
+  {
+    id: 'drink-mojito',
+    category: 'drink',
+    name: '手工特調莫吉托',
+    desc: '新鮮薄荷 · 氣泡水 · 萊姆',
+    price: 180,
+    thumb: 'from-[#1a5a4a] to-[#2a8a6a]',
   },
   {
     id: 'drink-wine',
     category: 'drink',
-    name: '單杯紅酒',
-    desc: '主廚嚴選 · 佐餐推薦',
-    price: 280,
+    name: '私家招牌紅酒',
+    desc: '法國波爾多 · 單杯供應',
+    price: 320,
     thumb: 'from-[#5a1a2a] to-[#8a2a4a]',
+  },
+  {
+    id: 'drink-sencha',
+    category: 'drink',
+    name: '煎茶冷泡',
+    desc: '日本靜岡煎茶 · 低溫慢萃 12hr',
+    price: 120,
+    thumb: 'from-[#2a4a1a] to-[#4a7a2a]',
   },
   // ─────────────────────── 客製化料理 ───────────────────────
   {

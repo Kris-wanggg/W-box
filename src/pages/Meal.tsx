@@ -4,10 +4,13 @@ import Layout from '../components/Layout';
 import TopBar from '../components/TopBar';
 import OrderSummary from '../components/OrderSummary';
 import SetMealCard from '../components/SetMealCard';
+import DrinkCard, { type DrinkDraft } from '../components/DrinkCard';
+import CustomBanquet from '../components/CustomBanquet';
 import { Card, PrimaryButton } from '../components/ui';
 import { MinusIcon, PlusIcon } from '../components/icons';
 import {
   defaultSelection,
+  isCustomActive,
   useBooking,
   type SetSelection,
 } from '../state/BookingContext';
@@ -19,57 +22,63 @@ import {
   type MenuItem,
 } from '../data/menu';
 
-/** Restaurant/choose-set — Figma nodes 492:3136 (default) + 497:3658 (editor). */
+/** Restaurant/choose-* — Figma nodes 492:3136, 497:3658, 497:4207, 497:4480,
+ * 500:5282, 500:4866. */
 export default function Meal() {
   const navigate = useNavigate();
   const { booking, update } = useBooking();
   const [tab, setTab] = useState<MenuCategory>('set');
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [openDrinkId, setOpenDrinkId] = useState<string | null>(null);
   const snapshot = useRef<{ id: string; sel: SetSelection } | null>(null);
 
   const items = MENU.filter((m) => m.category === tab);
+  const customActive = isCustomActive(booking);
 
   // ── set-meal (套餐) handlers ────────────────────────────────
   const patchSets = (next: Record<string, SetSelection>) =>
     update({ setSelections: next });
-
   const selectSet = (set: MenuItem) =>
     patchSets({ ...booking.setSelections, [set.id]: defaultSelection(set) });
-
   const removeSet = (id: string) => {
     const next = { ...booking.setSelections };
     delete next[id];
     patchSets(next);
     if (editingId === id) setEditingId(null);
   };
-
   const changeSet = (id: string, sel: SetSelection) =>
     patchSets({ ...booking.setSelections, [id]: sel });
-
   const openEditor = (id: string) => {
     snapshot.current = { id, sel: booking.setSelections[id] };
     setEditingId(id);
   };
-
   const cancelEditor = () => {
-    if (snapshot.current) {
-      changeSet(snapshot.current.id, snapshot.current.sel);
-    }
+    if (snapshot.current) changeSet(snapshot.current.id, snapshot.current.sel);
     snapshot.current = null;
     setEditingId(null);
   };
-
   const closeEditor = () => {
     snapshot.current = null;
     setEditingId(null);
   };
 
-  // ── simple items (單品 / 飲品 / 客製化) handlers ──────────────
+  // ── 單品 (simple) handlers ──────────────────────────────────
   const setQty = (id: string, qty: number) => {
     const cart = { ...booking.cart };
     if (qty <= 0) delete cart[id];
     else cart[id] = qty;
     update({ cart });
+  };
+
+  // ── 飲品 (customized drink) handlers ────────────────────────
+  const addDrink = (drink: MenuItem, draft: DrinkDraft) => {
+    const uid = `${drink.id}-${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2, 7)}`;
+    update({
+      drinkCart: [...booking.drinkCart, { uid, drinkId: drink.id, ...draft }],
+    });
+    setOpenDrinkId(null);
   };
 
   const editingSet = MENU.find((m) => m.id === editingId);
@@ -86,14 +95,21 @@ export default function Meal() {
           <p className="mb-4 text-sm text-muted">
             {editingSet
               ? `編輯「${editingSet.name}」的內容：請完成主餐、附餐、飲料與甜點的選擇。`
-              : '可先加入餐點，也可略過直接完成訂位。'}
+              : tab === 'drink'
+                ? '飲品可設定冰塊、甜度與加料；冰塊 / 甜度為必選單選，加料可複選。'
+                : tab === 'custom'
+                  ? '整桌宴會客製：選擇活動類型、預算與加購項目。'
+                  : '可先加入餐點，也可略過直接完成訂位。'}
           </p>
 
           <div className="mb-4 flex flex-wrap gap-2">
             {CATEGORY_TABS.map((t) => (
               <button
                 key={t.key}
-                onClick={() => setTab(t.key)}
+                onClick={() => {
+                  setTab(t.key);
+                  setOpenDrinkId(null);
+                }}
                 className={`rounded-full px-4 py-1.5 text-sm transition-colors ${
                   tab === t.key
                     ? 'bg-gold-gradient font-medium text-ink'
@@ -105,17 +121,32 @@ export default function Meal() {
             ))}
           </div>
 
+          {/* exclusive-mode notice on non-custom tabs */}
+          {customActive && tab !== 'custom' && (
+            <p className="mb-3 rounded-btn border border-gold-faint bg-gold-soft/20 px-3 py-2 text-xs text-gold-light">
+              已切換「客製化料理」整桌宴會，此分類的餐點金額暫停計算；金額以客製為準。
+            </p>
+          )}
+
           <div className="mb-3 flex items-center justify-between text-xs text-muted">
             <span>
               目前分類：{catLabel}
-              {tab === 'set' && editingId ? ' · 編輯套餐內容' : `，共 ${items.length} 項`}
+              {tab === 'set' && editingId
+                ? ' · 編輯套餐內容'
+                : tab === 'custom'
+                  ? ''
+                  : `，共 ${items.length} 項`}
             </span>
             {tab === 'set' && !editingId && <span>* 為必選組別</span>}
+            {tab === 'drink' && <span>點「＋客製化」展開設定</span>}
           </div>
 
-          <div className="flex flex-col gap-3">
-            {tab === 'set'
-              ? items.map((set) => (
+          {tab === 'custom' ? (
+            <CustomBanquet />
+          ) : (
+            <div className="flex flex-col gap-3">
+              {tab === 'set' &&
+                items.map((set) => (
                   <SetMealCard
                     key={set.id}
                     set={set}
@@ -124,18 +155,29 @@ export default function Meal() {
                     onSelect={() => selectSet(set)}
                     onRemove={() => removeSet(set.id)}
                     onQty={(qty) =>
-                      changeSet(set.id, {
-                        ...booking.setSelections[set.id],
-                        qty,
-                      })
+                      changeSet(set.id, { ...booking.setSelections[set.id], qty })
                     }
                     onEdit={() => openEditor(set.id)}
                     onChange={(sel) => changeSet(set.id, sel)}
                     onCancel={cancelEditor}
                     onDone={closeEditor}
                   />
-                ))
-              : items.map((item) => (
+                ))}
+
+              {tab === 'drink' &&
+                items.map((drink) => (
+                  <DrinkCard
+                    key={drink.id}
+                    drink={drink}
+                    open={openDrinkId === drink.id}
+                    onOpen={() => setOpenDrinkId(drink.id)}
+                    onClose={() => setOpenDrinkId(null)}
+                    onAdd={(draft) => addDrink(drink, draft)}
+                  />
+                ))}
+
+              {tab === 'single' &&
+                items.map((item) => (
                   <MealRow
                     key={item.id}
                     item={item}
@@ -143,7 +185,8 @@ export default function Meal() {
                     onChange={(q) => setQty(item.id, q)}
                   />
                 ))}
-          </div>
+            </div>
+          )}
         </Card>
 
         {/* Right: summary */}
