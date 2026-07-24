@@ -1,11 +1,16 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import TopBar from '../components/TopBar';
 import OrderSummary from '../components/OrderSummary';
+import SetMealCard from '../components/SetMealCard';
 import { Card, PrimaryButton } from '../components/ui';
 import { MinusIcon, PlusIcon } from '../components/icons';
-import { useBooking } from '../state/BookingContext';
+import {
+  defaultSelection,
+  useBooking,
+  type SetSelection,
+} from '../state/BookingContext';
 import {
   CATEGORY_TABS,
   MENU,
@@ -14,20 +19,61 @@ import {
   type MenuItem,
 } from '../data/menu';
 
-/** Restaurant/choose-set — Figma node 492:3136. Menu selection. */
+/** Restaurant/choose-set — Figma nodes 492:3136 (default) + 497:3658 (editor). */
 export default function Meal() {
   const navigate = useNavigate();
   const { booking, update } = useBooking();
   const [tab, setTab] = useState<MenuCategory>('set');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const snapshot = useRef<{ id: string; sel: SetSelection } | null>(null);
 
   const items = MENU.filter((m) => m.category === tab);
 
+  // ── set-meal (套餐) handlers ────────────────────────────────
+  const patchSets = (next: Record<string, SetSelection>) =>
+    update({ setSelections: next });
+
+  const selectSet = (set: MenuItem) =>
+    patchSets({ ...booking.setSelections, [set.id]: defaultSelection(set) });
+
+  const removeSet = (id: string) => {
+    const next = { ...booking.setSelections };
+    delete next[id];
+    patchSets(next);
+    if (editingId === id) setEditingId(null);
+  };
+
+  const changeSet = (id: string, sel: SetSelection) =>
+    patchSets({ ...booking.setSelections, [id]: sel });
+
+  const openEditor = (id: string) => {
+    snapshot.current = { id, sel: booking.setSelections[id] };
+    setEditingId(id);
+  };
+
+  const cancelEditor = () => {
+    if (snapshot.current) {
+      changeSet(snapshot.current.id, snapshot.current.sel);
+    }
+    snapshot.current = null;
+    setEditingId(null);
+  };
+
+  const closeEditor = () => {
+    snapshot.current = null;
+    setEditingId(null);
+  };
+
+  // ── simple items (單品 / 飲品 / 客製化) handlers ──────────────
   const setQty = (id: string, qty: number) => {
     const cart = { ...booking.cart };
     if (qty <= 0) delete cart[id];
     else cart[id] = qty;
     update({ cart });
   };
+
+  const editingSet = MENU.find((m) => m.id === editingId);
+  const catLabel = CATEGORY_TABS.find((t) => t.key === tab)?.label;
 
   return (
     <Layout>
@@ -38,7 +84,9 @@ export default function Meal() {
         <Card className="p-6">
           <h2 className="text-lg font-semibold text-cream">選擇餐點</h2>
           <p className="mb-4 text-sm text-muted">
-            可先加入餐點，也可略過直接完成訂位。
+            {editingSet
+              ? `編輯「${editingSet.name}」的內容：請完成主餐、附餐、飲料與甜點的選擇。`
+              : '可先加入餐點，也可略過直接完成訂位。'}
           </p>
 
           <div className="mb-4 flex flex-wrap gap-2">
@@ -59,27 +107,49 @@ export default function Meal() {
 
           <div className="mb-3 flex items-center justify-between text-xs text-muted">
             <span>
-              目前分類：
-              {CATEGORY_TABS.find((t) => t.key === tab)?.label}，共 {items.length} 項
+              目前分類：{catLabel}
+              {tab === 'set' && editingId ? ' · 編輯套餐內容' : `，共 ${items.length} 項`}
             </span>
-            <span>可上下捲動</span>
+            {tab === 'set' && !editingId && <span>* 為必選組別</span>}
           </div>
 
           <div className="flex flex-col gap-3">
-            {items.map((item) => (
-              <MealRow
-                key={item.id}
-                item={item}
-                qty={booking.cart[item.id] ?? 0}
-                onChange={(q) => setQty(item.id, q)}
-              />
-            ))}
+            {tab === 'set'
+              ? items.map((set) => (
+                  <SetMealCard
+                    key={set.id}
+                    set={set}
+                    selection={booking.setSelections[set.id]}
+                    editing={editingId === set.id}
+                    onSelect={() => selectSet(set)}
+                    onRemove={() => removeSet(set.id)}
+                    onQty={(qty) =>
+                      changeSet(set.id, {
+                        ...booking.setSelections[set.id],
+                        qty,
+                      })
+                    }
+                    onEdit={() => openEditor(set.id)}
+                    onChange={(sel) => changeSet(set.id, sel)}
+                    onCancel={cancelEditor}
+                    onDone={closeEditor}
+                  />
+                ))
+              : items.map((item) => (
+                  <MealRow
+                    key={item.id}
+                    item={item}
+                    qty={booking.cart[item.id] ?? 0}
+                    onChange={(q) => setQty(item.id, q)}
+                  />
+                ))}
           </div>
         </Card>
 
         {/* Right: summary */}
         <div>
           <OrderSummary
+            editingSetId={editingId}
             action={
               <PrimaryButton
                 onClick={() => navigate('/contact')}
@@ -88,7 +158,7 @@ export default function Meal() {
                 下一步：填寫聯絡資料
               </PrimaryButton>
             }
-            footnote="也可略過餐點選擇，直接前往填寫聯絡資料"
+            footnote="套餐內容可於訂位成立前修改；加價項目以現場出餐為準。"
           />
         </div>
       </div>
@@ -150,7 +220,7 @@ function MealRow({
               onClick={() => onChange(1)}
               className="rounded-btn border border-[rgba(201,146,42,0.55)] px-4 py-1.5 text-sm font-medium text-gold transition-colors hover:bg-gold-soft"
             >
-              選擇套餐
+              加入餐點
             </button>
           )}
         </div>

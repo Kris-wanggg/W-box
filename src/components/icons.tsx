@@ -113,6 +113,32 @@ export function CheckIcon(p: IconProps) {
   );
 }
 
+export function ChevronDownIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M6 9l6 6 6-6" />
+    </Svg>
+  );
+}
+
+export function ChevronUpIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M6 15l6-6 6 6" />
+    </Svg>
+  );
+}
+
+/** Plate with fork & knife — the set-meal thumbnail glyph. */
+export function UtensilsIcon(p: IconProps) {
+  return (
+    <Svg {...p}>
+      <path d="M5 3v7a2 2 0 0 0 2 2h0v9M7 3v6M9 3v6" />
+      <path d="M17 3c-1.5 0-2.5 2-2.5 5 0 2 1 3 2.5 3v9" />
+    </Svg>
+  );
+}
+
 export function SearchIcon(p: IconProps) {
   return (
     <Svg {...p}>
