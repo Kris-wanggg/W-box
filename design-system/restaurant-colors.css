@@ -1,0 +1,142 @@
+/**
+ * Restaurant Reservation — Colour tokens
+ *
+ * Mirrors the Figma variable collections in
+ * "Rastaurant Reservation system" (file f27j5bQ9NnxC6aiUPxt5Ip):
+ *   • "Restaurant Primitives"  — 23 raw colours, mode: Value
+ *   • "Restaurant Color"       — 45 semantic tokens, mode: Light
+ * and the matching `Restaurant/*` colour styles.
+ *
+ * Derived from section 668:1064 "28 section v2" (35 screens).
+ *
+ * ── Two layers ──────────────────────────────────────────────────────────
+ *   primitive   --rst-<family>-<step>     raw colour, never used directly
+ *   semantic    --rst-<group>-<role>      what a designer actually picks
+ *
+ * ── Why the -rgb triplets ───────────────────────────────────────────────
+ * Figma cannot alias a variable *and* override its alpha, so the 23
+ * semi-transparent tokens there store literal RGBA and do NOT follow their
+ * primitive. In CSS we can do better: every primitive also exposes a bare
+ * channel triplet, and the translucent semantics are built from it with
+ * `rgb(... / <alpha>)`. Change the triplet and the translucent tokens
+ * follow too.
+ *
+ * To re-skin the whole product, edit only the `*-rgb` triplets below.
+ */
+
+:root {
+  /* ── Primitives ─────────────────────────────────────────────────────── */
+
+  /* paper — page and card backgrounds */
+  --rst-paper-0-rgb:    255 255 255;
+  --rst-paper-50-rgb:   251 249 249;
+  --rst-paper-75-rgb:   253 252 249;
+  --rst-paper-100-rgb:  245 243 243;
+  --rst-paper-150-rgb:  239 237 237;
+  --rst-paper-200-rgb:  220 214 211;
+
+  /* ink — body copy and scrims */
+  --rst-ink-900-rgb:      27  28  28;
+  --rst-ink-1000-rgb:      0   0   0;
+
+  /* sand — the default border colour */
+  --rst-sand-300-rgb:   208 197 175;
+
+  /* taupe — secondary copy */
+  --rst-taupe-600-rgb:  110  98  82;
+
+  /* olive — brand dark, links, primary button */
+  --rst-olive-700-rgb:   77  70  53;
+  --rst-olive-900-rgb:  115  92   0;
+
+  /* gold — accents and highlights */
+  --rst-gold-50-rgb:    245 235 217;
+  --rst-gold-75-rgb:    250 241 217;
+  --rst-gold-100-rgb:   255 234 151;
+  --rst-gold-500-rgb:   201 146  42;
+  --rst-gold-700-rgb:   179 128  31;
+  --rst-gold-800-rgb:   140 100  23;
+
+  /* status */
+  --rst-green-500-rgb:    0 255  94;
+  --rst-green-700-rgb:    0 119  34;
+  --rst-green-900-rgb:    5  95   8;
+  --rst-red-500-rgb:    255  14   0;
+  --rst-red-600-rgb:    192  58  43;
+
+  /* Resolved primitives — handy for direct use and for debugging */
+  --rst-paper-0:     rgb(var(--rst-paper-0-rgb));
+  --rst-paper-50:    rgb(var(--rst-paper-50-rgb));
+  --rst-paper-75:    rgb(var(--rst-paper-75-rgb));
+  --rst-paper-100:   rgb(var(--rst-paper-100-rgb));
+  --rst-paper-150:   rgb(var(--rst-paper-150-rgb));
+  --rst-paper-200:   rgb(var(--rst-paper-200-rgb));
+  --rst-ink-900:     rgb(var(--rst-ink-900-rgb));
+  --rst-ink-1000:    rgb(var(--rst-ink-1000-rgb));
+  --rst-sand-300:    rgb(var(--rst-sand-300-rgb));
+  --rst-taupe-600:   rgb(var(--rst-taupe-600-rgb));
+  --rst-olive-700:   rgb(var(--rst-olive-700-rgb));
+  --rst-olive-900:   rgb(var(--rst-olive-900-rgb));
+  --rst-gold-50:     rgb(var(--rst-gold-50-rgb));
+  --rst-gold-75:     rgb(var(--rst-gold-75-rgb));
+  --rst-gold-100:    rgb(var(--rst-gold-100-rgb));
+  --rst-gold-500:    rgb(var(--rst-gold-500-rgb));
+  --rst-gold-700:    rgb(var(--rst-gold-700-rgb));
+  --rst-gold-800:    rgb(var(--rst-gold-800-rgb));
+  --rst-green-500:   rgb(var(--rst-green-500-rgb));
+  --rst-green-700:   rgb(var(--rst-green-700-rgb));
+  --rst-green-900:   rgb(var(--rst-green-900-rgb));
+  --rst-red-500:     rgb(var(--rst-red-500-rgb));
+  --rst-red-600:     rgb(var(--rst-red-600-rgb));
+
+  /* ── Semantic — background ──────────────────────────────────────────── */
+  --rst-bg-base:            var(--rst-paper-50);                  /* 頁面底色 */
+  --rst-bg-veil:            rgb(var(--rst-paper-50-rgb) / 70%);   /* Header 半透明遮罩 */
+  --rst-bg-surface:         rgb(var(--rst-paper-0-rgb)  / 84%);   /* 卡片底（半透明） */
+  --rst-bg-surface-solid:   var(--rst-paper-0);                   /* 實心卡片底 */
+  --rst-bg-surface-alt:     var(--rst-paper-75);                  /* 次要卡片底 */
+  --rst-bg-footer:          rgb(var(--rst-paper-0-rgb)  / 72%);   /* Footer 底 */
+  --rst-bg-subtle:          rgb(var(--rst-paper-0-rgb)  /  5%);   /* 極淡區塊底 */
+  --rst-bg-input:           rgb(var(--rst-paper-0-rgb)  /  6%);   /* 輸入框底 */
+  --rst-bg-muted:           var(--rst-paper-150);                 /* 標籤／步驟徽章底 */
+  --rst-bg-muted-alt:       var(--rst-paper-100);                 /* 次要灰底 */
+  --rst-bg-divider:         var(--rst-sand-300);                  /* 1px 分隔線 */
+  --rst-bg-brand:           var(--rst-olive-900);                 /* 主要按鈕底 */
+  --rst-bg-gold:            var(--rst-gold-500);                  /* 金色強調底 */
+  --rst-bg-gold-tint:       rgb(var(--rst-gold-100-rgb) / 42%);   /* 金色高亮底 */
+  --rst-bg-gold-tint-weak:  rgb(var(--rst-gold-50-rgb)  / 14%);   /* 金色極淡底 */
+  --rst-bg-scrim:           rgb(var(--rst-ink-1000-rgb) / 30%);   /* Modal 遮罩 */
+  --rst-bg-danger-tint:     rgb(var(--rst-red-500-rgb)  / 15%);   /* 錯誤提示底 */
+  --rst-bg-success-tint:    rgb(var(--rst-green-500-rgb)/ 20%);   /* 成功提示底 */
+
+  /* ── Semantic — text ────────────────────────────────────────────────── */
+  --rst-text-primary:           var(--rst-ink-900);               /* 主文字 */
+  --rst-text-secondary:         var(--rst-taupe-600);             /* 次要文字、說明 */
+  --rst-text-tertiary:          var(--rst-olive-700);             /* 第三層文字、頁尾連結 */
+  --rst-text-accent:            var(--rst-olive-900);             /* 品牌色文字、金額、連結 */
+  --rst-text-accent-weak:       rgb(var(--rst-olive-900-rgb) / 70%);
+  --rst-text-inverse:           var(--rst-paper-0);               /* 深底上的文字 */
+  --rst-text-disabled:          rgb(var(--rst-olive-700-rgb) / 30%);
+  --rst-text-placeholder:       rgb(var(--rst-ink-900-rgb)   / 50%);
+  --rst-text-placeholder-weak:  rgb(var(--rst-ink-900-rgb)   / 25%);
+  --rst-text-success:           var(--rst-green-700);
+  --rst-text-warning:           var(--rst-gold-800);
+  --rst-text-danger:            var(--rst-red-600);
+
+  /* ── Semantic — border ──────────────────────────────────────────────── */
+  --rst-border-default:      var(--rst-sand-300);                 /* 預設邊框、輸入框 */
+  --rst-border-subtle:       rgb(var(--rst-sand-300-rgb) / 35%);
+  --rst-border-card:         rgb(var(--rst-sand-300-rgb) / 28%);
+  --rst-border-faint:        rgb(var(--rst-sand-300-rgb) / 20%);
+  --rst-border-strong:       var(--rst-taupe-600);
+  --rst-border-active:       var(--rst-olive-900);                /* 選取／作用中 */
+  --rst-border-gold:         var(--rst-gold-500);
+  --rst-border-gold-strong:  var(--rst-gold-700);
+  --rst-border-gold-subtle:  rgb(var(--rst-gold-500-rgb)  / 35%);
+  --rst-border-gold-weak:    rgb(var(--rst-gold-500-rgb)  / 18%);
+  --rst-border-inverse:      var(--rst-paper-0);
+  --rst-border-inverse-weak: rgb(var(--rst-paper-0-rgb)   / 10%);
+  --rst-border-ink-weak:     rgb(var(--rst-ink-900-rgb)   / 20%);
+  --rst-border-danger:       rgb(var(--rst-red-500-rgb)   / 35%);
+  --rst-border-success:      rgb(var(--rst-green-900-rgb) / 35%);
+}

@@ -1,0 +1,58 @@
+/**
+ * Restaurant Reservation — Typography tokens
+ *
+ * Mirrors the 24 `Restaurant/*` text styles in Figma file
+ * f27j5bQ9NnxC6aiUPxt5Ip.
+ *
+ * The section used 63 distinct type signatures; they were condensed into
+ * this ramp. Line heights are kept in px (not unitless) because that is
+ * what the Figma styles store — matching them keeps layout identical.
+ *
+ * Family is Inter throughout, matching the source design.
+ */
+
+:root {
+  --rst-font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+                   "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+
+  --rst-weight-regular:   400;
+  --rst-weight-medium:    500;
+  --rst-weight-semibold:  600;
+  --rst-weight-bold:      700;
+  --rst-weight-black:     900;
+}
+
+/* ── Headings ─────────────────────────────────────────────────────────── */
+.rst-display   { font: var(--rst-weight-bold)     42px/46.2px var(--rst-font-sans); }
+.rst-h1        { font: var(--rst-weight-bold)     28px/36.4px var(--rst-font-sans); }
+.rst-h2        { font: var(--rst-weight-bold)     24px/24px   var(--rst-font-sans); }
+.rst-h2-loose  { font: var(--rst-weight-bold)     22px/33px   var(--rst-font-sans); }
+.rst-h3        { font: var(--rst-weight-bold)     20px/24px   var(--rst-font-sans); }
+.rst-h3-semi   { font: var(--rst-weight-semibold) 20px/27px   var(--rst-font-sans); }
+.rst-h4        { font: var(--rst-weight-semibold) 18px/27px   var(--rst-font-sans); }
+.rst-h4-strong { font: var(--rst-weight-bold)     18px/27px   var(--rst-font-sans); }
+.rst-h5        { font: var(--rst-weight-semibold) 16px/24px   var(--rst-font-sans); }
+
+/* ── Body ─────────────────────────────────────────────────────────────── */
+.rst-body-xl        { font: var(--rst-weight-regular) 20px/30px   var(--rst-font-sans); }
+.rst-body-lg        { font: var(--rst-weight-regular) 16px/24px   var(--rst-font-sans); }
+.rst-body-lg-medium { font: var(--rst-weight-medium)  16px/24px   var(--rst-font-sans); }
+.rst-body-md        { font: var(--rst-weight-regular) 15px/22.5px var(--rst-font-sans); }
+.rst-body-md-medium { font: var(--rst-weight-medium)  15px/22.5px var(--rst-font-sans); }
+.rst-body           { font: var(--rst-weight-regular) 14px/21px   var(--rst-font-sans); }
+.rst-body-strong    { font: var(--rst-weight-bold)    14px/21px   var(--rst-font-sans); }
+.rst-body-sm        { font: var(--rst-weight-regular) 13px/19.5px var(--rst-font-sans); }
+.rst-caption        { font: var(--rst-weight-regular) 12px/18px   var(--rst-font-sans); }
+
+/* ── Labels & UI ──────────────────────────────────────────────────────── */
+.rst-label     { font: var(--rst-weight-medium) 14px/21px   var(--rst-font-sans); }
+.rst-label-sm  { font: var(--rst-weight-medium) 13px/19.5px var(--rst-font-sans); }
+.rst-label-xs  { font: var(--rst-weight-medium) 12px/18px   var(--rst-font-sans); }
+.rst-label-2xs { font: var(--rst-weight-medium) 11px/16.5px var(--rst-font-sans); }
+.rst-button    { font: var(--rst-weight-medium) 16px/23.2px var(--rst-font-sans); }
+
+.rst-overline {
+  font: var(--rst-weight-black) 12px/18px var(--rst-font-sans);
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+}

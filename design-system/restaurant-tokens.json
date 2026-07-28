@@ -1,0 +1,129 @@
+{
+  "$description": "Restaurant Reservation design tokens. Mirrors Figma file f27j5bQ9NnxC6aiUPxt5Ip — collections 'Restaurant Primitives' + 'Restaurant Color', styles 'Restaurant/*'. Source: section 668:1064 '28 section v2'.",
+  "$source": {
+    "figmaFileKey": "f27j5bQ9NnxC6aiUPxt5Ip",
+    "figmaSectionId": "668:1064",
+    "figmaSectionName": "28 section v2",
+    "mode": "Light"
+  },
+
+  "primitive": {
+    "paper": {
+      "0":   { "$type": "color", "$value": "#ffffff" },
+      "50":  { "$type": "color", "$value": "#fbf9f9" },
+      "75":  { "$type": "color", "$value": "#fdfcf9" },
+      "100": { "$type": "color", "$value": "#f5f3f3" },
+      "150": { "$type": "color", "$value": "#efeded" },
+      "200": { "$type": "color", "$value": "#dcd6d3" }
+    },
+    "ink": {
+      "900":  { "$type": "color", "$value": "#1b1c1c" },
+      "1000": { "$type": "color", "$value": "#000000" }
+    },
+    "sand":  { "300": { "$type": "color", "$value": "#d0c5af" } },
+    "taupe": { "600": { "$type": "color", "$value": "#6e6252" } },
+    "olive": {
+      "700": { "$type": "color", "$value": "#4d4635" },
+      "900": { "$type": "color", "$value": "#735c00" }
+    },
+    "gold": {
+      "50":  { "$type": "color", "$value": "#f5ebd9" },
+      "75":  { "$type": "color", "$value": "#faf1d9" },
+      "100": { "$type": "color", "$value": "#ffea97" },
+      "500": { "$type": "color", "$value": "#c9922a" },
+      "700": { "$type": "color", "$value": "#b3801f" },
+      "800": { "$type": "color", "$value": "#8c6417" }
+    },
+    "green": {
+      "500": { "$type": "color", "$value": "#00ff5e" },
+      "700": { "$type": "color", "$value": "#007722" },
+      "900": { "$type": "color", "$value": "#055f08" }
+    },
+    "red": {
+      "500": { "$type": "color", "$value": "#ff0e00" },
+      "600": { "$type": "color", "$value": "#c03a2b" }
+    }
+  },
+
+  "bg": {
+    "base":           { "$type": "color", "$value": "{primitive.paper.50}",  "$description": "頁面底色" },
+    "veil":           { "$type": "color", "$value": "{primitive.paper.50}",  "$alpha": 0.70, "$description": "Header 半透明遮罩" },
+    "surface":        { "$type": "color", "$value": "{primitive.paper.0}",   "$alpha": 0.84, "$description": "卡片底（半透明）" },
+    "surface-solid":  { "$type": "color", "$value": "{primitive.paper.0}",   "$description": "實心卡片底" },
+    "surface-alt":    { "$type": "color", "$value": "{primitive.paper.75}",  "$description": "次要卡片底" },
+    "footer":         { "$type": "color", "$value": "{primitive.paper.0}",   "$alpha": 0.72, "$description": "Footer 底" },
+    "subtle":         { "$type": "color", "$value": "{primitive.paper.0}",   "$alpha": 0.05, "$description": "極淡區塊底" },
+    "input":          { "$type": "color", "$value": "{primitive.paper.0}",   "$alpha": 0.06, "$description": "輸入框底" },
+    "muted":          { "$type": "color", "$value": "{primitive.paper.150}", "$description": "標籤／步驟徽章底" },
+    "muted-alt":      { "$type": "color", "$value": "{primitive.paper.100}", "$description": "次要灰底" },
+    "divider":        { "$type": "color", "$value": "{primitive.sand.300}",  "$description": "1px 分隔線" },
+    "brand":          { "$type": "color", "$value": "{primitive.olive.900}", "$description": "主要按鈕底" },
+    "gold":           { "$type": "color", "$value": "{primitive.gold.500}",  "$description": "金色強調底" },
+    "gold-tint":      { "$type": "color", "$value": "{primitive.gold.100}",  "$alpha": 0.42, "$description": "金色高亮底" },
+    "gold-tint-weak": { "$type": "color", "$value": "{primitive.gold.50}",   "$alpha": 0.14, "$description": "金色極淡底" },
+    "scrim":          { "$type": "color", "$value": "{primitive.ink.1000}",  "$alpha": 0.30, "$description": "Modal 遮罩" },
+    "danger-tint":    { "$type": "color", "$value": "{primitive.red.500}",   "$alpha": 0.15, "$description": "錯誤提示底" },
+    "success-tint":   { "$type": "color", "$value": "{primitive.green.500}", "$alpha": 0.20, "$description": "成功提示底" }
+  },
+
+  "text": {
+    "primary":          { "$type": "color", "$value": "{primitive.ink.900}",   "$description": "主文字" },
+    "secondary":        { "$type": "color", "$value": "{primitive.taupe.600}", "$description": "次要文字、說明" },
+    "tertiary":         { "$type": "color", "$value": "{primitive.olive.700}", "$description": "第三層文字、頁尾連結" },
+    "accent":           { "$type": "color", "$value": "{primitive.olive.900}", "$description": "品牌色文字、金額、連結" },
+    "accent-weak":      { "$type": "color", "$value": "{primitive.olive.900}", "$alpha": 0.70, "$description": "弱化品牌色文字" },
+    "inverse":          { "$type": "color", "$value": "{primitive.paper.0}",   "$description": "深底上的文字" },
+    "disabled":         { "$type": "color", "$value": "{primitive.olive.700}", "$alpha": 0.30, "$description": "停用狀態文字" },
+    "placeholder":      { "$type": "color", "$value": "{primitive.ink.900}",   "$alpha": 0.50, "$description": "輸入框提示文字" },
+    "placeholder-weak": { "$type": "color", "$value": "{primitive.ink.900}",   "$alpha": 0.25, "$description": "更淡的提示文字" },
+    "success":          { "$type": "color", "$value": "{primitive.green.700}", "$description": "成功文字" },
+    "warning":          { "$type": "color", "$value": "{primitive.gold.800}",  "$description": "警示文字" },
+    "danger":           { "$type": "color", "$value": "{primitive.red.600}",   "$description": "錯誤文字" }
+  },
+
+  "border": {
+    "default":      { "$type": "color", "$value": "{primitive.sand.300}",  "$description": "預設邊框、輸入框" },
+    "subtle":       { "$type": "color", "$value": "{primitive.sand.300}",  "$alpha": 0.35, "$description": "淡邊框、分隔" },
+    "card":         { "$type": "color", "$value": "{primitive.sand.300}",  "$alpha": 0.28, "$description": "卡片邊框" },
+    "faint":        { "$type": "color", "$value": "{primitive.sand.300}",  "$alpha": 0.20, "$description": "極淡邊框" },
+    "strong":       { "$type": "color", "$value": "{primitive.taupe.600}", "$description": "強調邊框" },
+    "active":       { "$type": "color", "$value": "{primitive.olive.900}", "$description": "選取／作用中邊框" },
+    "gold":         { "$type": "color", "$value": "{primitive.gold.500}",  "$description": "金色邊框" },
+    "gold-strong":  { "$type": "color", "$value": "{primitive.gold.700}",  "$description": "深金色邊框" },
+    "gold-subtle":  { "$type": "color", "$value": "{primitive.gold.500}",  "$alpha": 0.35, "$description": "淡金色邊框" },
+    "gold-weak":    { "$type": "color", "$value": "{primitive.gold.500}",  "$alpha": 0.18, "$description": "極淡金色邊框" },
+    "inverse":      { "$type": "color", "$value": "{primitive.paper.0}",   "$description": "深底上的邊框" },
+    "inverse-weak": { "$type": "color", "$value": "{primitive.paper.0}",   "$alpha": 0.10, "$description": "深底上的淡邊框" },
+    "ink-weak":     { "$type": "color", "$value": "{primitive.ink.900}",   "$alpha": 0.20, "$description": "淡墨色邊框" },
+    "danger":       { "$type": "color", "$value": "{primitive.red.500}",   "$alpha": 0.35, "$description": "錯誤邊框" },
+    "success":      { "$type": "color", "$value": "{primitive.green.900}", "$alpha": 0.35, "$description": "成功邊框" }
+  },
+
+  "typography": {
+    "$font": "Inter",
+    "display":        { "weight": 700, "size": 42, "lineHeight": 46.2 },
+    "h1":             { "weight": 700, "size": 28, "lineHeight": 36.4 },
+    "h2":             { "weight": 700, "size": 24, "lineHeight": 24 },
+    "h2-loose":       { "weight": 700, "size": 22, "lineHeight": 33 },
+    "h3":             { "weight": 700, "size": 20, "lineHeight": 24 },
+    "h3-semi":        { "weight": 600, "size": 20, "lineHeight": 27 },
+    "h4":             { "weight": 600, "size": 18, "lineHeight": 27 },
+    "h4-strong":      { "weight": 700, "size": 18, "lineHeight": 27 },
+    "h5":             { "weight": 600, "size": 16, "lineHeight": 24 },
+    "body-xl":        { "weight": 400, "size": 20, "lineHeight": 30 },
+    "body-lg":        { "weight": 400, "size": 16, "lineHeight": 24 },
+    "body-lg-medium": { "weight": 500, "size": 16, "lineHeight": 24 },
+    "body-md":        { "weight": 400, "size": 15, "lineHeight": 22.5 },
+    "body-md-medium": { "weight": 500, "size": 15, "lineHeight": 22.5 },
+    "body":           { "weight": 400, "size": 14, "lineHeight": 21 },
+    "body-strong":    { "weight": 700, "size": 14, "lineHeight": 21 },
+    "body-sm":        { "weight": 400, "size": 13, "lineHeight": 19.5 },
+    "caption":        { "weight": 400, "size": 12, "lineHeight": 18 },
+    "label":          { "weight": 500, "size": 14, "lineHeight": 21 },
+    "label-sm":       { "weight": 500, "size": 13, "lineHeight": 19.5 },
+    "label-xs":       { "weight": 500, "size": 12, "lineHeight": 18 },
+    "label-2xs":      { "weight": 500, "size": 11, "lineHeight": 16.5 },
+    "button":         { "weight": 500, "size": 16, "lineHeight": 23.2 },
+    "overline":       { "weight": 900, "size": 12, "lineHeight": 18, "letterSpacing": 2.4, "textCase": "uppercase" }
+  }
+}
