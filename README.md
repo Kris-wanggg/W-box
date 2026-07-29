@@ -72,7 +72,7 @@ npm run typecheck
 字級同樣對應變數集合：`h2` `h2-loose` `h3` `h4` `h4-strong` `h5` `body-lg` `body`
 `body-sm` `label` `label-sm` `label-xs` `cap` `overline` `btn`。
 
-**二、元件published、但變數集合沒有的值**（每一個都在設定檔註明出處元件）
+**二、元件有定義、但變數集合未發佈的值**（每一個都在設定檔註明出處元件）
 
 | 來源元件 | 值 | Tailwind |
 | --- | --- | --- |
