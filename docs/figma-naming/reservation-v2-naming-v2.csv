@@ -1,0 +1,221 @@
+﻿nodeId,type,depth,oldName,newName,action,reason
+779:2573,frame,0,Main,Main,不變,
+779:2574,frame,1,Hero Carousel Section,Hero Carousel,改名,原名帶多餘的 Section
+779:2575,frame,2,Slides,Slides,不變,
+779:2576,frame,3,Slide,Slide,不變,
+779:2577,rounded-rectangle,4,Image,Hero Image,改名,原名 Image 太泛用
+779:2578,rounded-rectangle,4,Overlay,Hero Overlay,改名,原名 Overlay 太泛用
+779:2579,frame,4,Box,Slide Content,改名,原名 Box 看不出用途（目前為空層）
+779:2580,frame,2,Indicator,Carousel Indicator,改名,原名 Indicator 太泛用
+782:2572,frame,1,StackWrap,Booking Form,改名,原名 StackWrap 是 Figma 排版術語，非畫面語意
+779:2584,frame,2,Stack,Booking Form Card,改名,原名 Stack；實際是三欄白色卡片
+779:2585,frame,3,SectionWrap,Party Size Column,改名,原名 SectionWrap
+779:2586,frame,4,Section,Party Size,改名,原名 Section
+779:2587,frame,5,Block,Party Size Content,改名,原名 Block
+779:2588,frame,6,Heading,Heading,不變,
+779:2589,text,7,用餐人數,用餐人數,不變（text 保留文案）,
+779:2590,frame,6,Row,Stepper List,改名,⚠️ 原名 Row 但實際是垂直排列，名字與事實相反
+779:2591,frame,7,Stepper,Adult Stepper,改名,兩個同名 Stepper 無法分辨
+779:2592,frame,8,成人,Adult Label,改名,原名為文案「成人」
+779:2593,text,9,成人,成人,不變（text 保留文案）,
+835:636,instance,8,stepper,[Comp] Stepper (Adult),改名,元件實例
+779:2601,frame,7,Stepper,Child Stepper,改名,兩個同名 Stepper 無法分辨
+779:2602,frame,8,小孩 0-7歲,Child Label,改名,原名為文案「小孩 0-7歲」
+779:2603,text,9,小孩 (0-7歲),小孩 (0-7歲),不變（text 保留文案）,
+835:646,instance,8,stepper,[Comp] Stepper (Child),改名,元件實例
+779:2611,frame,4,Background+VerticalBorder,Party Size Notice,改名,原名 Background+VerticalBorder 描述的是樣式不是用途
+779:2612,text,5,預約說明： 超過 8 人的團體預約，請直接撥打電話聯繫我們的專屬客服。,預約說明： 超過 8 人的團體預約，請直接撥打電話聯繫我們的專屬客服。,不變（text 保留文案）,
+779:2613,frame,4,Margin,Column Spacer,改名,⚠️ 原名 Margin，340×1px 在欄位最底部。請確認是分隔線還是殘留佔位
+779:2614,frame,3,Section,Date Picker,改名,原名 Section
+779:2615,frame,4,Heading,Heading,不變,
+779:2616,text,5,選擇日期,選擇日期,不變（text 保留文案）,
+779:2617,frame,4,2026 年 8月,Month Nav,改名,原名為文案「2026 年 8月」，換月後名字就過期
+779:2618,frame,5,2026 年 8月,Month Label,改名,同上
+779:2619,text,6,2026 年 8月,2026 年 8月,不變（text 保留文案）,
+779:2620,frame,5,Row,Month Nav Buttons,改名,原名 Row
+779:2621,frame,6,Button - 上個月,Prev Month Button,改名,統一 Button 命名
+779:2622,frame,7,ChevLeft,Chevron Left,改名,ChevLeft 縮寫改全名
+779:2624,frame,6,Button - 下個月,Next Month Button,改名,統一 Button 命名
+779:2625,frame,7,ChevRight,Chevron Right,改名,ChevRight 縮寫改全名
+779:2627,frame,4,Calendar,Calendar,不變,
+779:2628,frame,5,Stack,Weekday Header,改名,原名 Stack
+779:2629,frame,6,Sun,Sun,不變,
+779:2630,frame,7,Sun,Sun Label,改名,內外層同名，內層改為 Label
+779:2631,text,8,Sun,Sun,不變（text 保留文案）,
+779:2632,frame,6,Mon,Mon,不變,
+779:2633,frame,7,Mon,Mon Label,改名,內外層同名，內層改為 Label
+779:2634,text,8,Mon,Mon,不變（text 保留文案）,
+779:2635,frame,6,Tue,Tue,不變,
+779:2636,frame,7,Tue,Tue Label,改名,內外層同名，內層改為 Label
+779:2637,text,8,Tue,Tue,不變（text 保留文案）,
+779:2638,frame,6,Wed,Wed,不變,
+779:2639,frame,7,Wed,Wed Label,改名,內外層同名，內層改為 Label
+779:2640,text,8,Wed,Wed,不變（text 保留文案）,
+779:2641,frame,6,Thu,Thu,不變,
+779:2642,frame,7,Thu,Thu Label,改名,內外層同名，內層改為 Label
+779:2643,text,8,Thu,Thu,不變（text 保留文案）,
+779:2644,frame,6,Fri,Fri,不變,
+779:2645,frame,7,Fri,Fri Label,改名,內外層同名，內層改為 Label
+779:2646,text,8,Fri,Fri,不變（text 保留文案）,
+779:2647,frame,6,Sat,Sat,不變,
+779:2648,frame,7,Sat,Sat Label,改名,內外層同名，內層改為 Label
+779:2649,text,8,Sat,Sat,不變（text 保留文案）,
+779:2650,frame,5,Inner,Day Grid,改名,原名 Inner
+779:2651,frame,6,Stack,Day Cells,改名,原名 Stack
+779:2652,frame,7,26,Jul 26,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2653,frame,8,Button,Day Button (Outside),改名,非本月日期
+779:2654,text,9,26,26,不變（text 保留文案）,
+779:2655,frame,7,27,Jul 27,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2656,frame,8,Button,Day Button (Outside),改名,非本月日期
+779:2657,text,9,27,27,不變（text 保留文案）,
+779:2658,frame,7,28,Jul 28,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2659,frame,8,Button,Day Button (Outside),改名,非本月日期
+779:2660,text,9,28,28,不變（text 保留文案）,
+779:2661,frame,7,29,Jul 29,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2662,frame,8,Button,Day Button (Outside),改名,非本月日期
+779:2663,text,9,29,29,不變（text 保留文案）,
+779:2664,frame,7,30,Jul 30,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2665,frame,8,Button,Day Button (Outside),改名,非本月日期
+779:2666,text,9,30,30,不變（text 保留文案）,
+779:2667,frame,7,31,Jul 31,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2668,frame,8,Button,Day Button (Outside),改名,非本月日期
+779:2669,text,9,31,31,不變（text 保留文案）,
+779:2670,frame,7,1,Aug 1,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2671,frame,8,Button - 2026年8月1日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2672,text,9,1,1,不變（text 保留文案）,
+779:2673,frame,7,2,Aug 2,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2674,frame,8,Button - 2026年8月2日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2675,text,9,2,2,不變（text 保留文案）,
+779:2676,frame,7,3,Aug 3,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2677,frame,8,Button - 2026年8月3日（公休）,Day Button (Closed),改名,公休日
+779:2678,text,9,3,3,不變（text 保留文案）,
+779:2679,frame,7,4,Aug 4,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2680,frame,8,Button - 2026年8月4日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2681,text,9,4,4,不變（text 保留文案）,
+779:2682,frame,7,5,Aug 5,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2683,frame,8,Button - 2026年8月5日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2684,text,9,5,5,不變（text 保留文案）,
+779:2685,frame,7,6,Aug 6,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2686,frame,8,Button - 2026年8月6日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2687,text,9,6,6,不變（text 保留文案）,
+779:2688,frame,7,7,Aug 7,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2689,frame,8,Button - 2026年8月7日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2690,text,9,7,7,不變（text 保留文案）,
+779:2691,frame,7,8,Aug 8,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2692,frame,8,Button - 2026年8月8日,Day Button (Selected),改名,目前選取日
+779:2693,text,9,8,8,不變（text 保留文案）,
+779:2694,frame,7,9,Aug 9,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2695,frame,8,Button - 2026年8月9日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2696,text,9,9,9,不變（text 保留文案）,
+779:2697,frame,7,10,Aug 10,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2698,frame,8,Button - 2026年8月10日（公休）,Day Button (Closed),改名,公休日
+779:2699,text,9,10,10,不變（text 保留文案）,
+779:2700,frame,7,11,Aug 11,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2701,frame,8,Button - 2026年8月11日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2702,text,9,11,11,不變（text 保留文案）,
+779:2703,frame,7,12,Aug 12,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2704,frame,8,Button - 2026年8月12日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2705,text,9,12,12,不變（text 保留文案）,
+779:2706,frame,7,13,Aug 13,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2707,frame,8,Button - 2026年8月13日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2708,text,9,13,13,不變（text 保留文案）,
+779:2709,frame,7,14,Aug 14,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2710,frame,8,Button - 2026年8月14日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2711,text,9,14,14,不變（text 保留文案）,
+779:2712,frame,7,15,Aug 15,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2713,frame,8,Button - 2026年8月15日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2714,text,9,15,15,不變（text 保留文案）,
+779:2715,frame,7,16,Aug 16,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2716,frame,8,Button - 2026年8月16日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2717,text,9,16,16,不變（text 保留文案）,
+779:2718,frame,7,17,Aug 17,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2719,frame,8,Button - 2026年8月17日（公休）,Day Button (Closed),改名,公休日
+779:2720,text,9,17,17,不變（text 保留文案）,
+779:2721,frame,7,18,Aug 18,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2722,frame,8,Button - 2026年8月18日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2723,text,9,18,18,不變（text 保留文案）,
+779:2724,frame,7,19,Aug 19,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2725,frame,8,Button - 2026年8月19日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2726,text,9,19,19,不變（text 保留文案）,
+779:2727,frame,7,20,Aug 20,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2728,frame,8,Button - 2026年8月20日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2729,text,9,20,20,不變（text 保留文案）,
+779:2730,frame,7,21,Aug 21,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2731,frame,8,Button - 2026年8月21日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2732,text,9,21,21,不變（text 保留文案）,
+779:2733,frame,7,22,Aug 22,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2734,frame,8,Button - 2026年8月22日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2735,text,9,22,22,不變（text 保留文案）,
+779:2736,frame,7,23,Aug 23,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2737,frame,8,Button - 2026年8月23日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2738,text,9,23,23,不變（text 保留文案）,
+779:2739,frame,7,24,Aug 24,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2740,frame,8,Button - 2026年8月24日（公休）,Day Button (Closed),改名,公休日
+779:2741,text,9,24,24,不變（text 保留文案）,
+779:2742,frame,7,25,Aug 25,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2743,frame,8,Button - 2026年8月25日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2744,text,9,25,25,不變（text 保留文案）,
+779:2745,frame,7,26,Aug 26,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2746,frame,8,Button - 2026年8月26日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2747,text,9,26,26,不變（text 保留文案）,
+779:2748,frame,7,27,Aug 27,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2749,frame,8,Button - 2026年8月27日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2750,text,9,27,27,不變（text 保留文案）,
+779:2751,frame,7,28,Aug 28,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2752,frame,8,Button - 2026年8月28日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2753,text,9,28,28,不變（text 保留文案）,
+779:2754,frame,7,29,Aug 29,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2755,frame,8,Button - 2026年8月29日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2756,text,9,29,29,不變（text 保留文案）,
+779:2757,frame,7,30,Aug 30,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2758,frame,8,Button - 2026年8月30日,Day Button,改名,原名一律叫 Button，42 個無法分辨
+779:2759,text,9,30,30,不變（text 保留文案）,
+779:2760,frame,7,31,Aug 31,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2761,frame,8,Button - 2026年8月31日（公休）,Day Button (Closed),改名,公休日
+779:2762,text,9,31,31,不變（text 保留文案）,
+779:2763,frame,7,1,Sep 1,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2764,frame,8,Button,Day Button (Outside),改名,非本月日期
+779:2765,text,9,1,1,不變（text 保留文案）,
+779:2766,frame,7,2,Sep 2,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2767,frame,8,Button,Day Button (Outside),改名,非本月日期
+779:2768,text,9,2,2,不變（text 保留文案）,
+779:2769,frame,7,3,Sep 3,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2770,frame,8,Button,Day Button (Outside),改名,非本月日期
+779:2771,text,9,3,3,不變（text 保留文案）,
+779:2772,frame,7,4,Sep 4,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2773,frame,8,Button,Day Button (Outside),改名,非本月日期
+779:2774,text,9,4,4,不變（text 保留文案）,
+779:2775,frame,7,5,Sep 5,改名,原名只有數字，跨月會重複（26、1…各出現兩次）
+779:2776,frame,8,Button,Day Button (Outside),改名,非本月日期
+779:2777,text,9,5,5,不變（text 保留文案）,
+779:2778,frame,3,BookingPanel,Time Slot Column,改名,原名 BookingPanel，與另外兩欄命名不一致
+779:2779,frame,4,TimeSlotGroup,Time Slot,改名,原名 TimeSlotGroup
+779:2780,frame,5,Row,Time Slot Header,改名,原名 Row
+779:2781,frame,6,Heading,Heading,不變,
+779:2782,text,7,選擇時段,選擇時段,不變（text 保留文案）,
+779:2783,instance,5,TimeSlots,[Comp] Time Slots,改名,元件實例
+835:663,instance,4,Button,[Comp] Button (Next Step),改名,元件實例：下一步 CTA
+779:2787,frame,0,Header,Header,不變,
+779:2788,frame,1,Row,Header Bar,改名,原名 Row
+779:2789,frame,2,Button - 返回預約首頁,Back Button,改名,原名 Button - 返回預約首頁
+779:2790,frame,3,ChevLeft,Chevron Left,改名,ChevLeft 縮寫改全名
+779:2792,frame,3,預約首頁,Back Label,改名,⚠️ 原名「預約首頁」但文案是「訂位查詢」，兩者不一致，請確認哪個才對
+779:2793,text,4,訂位查詢,訂位查詢,不變（text 保留文案）,
+779:2794,frame,2,步驟 1 3,Step Badge,改名,原名為文案「步驟 1 3」，步驟改了名字就過期
+779:2795,frame,3,步驟 1 3,Step Label,改名,同上
+779:2796,text,4,步驟 1 / 3,步驟 1 / 3,不變（text 保留文案）,
+779:2797,frame,0,SharedFooter,Shared Footer,改名,加空格，保留 Shared 表示這是共用區塊
+779:2798,frame,1,Inner,Footer Container,改名,原名 Inner
+779:2799,frame,2,Row,Footer Content,改名,原名 Row
+779:2800,frame,3,Stack,Footer Brand,改名,原名 Stack
+779:2801,frame,4,RESTAURANT BOO,Brand Name,改名,原名為被截斷的文案 RESTAURANT BOO
+779:2802,text,5,RESTAURANT BOOKING ENTRANCE,RESTAURANT BOOKING ENTRANCE,不變（text 保留文案）,
+779:2803,frame,4,© 2026 Restaur,Copyright,改名,原名為被截斷的文案 © 2026 Restaur
+779:2804,text,5,© 2026 Restaurant Booking Entrance. All rights res,© 2026 Restaurant Booking Entrance. All rights res,不變（text 保留文案）,
+779:2805,frame,3,Navigation - 頁尾導覽,Footer Nav,改名,原名 Navigation - 頁尾導覽，中英混用
+779:2806,frame,4,Link,Privacy Link,改名,三個 Link 完全同名
+779:2807,text,5,隱私政策,隱私政策,不變（text 保留文案）,
+779:2808,frame,4,Link,Terms Link,改名,三個 Link 完全同名
+779:2809,text,5,服務條款,服務條款,不變（text 保留文案）,
+779:2810,frame,4,Link,Contact Link,改名,三個 Link 完全同名
+779:2811,text,5,聯繫我們,聯繫我們,不變（text 保留文案）,
