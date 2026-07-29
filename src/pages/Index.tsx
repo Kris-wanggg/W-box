@@ -44,7 +44,7 @@ export default function Index() {
                 <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {screens.map((screen) => (
                     <li key={screen.path}>
-                      <article className="flex h-full flex-col gap-2 rounded-md border border-line bg-white p-4 transition-shadow hover:shadow-card">
+                      <article className="flex h-full flex-col gap-2 rounded-chip border border-line bg-white p-4 transition-shadow hover:shadow-card">
                         <Link
                           to={screen.path}
                           className="flex items-start justify-between gap-2 text-[15px] font-medium text-ink transition-colors hover:text-brand"

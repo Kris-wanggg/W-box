@@ -30,7 +30,7 @@ export function Header({
         <button
           type="button"
           onClick={() => (backTo ? navigate(backTo) : navigate(-1))}
-          className="inline-flex items-center gap-2 rounded-md px-2 py-1 text-brand transition-colors hover:bg-brand-tint active:bg-brand-tint"
+          className="inline-flex items-center gap-2 rounded-chip px-2 py-1 text-brand transition-colors hover:bg-brand-tint active:bg-brand-tint"
         >
           <ChevronLeftIcon size={20} />
           <span className="text-[17px] font-bold leading-6 md:text-[20px]">{backLabel}</span>
@@ -39,7 +39,7 @@ export function Header({
         <div className="flex items-center gap-3">
           {action}
           {step ? (
-            <span className="rounded-md bg-badge px-2.5 py-[5px] text-xs font-medium leading-[18px] text-ink-soft">
+            <span className="rounded-chip bg-badge px-2.5 py-[5px] text-xs font-medium leading-[18px] text-ink-soft">
               {step}
             </span>
           ) : null}

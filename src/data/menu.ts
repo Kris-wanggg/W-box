@@ -38,13 +38,15 @@ export type MenuItem = {
   groups?: OptionGroup[];
 };
 
-export const ICE_OPTIONS = ['正常冰', '少冰', '微冰', '去冰'];
-export const SUGAR_OPTIONS = ['正常糖', '少糖', '半糖', '微糖', '無糖'];
+/** Read off `Restaurant/choose-drink/open`. 熱飲 only exists on the drink page. */
+export const ICE_OPTIONS = ['正常冰', '少冰', '微冰', '去冰', '熱飲'];
+/** The set editor's inline drink customiser omits 熱飲. */
+export const ICE_OPTIONS_COMPACT = ['正常冰', '少冰', '微冰', '去冰'];
+export const SUGAR_OPTIONS = ['正常糖', '半糖', '少糖', '微糖', '無糖'];
 export const TOPPING_OPTIONS: Option[] = [
-  { id: 'pearl', name: '珍珠', extra: 20 },
-  { id: 'jelly', name: '仙草凍', extra: 20 },
-  { id: 'pudding', name: '布丁', extra: 30 },
-  { id: 'oat', name: '燕麥奶', extra: 40 },
+  { id: 'pearl', name: '珍珠', extra: 10 },
+  { id: 'coconut', name: '椰果', extra: 10 },
+  { id: 'grassjelly', name: '仙草凍', extra: 15 },
 ];
 
 const mainGroup = (pick: number): OptionGroup => ({

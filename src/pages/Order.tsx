@@ -7,17 +7,34 @@
  * (`choose-set/open`) and the drink cards open an ice/sugar/topping customiser
  * (`choose-drink/open`), which is what the separate frames capture as states.
  */
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { OrderSummaryCard } from '../components/blocks';
 import { ChevronDownIcon } from '../components/icons';
 import { Screen, TwoColumn } from '../components/layout';
-import { Button, Card, Divider, Money, Notice, Stepper, Tab, Textarea, Tile, cx } from '../components/ui';
+import {
+  Badge,
+  Button,
+  Card,
+  Divider,
+  FieldLegend,
+  Money,
+  OptionChip,
+  RadioBox,
+  RadioChip,
+  Select,
+  Stepper,
+  Tab,
+  Textarea,
+  Tile,
+  cx,
+} from '../components/ui';
 import {
   BUDGETS,
   CATEGORY_TABS,
   CUSTOM_DRINK_GROUPS,
   EVENT_TYPES,
   ICE_OPTIONS,
+  ICE_OPTIONS_COMPACT,
   MENU,
   ROOM_HINT,
   SUGAR_OPTIONS,
@@ -27,7 +44,7 @@ import {
   type MenuItem,
   type OptionGroup,
 } from '../data/menu';
-import { lineExtra, useBooking, type CartLine, type DrinkPref } from '../store';
+import { lineExtra, toppingPrice, useBooking, type CartLine, type DrinkPref } from '../store';
 
 const DEFAULT_PREF: DrinkPref = { ice: '正常冰', sugar: '正常糖', toppings: [] };
 
@@ -63,6 +80,17 @@ export default function Order({
     if (openEditor && preset) {
       addLine({ key: openEditor, itemId: openEditor, qty: 1, note: '', ...preset });
     }
+    // The 客製化 frames show the summary already reflecting the form's defaults,
+    // so commit them on arrival rather than waiting for the first change.
+    if (initialCategory === 'custom' && !store.custom) {
+      store.set('custom', {
+        eventType: '謝師宴',
+        budget: '10,800',
+        privateRoom: '不需要',
+        addDrinks: openDrink ? '需要加購' : '現場需求加購',
+        drinkIds: [],
+      });
+    }
     // Seeding is a one-off, to put the screen into the state its frame captures.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -83,7 +111,12 @@ export default function Order({
   };
 
   return (
-    <Screen backLabel="選擇日期" backTo="/" step="步驟 2 / 3">
+    <Screen
+      backLabel="選擇日期"
+      backTo="/"
+      step="步驟 2 / 3"
+      headerAction={editing ? <Badge>編輯套餐</Badge> : undefined}
+    >
       <TwoColumn
         main={
           <Card>
@@ -191,7 +224,7 @@ function MealCard({
       <div className="flex gap-3">
         <span
           aria-hidden
-          className="flex size-14 shrink-0 items-center justify-center rounded-lg border border-brand/15 bg-gradient-to-br from-[#DCD6D3] to-[#D8D1D4] text-[20px]"
+          className="flex size-14 shrink-0 items-center justify-center rounded-control border border-brand/15 bg-gradient-to-br from-[#DCD6D3] to-[#D8D1D4] text-[20px]"
         >
           {item.glyph}
         </span>
@@ -257,7 +290,7 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
     <div className="flex flex-col gap-4">
       <Tile className="flex flex-col gap-3">
         <div className="flex gap-3">
-          <span aria-hidden className="flex size-14 shrink-0 items-center justify-center rounded-lg border border-brand/15 bg-gradient-to-br from-[#DCD6D3] to-[#D8D1D4] text-[20px]">
+          <span aria-hidden className="flex size-14 shrink-0 items-center justify-center rounded-control border border-brand/15 bg-gradient-to-br from-[#DCD6D3] to-[#D8D1D4] text-[20px]">
             {item.glyph}
           </span>
           <div className="min-w-0 flex-1">
@@ -282,40 +315,29 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
           <section key={group.id} className="flex flex-col gap-3">
             {index > 0 ? <Divider /> : null}
 
-            <header className="flex flex-wrap items-center justify-between gap-2">
-              <h3 className="flex items-center gap-1 text-sm font-medium text-ink">
-                {group.required ? <span className="text-danger">＊</span> : null}
-                {group.label}
+            {/* The status sits inline after the label, not opposite it. */}
+            <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h3 className="text-sm font-medium text-ink">
+                <FieldLegend required={group.required}>{group.label}</FieldLegend>
               </h3>
-              <span className={cx('text-xs', full ? 'text-brand' : 'text-ink-muted')}>
+              <span className={cx('text-xs', full ? 'text-brand-soft' : 'text-ink-muted')}>
                 已選 {picked.length} / {group.pick}
                 {full ? ` ‧ ${group.customisable ? '勾選後於下方設定冰塊與甜度' : '已額滿，其餘暫停選取'}` : ''}
               </span>
             </header>
 
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="flex flex-wrap gap-2">
               {group.options.map((option) => {
                 const checked = picked.includes(option.id);
-                const disabled = !checked && full;
                 return (
-                  <label
+                  <OptionChip
                     key={option.id}
-                    className={cx(
-                      'flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition-colors',
-                      checked ? 'border-brand bg-brand-tint text-ink' : 'border-line text-ink hover:bg-brand-tint',
-                      disabled && 'cursor-not-allowed opacity-45 hover:bg-transparent',
-                    )}
-                  >
-                    <input
-                      type="checkbox"
-                      className="size-4 accent-brand"
-                      checked={checked}
-                      disabled={disabled}
-                      onChange={() => toggle(group, option.id)}
-                    />
-                    <span className="flex-1">{option.name}</span>
-                    {option.extra ? <span className="text-xs text-brand-soft">+${option.extra}</span> : null}
-                  </label>
+                    label={option.name}
+                    extra={option.extra}
+                    checked={checked}
+                    disabled={!checked && full}
+                    onChange={() => toggle(group, option.id)}
+                  />
                 );
               })}
             </div>
@@ -325,21 +347,24 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
                   const option = group.options.find((o) => o.id === optionId)!;
                   const pref = prefs[optionId] ?? DEFAULT_PREF;
                   return (
-                    <Tile key={optionId} className="flex flex-col gap-3">
+                    <Tile key={optionId} className="flex flex-col gap-2.5">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-ink">{option.name}</span>
-                        <span className="text-xs text-brand-soft">{option.extra ? `+$${option.extra}` : '$0'}</span>
+                        <span className="text-[13px] font-medium text-brand">
+                          {option.name}
+                          {option.extra ? ` +$${option.extra}` : ''}
+                        </span>
+                        <span className="text-xs text-ink-muted">{option.extra ? `+$${option.extra}` : '$0'}</span>
                       </div>
-                      <RadioRow
+                      <InlineRadioRow
                         label="冰塊"
-                        required
-                        options={ICE_OPTIONS}
+                        name={`ice-${itemId}-${optionId}`}
+                        options={ICE_OPTIONS_COMPACT}
                         value={pref.ice}
                         onChange={(v) => setPrefs((p) => ({ ...p, [optionId]: { ...pref, ice: v } }))}
                       />
-                      <RadioRow
+                      <InlineRadioRow
                         label="甜度"
-                        required
+                        name={`sugar-${itemId}-${optionId}`}
                         options={SUGAR_OPTIONS}
                         value={pref.sugar}
                         onChange={(v) => setPrefs((p) => ({ ...p, [optionId]: { ...pref, sugar: v } }))}
@@ -367,30 +392,30 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
         />
       </section>
 
-      <Tile className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <span className="text-sm font-medium text-ink">
-            此套餐小計 <Money value={item.price + extra} className="text-brand" />
-          </span>
-          <span className="text-xs text-ink-muted">
-            （套餐 ${item.price.toLocaleString('en-US')} ＋ 內容加價 ${extra}）
-          </span>
-        </div>
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" size="md" onClick={onClose}>
-            取消
-          </Button>
-          <Button
-            size="md"
-            onClick={() => {
-              addLine({ key: itemId, itemId, qty: draft.qty, selections, drinkPrefs: prefs, note });
-              onClose();
-            }}
-          >
-            更新套餐內容
-          </Button>
-        </div>
-      </Tile>
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <span className="text-sm font-medium text-ink">
+          此套餐小計 <Money value={item.price + extra} className="text-brand" />
+        </span>
+        <span className="text-xs text-ink-muted">
+          （套餐 ${item.price.toLocaleString('en-US')} ＋ 內容加價 ${extra}）
+        </span>
+      </div>
+
+      {/* Two equal-width actions spanning the card, as in the frame. */}
+      <div className="flex gap-3">
+        <Button variant="outline" className="flex-1" onClick={onClose}>
+          取消
+        </Button>
+        <Button
+          className="flex-1"
+          onClick={() => {
+            addLine({ key: itemId, itemId, qty: draft.qty, selections, drinkPrefs: prefs, note });
+            onClose();
+          }}
+        >
+          更新套餐內容
+        </Button>
+      </div>
     </div>
   );
 }
@@ -409,66 +434,92 @@ function DrinkCustomizer({ item, cups, onDone }: { item: MenuItem; cups: number;
   const update = (cup: string, patch: Partial<DrinkPref>) =>
     setPrefs((p) => ({ ...p, [cup]: { ...p[cup], ...patch } }));
 
+  const total = Object.values(prefs).reduce((sum, p) => sum + item.price + toppingPrice(p.toppings), 0);
+
   return (
-    <div className="flex flex-col gap-3 border-t border-line-soft pt-3">
+    <div className="flex flex-col gap-4 border-t border-line-soft pt-4">
       {Object.keys(prefs).map((cup, i) => {
         const pref = prefs[cup];
+        const note = pref.note ?? '';
         return (
-          <div key={cup} className="flex flex-col gap-3 rounded-sm bg-black/[0.02] p-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-ink">
-                {item.name}
-                {cups > 1 ? ` ‧ 第 ${i + 1} 杯` : ''}
-              </span>
-              <span className="text-xs text-brand-soft">
-                {pref.toppings.length ? `+$${pref.toppings.length * 20}` : '$0'}
-              </span>
-            </div>
-
-            <RadioRow label="冰塊" required options={ICE_OPTIONS} value={pref.ice} onChange={(v) => update(cup, { ice: v })} />
-            <RadioRow label="甜度" required options={SUGAR_OPTIONS} value={pref.sugar} onChange={(v) => update(cup, { sugar: v })} />
-
-            <div className="flex flex-col gap-1.5">
-              <span className="text-[13px] font-medium text-ink">加料（可複選）</span>
-              <div className="flex flex-wrap gap-2">
-                {TOPPING_OPTIONS.map((topping) => {
-                  const checked = pref.toppings.includes(topping.id);
-                  return (
-                    <label
-                      key={topping.id}
-                      className={cx(
-                        'flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[13px] transition-colors',
-                        checked ? 'border-brand bg-brand-tint text-brand' : 'border-line text-ink hover:bg-brand-tint',
-                      )}
-                    >
-                      <input
-                        type="checkbox"
-                        className="size-3.5 accent-brand"
-                        checked={checked}
-                        onChange={() =>
-                          update(cup, {
-                            toppings: checked
-                              ? pref.toppings.filter((t) => t !== topping.id)
-                              : [...pref.toppings, topping.id],
-                          })
-                        }
-                      />
-                      {topping.name} +${topping.extra}
-                    </label>
-                  );
-                })}
+          <div key={cup} className="flex flex-col gap-3">
+            {cups > 1 ? (
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-medium text-brand">
+                  {item.name} ‧ 第 {i + 1} 杯
+                </span>
+                <span className="text-xs text-ink-muted">
+                  {pref.toppings.length ? `+$${toppingPrice(pref.toppings)}` : '$0'}
+                </span>
               </div>
-            </div>
+            ) : null}
+
+            <StackedRadioRow
+              legend="冰塊"
+              qualifier="＊必選（單選）"
+              name={`ice-${item.id}-${cup}`}
+              options={ICE_OPTIONS}
+              value={pref.ice}
+              onChange={(v) => update(cup, { ice: v })}
+            />
+            <StackedRadioRow
+              legend="甜度"
+              qualifier="＊必選（單選）"
+              name={`sugar-${item.id}-${cup}`}
+              options={SUGAR_OPTIONS}
+              value={pref.sugar}
+              onChange={(v) => update(cup, { sugar: v })}
+            />
+
+            <fieldset className="flex flex-col gap-2">
+              <legend className="pb-2">
+                <FieldLegend qualifier="（選填 ‧ 可複選）">加料</FieldLegend>
+              </legend>
+              <div className="flex flex-wrap gap-2">
+                {TOPPING_OPTIONS.map((topping) => (
+                  <OptionChip
+                    key={topping.id}
+                    label={topping.name}
+                    extra={topping.extra}
+                    checked={pref.toppings.includes(topping.id)}
+                    onChange={() =>
+                      update(cup, {
+                        toppings: pref.toppings.includes(topping.id)
+                          ? pref.toppings.filter((t) => t !== topping.id)
+                          : [...pref.toppings, topping.id],
+                      })
+                    }
+                  />
+                ))}
+              </div>
+            </fieldset>
+
+            <section className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <FieldLegend qualifier="（選填）">其他自訂需求</FieldLegend>
+                <span className="text-xs text-ink-muted">{note.length} / 50</span>
+              </div>
+              <Textarea
+                maxLength={50}
+                value={note}
+                onChange={(e) => update(cup, { note: e.target.value })}
+                placeholder="例：不要吸管、另附冰塊一杯"
+              />
+            </section>
           </div>
         );
       })}
 
-      <div className="flex justify-end gap-2">
-        <Button variant="outline" size="md" onClick={onDone}>
+      <span className="text-sm font-medium text-ink">
+        此品項小計 <Money value={total} className="text-brand" />
+      </span>
+
+      <div className="flex gap-3">
+        <Button variant="outline" className="flex-1" onClick={onDone}>
           取消
         </Button>
         <Button
-          size="md"
+          className="flex-1"
           onClick={() => {
             addLine({
               key: item.id,
@@ -481,75 +532,99 @@ function DrinkCustomizer({ item, cups, onDone }: { item: MenuItem; cups: number;
             onDone();
           }}
         >
-          更新飲品設定
+          確認
         </Button>
       </div>
     </div>
   );
 }
 
-function RadioRow({
-  label,
+/** Label on its own line above the pills — the drink page's layout. */
+function StackedRadioRow({
+  legend,
+  qualifier,
+  name,
   options,
   value,
   onChange,
-  required,
 }: {
-  /** Omitted when an enclosing <Fieldset> legend already names the group. */
-  label?: string;
+  legend: string;
+  qualifier?: string;
+  name: string;
   options: string[];
   value: string;
   onChange: (next: string) => void;
-  required?: boolean;
 }) {
   return (
-    <fieldset className="flex flex-col gap-1.5">
-      {label ? (
-        <legend className="flex items-center gap-1 pb-1 text-[13px] font-medium text-ink">
-          {label}
-          {required ? <span className="text-danger">＊</span> : null}
-        </legend>
-      ) : null}
+    <fieldset className="flex flex-col gap-2">
+      <legend className="pb-2">
+        <FieldLegend qualifier={qualifier}>{legend}</FieldLegend>
+      </legend>
       <div className="flex flex-wrap gap-2">
         {options.map((option) => (
-          <label
+          <RadioChip
             key={option}
-            className={cx(
-              'flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[13px] transition-colors',
-              option === value ? 'border-brand bg-brand-tint text-brand' : 'border-line text-ink hover:bg-brand-tint',
-            )}
-          >
-            <input
-              type="radio"
-              className="size-3.5 accent-brand"
-              checked={option === value}
-              onChange={() => onChange(option)}
-            />
-            {option}
-          </label>
+            name={name}
+            label={option}
+            checked={option === value}
+            onChange={() => onChange(option)}
+          />
         ))}
       </div>
     </fieldset>
   );
 }
 
+/** Label to the left of the pills — the compact set-editor layout. */
+function InlineRadioRow({
+  label,
+  name,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  name: string;
+  options: string[];
+  value: string;
+  onChange: (next: string) => void;
+}) {
+  return (
+    <fieldset className="flex flex-wrap items-center gap-x-3 gap-y-2">
+      <legend className="float-left mr-3 w-12">
+        <FieldLegend required>{label}</FieldLegend>
+      </legend>
+      {options.map((option) => (
+        <RadioChip
+          key={option}
+          name={name}
+          label={option}
+          checked={option === value}
+          onChange={() => onChange(option)}
+        />
+      ))}
+    </fieldset>
+  );
+}
+
 /* ── 客製化料理 (`custom/default`, `custom/add drink`) ────────────────────── */
 
+/**
+ * The form writes straight into the store on every change, because in the
+ * design the running summary — and the 清除設定 control — live in the
+ * order-summary card, not at the bottom of the form.
+ */
 function CustomMealForm() {
   const { custom, set } = useBooking();
-  const [eventType, setEventType] = useState(custom?.eventType ?? '謝師宴');
-  const [budget, setBudget] = useState(custom?.budget ?? '10,800');
-  const [room, setRoom] = useState<'不需要' | '需要'>(custom?.privateRoom ?? '不需要');
-  const [addDrinks, setAddDrinks] = useState<'現場需求加購' | '需要加購'>(custom?.addDrinks ?? '現場需求加購');
-  const [drinkIds, setDrinkIds] = useState<string[]>(custom?.drinkIds ?? []);
+  const value = custom ?? {
+    eventType: '謝師宴',
+    budget: '10,800',
+    privateRoom: '不需要' as const,
+    addDrinks: '現場需求加購' as const,
+    drinkIds: [] as string[],
+  };
 
-  const drinkTotal = useMemo(
-    () =>
-      CUSTOM_DRINK_GROUPS.flatMap((g) => g.options)
-        .filter((o) => drinkIds.includes(o.id))
-        .reduce((sum, o) => sum + o.extra, 0),
-    [drinkIds],
-  );
+  const patch = (next: Partial<typeof value>) => set('custom', { ...value, ...next });
 
   return (
     <div className="flex flex-col gap-6">
@@ -559,13 +634,13 @@ function CustomMealForm() {
             <button
               key={type}
               type="button"
-              aria-pressed={type === eventType}
-              onClick={() => setEventType(type)}
+              aria-pressed={type === value.eventType}
+              onClick={() => patch({ eventType: type })}
               className={cx(
-                'h-9 rounded-lg border px-3 text-[13px] transition-colors',
-                type === eventType
-                  ? 'border-brand bg-brand-tint font-medium text-brand'
-                  : 'border-line text-ink hover:bg-brand-tint',
+                'h-9 rounded-chip border px-3 text-[13px] transition-colors',
+                type === value.eventType
+                  ? 'border-brand font-medium text-brand'
+                  : 'border-line text-ink hover:border-brand/60',
               )}
             >
               {type}
@@ -575,26 +650,27 @@ function CustomMealForm() {
       </Fieldset>
 
       <Fieldset legend="整桌預算（單選）" required hint={`可選：${BUDGETS.join('／')}`}>
-        <div className="flex flex-wrap gap-2">
+        <Select value={value.budget} onChange={(e) => patch({ budget: e.target.value })} aria-label="整桌預算">
           {BUDGETS.map((b) => (
-            <button
-              key={b}
-              type="button"
-              aria-pressed={b === budget}
-              onClick={() => setBudget(b)}
-              className={cx(
-                'h-9 rounded-lg border px-3 text-[13px] transition-colors',
-                b === budget ? 'border-brand bg-brand-tint font-medium text-brand' : 'border-line text-ink hover:bg-brand-tint',
-              )}
-            >
+            <option key={b} value={b}>
               {b}
-            </button>
+            </option>
           ))}
-        </div>
+        </Select>
       </Fieldset>
 
       <Fieldset legend="是否需要包廂（單選）" required hint={ROOM_HINT}>
-        <RadioRow options={['不需要', '需要']} value={room} onChange={(v) => setRoom(v as typeof room)} />
+        <div className="flex gap-3">
+          {(['不需要', '需要'] as const).map((option) => (
+            <RadioBox
+              key={option}
+              name="private-room"
+              label={option}
+              checked={value.privateRoom === option}
+              onChange={() => patch({ privateRoom: option })}
+            />
+          ))}
+        </div>
       </Fieldset>
 
       <Fieldset
@@ -602,73 +678,45 @@ function CustomMealForm() {
         required
         hint="整桌加購以壺／瓶為單位計價；未勾選的品項不計入金額。分類：養身飲品／酒／熱飲（壺）／冷飲。"
       >
-        <RadioRow
-          options={['現場需求加購', '需要加購']}
-          value={addDrinks}
-          onChange={(v) => setAddDrinks(v as typeof addDrinks)}
-        />
+        <div className="flex gap-3">
+          {(['現場需求加購', '需要加購'] as const).map((option) => (
+            <RadioBox
+              key={option}
+              name="add-drinks"
+              label={option}
+              checked={value.addDrinks === option}
+              onChange={() => patch({ addDrinks: option })}
+            />
+          ))}
+        </div>
 
-        {addDrinks === '需要加購' ? (
-          <div className="mt-3 flex flex-col gap-4">
+        {value.addDrinks === '需要加購' ? (
+          <div className="mt-4 flex flex-col gap-4">
             {CUSTOM_DRINK_GROUPS.map((group) => (
               <div key={group.label} className="flex flex-col gap-2">
-                <span className="text-[13px] font-medium text-ink">{group.label}</span>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {group.options.map((option) => {
-                    const checked = drinkIds.includes(option.id);
-                    return (
-                      <label
-                        key={option.id}
-                        className={cx(
-                          'flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition-colors',
-                          checked ? 'border-brand bg-brand-tint' : 'border-line hover:bg-brand-tint',
-                        )}
-                      >
-                        <input
-                          type="checkbox"
-                          className="size-4 accent-brand"
-                          checked={checked}
-                          onChange={() =>
-                            setDrinkIds((prev) =>
-                              checked ? prev.filter((id) => id !== option.id) : [...prev, option.id],
-                            )
-                          }
-                        />
-                        <span className="flex-1">{option.name}</span>
-                        <span className="text-xs text-brand-soft">+${option.extra}</span>
-                      </label>
-                    );
-                  })}
+                <FieldLegend>{group.label}</FieldLegend>
+                <div className="flex flex-wrap gap-2">
+                  {group.options.map((option) => (
+                    <OptionChip
+                      key={option.id}
+                      label={option.name}
+                      extra={option.extra}
+                      checked={value.drinkIds.includes(option.id)}
+                      onChange={() =>
+                        patch({
+                          drinkIds: value.drinkIds.includes(option.id)
+                            ? value.drinkIds.filter((id) => id !== option.id)
+                            : [...value.drinkIds, option.id],
+                        })
+                      }
+                    />
+                  ))}
                 </div>
               </div>
             ))}
           </div>
         ) : null}
       </Fieldset>
-
-      <Notice tone="neutral">
-        客製化點餐：<span className="font-medium text-brand">${budget} / 桌</span>
-        {drinkTotal ? <span className="text-brand-soft">（＋加購飲品 ${drinkTotal}）</span> : null}
-        ；金額以現場確認菜色為準。
-      </Notice>
-
-      <div className="flex justify-end gap-2">
-        <Button
-          variant="outline"
-          size="md"
-          onClick={() => {
-            setDrinkIds([]);
-            setAddDrinks('現場需求加購');
-            setRoom('不需要');
-            set('custom', null);
-          }}
-        >
-          清除設定
-        </Button>
-        <Button size="md" onClick={() => set('custom', { eventType, budget, privateRoom: room, addDrinks, drinkIds })}>
-          套用客製化設定
-        </Button>
-      </div>
     </div>
   );
 }
@@ -686,9 +734,8 @@ function Fieldset({
 }) {
   return (
     <fieldset className="flex flex-col gap-2">
-      <legend className="flex items-center gap-1 pb-2 text-sm font-medium text-ink">
-        {required ? <span className="text-danger">＊</span> : null}
-        {legend}
+      <legend className="pb-2">
+        <FieldLegend required={required}>{legend}</FieldLegend>
       </legend>
       {children}
       {hint ? <p className="pt-1 text-xs leading-[18px] text-ink-muted">{hint}</p> : null}

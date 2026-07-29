@@ -182,7 +182,7 @@ export const SCREENS: ScreenDef[] = [
     title: '客製化料理 — 加購飲品',
     note: '養身飲品／酒／熱飲／冷飲分組複選',
     group: '② 選擇餐點',
-    element: <Order initialCategory="custom" />,
+    element: <Order initialCategory="custom" openDrink="add" />,
   },
 
   /* ── ③ 聯絡資訊 ───────────────────────────────────────────────────────── */

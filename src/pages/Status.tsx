@@ -205,7 +205,7 @@ export function PaySuccess() {
           <span className="text-[13px] text-ink-muted">訂位編號 {BOOKING_ID}</span>
         </div>
 
-        <p className="rounded-sm bg-black/[0.03] p-3 text-[13px] leading-[19.5px] text-ink-muted">
+        <p className="rounded-tile bg-black/[0.03] p-3 text-[13px] leading-[19.5px] text-ink-muted">
           【訂位成功通知】{contact.name} 您好，您的訂位已確認：{slotLabel} ‧ {partyLabel} 訂金 ${deposit}
         </p>
 

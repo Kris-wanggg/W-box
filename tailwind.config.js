@@ -79,11 +79,20 @@ export default {
       },
 
       borderRadius: {
+        // ⬡ Border Radius collection from the login design system. These
+        // override Tailwind's defaults, so the reservation screens must NOT
+        // use rounded-sm/md/lg — they would silently pick up these values.
         sm: '10px',
         md: '12px',
         lg: '16px',
         xl: '20px',
         pill: '100px',
+
+        // Restaurant reservation radii, read off the frames.
+        chip: '6px', // step badge, option chips, radio pills
+        control: '8px', // buttons, inputs, steppers, radio boxes, meal icons
+        tile: '10px', // meal / drink / payment row cards
+        panel: '12px', // surface cards
       },
 
       boxShadow: {

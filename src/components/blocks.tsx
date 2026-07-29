@@ -5,7 +5,7 @@
  */
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { findItem, type MenuItem } from '../data/menu';
+import { CUSTOM_DRINK_GROUPS, findItem, type MenuItem } from '../data/menu';
 import {
   BOOKING_ID,
   CANCEL_RULES,
@@ -39,7 +39,7 @@ export function OrderSummaryCard({
       <CardTitle note={`共 ${itemCount} 項`}>已選餐點</CardTitle>
 
       {cart.length === 0 && !custom ? (
-        <p className="rounded-sm border border-dashed border-line py-8 text-center text-[13px] leading-[19.5px] text-ink-muted">
+        <p className="rounded-tile border border-dashed border-line py-8 text-center text-[13px] leading-[19.5px] text-ink-muted">
           尚未加入任何餐點
           <br />
           可先完成訂位，到店再點餐。
@@ -74,12 +74,7 @@ export function OrderSummaryCard({
         </ul>
       )}
 
-      {custom ? (
-        <div className="flex items-center justify-between rounded-sm bg-brand-tint px-3 py-2 text-sm text-ink">
-          <span>客製化點餐 ‧ {custom.eventType}</span>
-          <span className="font-medium text-brand">${custom.budget} / 桌</span>
-        </div>
-      ) : null}
+      {custom ? <CustomOrderBlock /> : null}
 
       {editing ? <EditingBreakdown line={editing} /> : null}
 
@@ -109,6 +104,69 @@ export function OrderSummaryCard({
         套餐內容可於訂位成立前修改；加價項目以現場出餐為準。
       </p>
     </Card>
+  );
+}
+
+/**
+ * `客製化點餐（進行中）` — the design keeps this readout, and its 清除設定
+ * control, in the summary column rather than at the foot of the form.
+ */
+function CustomOrderBlock() {
+  const { custom, set } = useBooking();
+  if (!custom) return null;
+
+  const drinks = CUSTOM_DRINK_GROUPS.flatMap((g) => g.options).filter((o) => custom.drinkIds.includes(o.id));
+  const drinkTotal = drinks.reduce((sum, o) => sum + o.extra, 0);
+
+  return (
+    <>
+      <Divider />
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <span className="text-[13px] font-medium text-ink">客製化點餐（進行中）</span>
+          <span className="flex items-center gap-3">
+            <span className="text-[13px] font-semibold text-brand">整桌預訂</span>
+            <button
+              type="button"
+              onClick={() => set('custom', null)}
+              className="rounded-chip border border-line px-2 py-0.5 text-xs text-ink transition-colors hover:border-brand/60 hover:text-brand"
+            >
+              清除設定
+            </button>
+          </span>
+        </div>
+
+        <dl className="flex flex-col gap-1.5 text-xs leading-[18px]">
+          {(
+            [
+              ['活動類型', custom.eventType],
+              ['整桌預算', `$${custom.budget} / 桌`],
+              ['是否需要包廂', custom.privateRoom],
+              ['加購飲品', custom.addDrinks === '需要加購' ? '需要加購' : '不需要'],
+            ] as const
+          ).map(([label, value]) => (
+            <div key={label} className="flex justify-between gap-3">
+              <dt className="text-ink-muted">{label}</dt>
+              <dd className="text-right text-ink">{value}</dd>
+            </div>
+          ))}
+
+          {drinks.map((drink) => (
+            <div key={drink.id} className="flex justify-between gap-3">
+              <dt className="text-ink-muted">└ {drink.name}</dt>
+              <dd className="text-right text-brand">+${drink.extra}</dd>
+            </div>
+          ))}
+
+          {drinkTotal ? (
+            <div className="flex justify-between gap-3 pt-1">
+              <dt className="text-ink-muted">加購飲品小計</dt>
+              <dd className="text-right font-medium text-ink">${drinkTotal.toLocaleString('en-US')}</dd>
+            </div>
+          ) : null}
+        </dl>
+      </div>
+    </>
   );
 }
 

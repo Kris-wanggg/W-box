@@ -83,7 +83,7 @@ function Variant({
         <p className="text-xs text-ink-muted">{caption}</p>
       </div>
       {children}
-      <ul className="flex flex-col gap-1 rounded-sm border border-dashed border-line p-3 text-xs leading-[18px] text-ink-muted">
+      <ul className="flex flex-col gap-1 rounded-tile border border-dashed border-line p-3 text-xs leading-[18px] text-ink-muted">
         {notes.map((n) => (
           <li key={n}>{n}</li>
         ))}
@@ -133,7 +133,7 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
             </div>
 
             {collapsible && expanded(row.id) ? (
-              <div className="flex items-center justify-between rounded-sm bg-black/[0.03] px-3 py-2">
+              <div className="flex items-center justify-between rounded-tile bg-black/[0.03] px-3 py-2">
                 <Stepper
                   size="sm"
                   label={row.name}
@@ -198,7 +198,7 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
             </div>
 
             {collapsible && expanded(drink.id) ? (
-              <div className="flex items-center justify-between rounded-sm bg-black/[0.03] px-3 py-2">
+              <div className="flex items-center justify-between rounded-tile bg-black/[0.03] px-3 py-2">
                 <Stepper
                   size="sm"
                   label={drink.name}

@@ -8,7 +8,7 @@
  * controls, 10px on inner cards, 12px on surface cards).
  */
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
-import { MinusIcon, PlusIcon, TrashIcon } from './icons';
+import { ChevronDownIcon, MinusIcon, PlusIcon, TrashIcon } from './icons';
 
 export function cx(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(' ');
@@ -23,7 +23,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const BUTTON_BASE =
-  'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors ' +
+  'inline-flex items-center justify-center gap-2 rounded-control font-medium transition-colors ' +
   'disabled:cursor-not-allowed disabled:opacity-45';
 
 const BUTTON_VARIANT: Record<NonNullable<ButtonProps['variant']>, string> = {
@@ -35,7 +35,7 @@ const BUTTON_VARIANT: Record<NonNullable<ButtonProps['variant']>, string> = {
 };
 
 const BUTTON_SIZE: Record<NonNullable<ButtonProps['size']>, string> = {
-  sm: 'h-9 px-3 text-[13px] leading-[19.5px] rounded-lg',
+  sm: 'h-9 px-3 text-[13px] leading-[19.5px]',
   md: 'h-11 px-[13px] text-[13px] leading-[19.5px]',
   lg: 'h-11 px-3 text-[16px] leading-[23.2px]',
 };
@@ -92,7 +92,7 @@ type StepperProps = {
  */
 export function Stepper({ value, onChange, min = 0, max = 99, size = 'md', label }: StepperProps) {
   const compact = size === 'sm';
-  const btn = compact ? 'size-8 rounded-md' : 'size-9 rounded-lg';
+  const btn = compact ? 'size-8 rounded-[6px]' : 'size-9 rounded-control';
   const icon = compact ? 16 : 20;
   const canDecrement = value > min;
 
@@ -100,7 +100,7 @@ export function Stepper({ value, onChange, min = 0, max = 99, size = 'md', label
     <div
       className={cx(
         'inline-flex items-center border border-line bg-white/5',
-        compact ? 'h-8 rounded-[4px]' : 'h-11 rounded-lg px-[5px]',
+        compact ? 'h-8 rounded-[4px]' : 'h-11 rounded-control px-[5px]',
       )}
     >
       <button
@@ -150,7 +150,7 @@ export function Stepper({ value, onChange, min = 0, max = 99, size = 'md', label
 
 export function Card({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <section className={cx('rounded-md bg-card shadow-card', className)}>
+    <section className={cx('rounded-panel bg-card shadow-card', className)}>
       <div className="flex flex-col gap-4 p-6">{children}</div>
     </section>
   );
@@ -174,7 +174,7 @@ export function Tile({
   return (
     <As
       className={cx(
-        'block rounded-sm border p-4 transition-colors',
+        'block rounded-tile border p-4 transition-colors',
         selected
           ? 'border-brand bg-white ring-1 ring-brand'
           : muted
@@ -218,7 +218,7 @@ export function Badge({
     info: 'bg-info/10 text-info',
   };
   return (
-    <span className={cx('inline-flex items-center rounded-md px-2.5 py-[5px] text-xs font-medium', tones[tone])}>
+    <span className={cx('inline-flex items-center rounded-chip px-2.5 py-[5px] text-xs font-medium', tones[tone])}>
       {children}
     </span>
   );
@@ -241,17 +241,135 @@ export function Notice({
     info: 'border-info/25 bg-info/5 text-info',
   };
   return (
-    <div className={cx('flex items-start gap-2 rounded-sm border p-3 text-[13px] leading-[19.5px]', tones[tone])}>
+    <div className={cx('flex items-start gap-2 rounded-tile border p-3 text-[13px] leading-[19.5px]', tones[tone])}>
       {icon ? <span className="mt-px shrink-0">{icon}</span> : null}
       <div className="min-w-0 flex-1">{children}</div>
     </div>
   );
 }
 
+/* ── Option controls ─────────────────────────────────────────────────────── */
+
+/**
+ * `[Comp] Checkbox (…)` — the wrapping option chip used by the set editor and
+ * the drink 加料 row. Three distinct looks in the design: picked chips carry a
+ * brand outline, pickable-but-unpicked ones a hairline outline, and options
+ * that are locked out because the group is full drop their outline entirely
+ * and grey down.
+ */
+export function OptionChip({
+  label,
+  extra,
+  checked,
+  disabled,
+  onChange,
+}: {
+  label: string;
+  extra?: number;
+  checked: boolean;
+  disabled?: boolean;
+  onChange: () => void;
+}) {
+  return (
+    <label
+      className={cx(
+        'inline-flex items-center gap-2 rounded-control px-3 py-1.5 text-[13px] transition-colors',
+        disabled
+          ? 'cursor-not-allowed border border-transparent text-ink-muted/55'
+          : checked
+            ? 'cursor-pointer border border-brand bg-white text-ink'
+            : 'cursor-pointer border border-line bg-white text-ink hover:border-brand/60',
+      )}
+    >
+      <input
+        type="checkbox"
+        className="size-3.5 accent-brand"
+        checked={checked}
+        disabled={disabled}
+        onChange={onChange}
+      />
+      <span>{label}</span>
+      {extra ? <span className={cx(disabled ? 'text-ink-muted/55' : 'text-brand-soft')}>+${extra}</span> : null}
+    </label>
+  );
+}
+
+/** `[Comp] Radio (…)` — the compact pill used for 冰塊 / 甜度. */
+export function RadioChip({
+  label,
+  checked,
+  onChange,
+  name,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
+  name: string;
+}) {
+  return (
+    <label
+      className={cx(
+        'inline-flex cursor-pointer items-center gap-1.5 rounded-chip border px-3 py-1 text-[13px] transition-colors',
+        checked ? 'border-brand font-medium text-brand' : 'border-line text-ink hover:border-brand/60',
+      )}
+    >
+      <input type="radio" name={name} className="size-3.5 accent-brand" checked={checked} onChange={onChange} />
+      {label}
+    </label>
+  );
+}
+
+/**
+ * The full-height radio used by the 客製化料理 form, where each choice takes
+ * half the row rather than sitting in a pill.
+ */
+export function RadioBox({
+  label,
+  checked,
+  onChange,
+  name,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
+  name: string;
+}) {
+  return (
+    <label
+      className={cx(
+        'flex h-11 flex-1 cursor-pointer items-center gap-2.5 rounded-control border px-3 text-sm transition-colors',
+        checked ? 'border-brand font-medium text-brand' : 'border-line text-ink hover:border-brand/60',
+      )}
+    >
+      <input type="radio" name={name} className="size-4 accent-brand" checked={checked} onChange={onChange} />
+      {label}
+    </label>
+  );
+}
+
+/** Label + required mark + optional qualifier, above a group of options. */
+export function FieldLegend({
+  children,
+  required,
+  qualifier,
+}: {
+  children: ReactNode;
+  required?: boolean;
+  qualifier?: string;
+}) {
+  return (
+    <span className="flex items-center gap-1 text-[13px] font-medium text-ink">
+      {required ? <span className="text-danger">＊</span> : null}
+      {children}
+      {qualifier ? <span className="font-normal text-ink-muted">{qualifier}</span> : null}
+    </span>
+  );
+}
+
 /* ── Form controls ───────────────────────────────────────────────────────── */
 
 const CONTROL =
-  'h-11 w-full rounded-lg border border-line bg-white px-3 text-sm text-ink transition-colors ' +
+  'h-11 w-full rounded-control border border-line bg-white px-3 text-sm text-ink transition-colors ' +
   'placeholder:text-ink-muted/70 hover:border-brand/50 focus:border-brand disabled:bg-black/[0.03] disabled:text-ink-muted';
 
 export function Field({
@@ -289,9 +407,15 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
 
 export function Select({ className, children, ...props }: SelectHTMLAttributes<HTMLSelectElement>) {
   return (
-    <select className={cx(CONTROL, 'appearance-none pr-8', className)} {...props}>
-      {children}
-    </select>
+    <span className="relative block w-full">
+      <select className={cx(CONTROL, 'appearance-none pr-10', className)} {...props}>
+        {children}
+      </select>
+      <ChevronDownIcon
+        size={20}
+        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted"
+      />
+    </span>
   );
 }
 

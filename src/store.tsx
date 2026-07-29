@@ -6,10 +6,14 @@
  * the flow instead of drifting from the design's sample data.
  */
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
-import { findItem, type MenuItem } from './data/menu';
+import { CUSTOM_DRINK_GROUPS, TOPPING_OPTIONS, findItem, type MenuItem } from './data/menu';
 import { CONTACT, DEPOSIT, formatSlot } from './data/reservation';
 
-export type DrinkPref = { ice: string; sugar: string; toppings: string[] };
+export type DrinkPref = { ice: string; sugar: string; toppings: string[]; note?: string };
+
+export function toppingPrice(ids: string[]): number {
+  return ids.reduce((sum, id) => sum + (TOPPING_OPTIONS.find((t) => t.id === id)?.extra ?? 0), 0);
+}
 
 export type CartLine = {
   /** Unique per configuration, so one set can appear twice with different content. */
@@ -87,7 +91,7 @@ export function linePrice(line: CartLine, item = findItem(line.itemId)): number 
     }
   }
   for (const pref of Object.values(line.drinkPrefs)) {
-    extra += pref.toppings.length * 20;
+    extra += toppingPrice(pref.toppings);
   }
   return item.price + extra;
 }
@@ -97,12 +101,26 @@ export function lineExtra(line: CartLine, item?: MenuItem): number {
   return resolved ? linePrice(line, resolved) - resolved.price : 0;
 }
 
+/**
+ * A 客製化 order contributes its per-table budget plus any add-on drinks — the
+ * design's 小計 of $12,860 is 1,580 + 480 + 10,800.
+ */
+export function customTotal(custom: CustomOrder | null): number {
+  if (!custom) return 0;
+  const budget = Number(custom.budget.replace(/[^\d]/g, '')) || 0;
+  const drinks = CUSTOM_DRINK_GROUPS.flatMap((g) => g.options)
+    .filter((o) => custom.drinkIds.includes(o.id))
+    .reduce((sum, o) => sum + o.extra, 0);
+  return budget + drinks;
+}
+
 export function BookingProvider({ children }: { children: ReactNode }) {
   const [booking, setBooking] = useState<Booking>(INITIAL);
 
   const value = useMemo<Store>(() => {
-    const subtotal = booking.cart.reduce((sum, line) => sum + linePrice(line) * line.qty, 0);
+    const itemsTotal = booking.cart.reduce((sum, line) => sum + linePrice(line) * line.qty, 0);
     const itemCount = booking.cart.reduce((sum, line) => sum + line.qty, 0);
+    const subtotal = itemsTotal + customTotal(booking.custom);
 
     return {
       ...booking,

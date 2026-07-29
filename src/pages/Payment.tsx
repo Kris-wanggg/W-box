@@ -4,19 +4,19 @@
  *
  * One screen; the three frames are the three radio選項 expanded.
  */
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DepositRulesCard } from '../components/blocks';
-import { BankIcon, CopyIcon, CreditCardIcon, InfoIcon } from '../components/icons';
+import { CopyIcon, InfoIcon } from '../components/icons';
 import { Screen } from '../components/layout';
-import { Button, Card, CardTitle, Field, Input, Money, Notice, SummaryRow, cx } from '../components/ui';
+import { Button, Card, Field, Input, Money, Notice, SummaryRow, cx } from '../components/ui';
 import { BANK, RESTAURANT } from '../data/reservation';
 import { useBooking, type PaymentMethod } from '../store';
 
-const METHODS: Array<{ id: PaymentMethod; label: string; icon: typeof BankIcon }> = [
-  { id: 'card', label: '線上支付信用卡', icon: CreditCardIcon },
-  { id: 'bank', label: '匯款', icon: BankIcon },
-  { id: 'online', label: '線上轉帳', icon: BankIcon },
+const METHODS: Array<{ id: PaymentMethod; label: string }> = [
+  { id: 'card', label: '線上支付信用卡' },
+  { id: 'bank', label: '匯款' },
+  { id: 'online', label: '線上轉帳' },
 ];
 
 export default function Payment({ initialMethod = 'card' }: { initialMethod?: PaymentMethod }) {
@@ -33,52 +33,48 @@ export default function Payment({ initialMethod = 'card' }: { initialMethod?: Pa
 
   return (
     <Screen backLabel="訂位詳情" backTo="/booking-success" width="narrow">
-      <Card>
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <span className="text-base font-medium text-ink">應付訂金</span>
-          <Money value={deposit} className="text-[28px] font-bold leading-9 text-brand" />
+      {/* `應付訂金` is a centred stack in the design, not a label/value row. */}
+      <Card className="text-center">
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-[13px] text-ink-muted">應付訂金</span>
+          <Money value={deposit} className="text-[32px] font-bold leading-10 text-ink" />
+          <p className="text-xs text-ink-muted">
+            {RESTAURANT} ‧ {slotLabel} ‧ {partyLabel}
+          </p>
         </div>
-        <p className="text-[13px] text-ink-muted">
-          {RESTAURANT} ‧ {slotLabel} ‧ {partyLabel}
-        </p>
       </Card>
 
-      <Card>
-        <CardTitle>選擇支付方式（依店家設定顯示）</CardTitle>
+      <div className="flex flex-col gap-3">
+        <span className="text-[13px] text-ink-muted">選擇支付方式（依店家設定顯示）</span>
 
-        <div className="flex flex-col gap-3">
-          {METHODS.map(({ id, label, icon: Icon }) => {
-            const active = method === id;
-            return (
-              <div
-                key={id}
+        {METHODS.map(({ id, label }) => {
+          const active = method === id;
+          return (
+            <div key={id} className="flex flex-col gap-3">
+              <label
                 className={cx(
-                  'rounded-sm border transition-colors',
-                  // brand-tint is already an rgba() token, so an opacity
-                  // modifier on it would not compile — tint off the hex instead.
-                  active ? 'border-brand bg-brand/[0.04]' : 'border-line bg-white',
+                  'flex cursor-pointer items-center gap-3 rounded-control border bg-white px-4 py-3 transition-colors',
+                  active ? 'border-brand' : 'border-line hover:border-brand/60',
                 )}
               >
-                <label className="flex cursor-pointer items-center gap-3 p-4">
-                  <input
-                    type="radio"
-                    name="payment-method"
-                    className="size-4 accent-brand"
-                    checked={active}
-                    onChange={() => setMethod(id)}
-                  />
-                  <Icon size={20} className="text-ink-muted" />
-                  <span className="text-sm font-medium text-ink">{label}</span>
-                </label>
+                <input
+                  type="radio"
+                  name="payment-method"
+                  className="size-4 accent-brand"
+                  checked={active}
+                  onChange={() => setMethod(id)}
+                />
+                <span className={cx('text-sm', active ? 'font-medium text-ink' : 'text-ink')}>{label}</span>
+              </label>
 
-                {active && id === 'card' ? <CardForm /> : null}
-                {active && id === 'bank' ? <BankPanel last5={last5} onLast5={setLast5} /> : null}
-                {active && id === 'online' ? <OnlineBankPanel /> : null}
-              </div>
-            );
-          })}
-        </div>
-      </Card>
+              {/* The expanded details are their own card beneath the row. */}
+              {active && id === 'card' ? <CardForm /> : null}
+              {active && id === 'bank' ? <BankPanel last5={last5} onLast5={setLast5} /> : null}
+              {active && id === 'online' ? <OnlineBankPanel /> : null}
+            </div>
+          );
+        })}
+      </div>
 
       <DepositRulesCard />
 
@@ -89,9 +85,15 @@ export default function Payment({ initialMethod = 'card' }: { initialMethod?: Pa
   );
 }
 
+function Panel({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex flex-col gap-4 rounded-tile border border-line bg-white p-4">{children}</div>
+  );
+}
+
 function CardForm() {
   return (
-    <div className="flex flex-col gap-4 border-t border-line-soft p-4">
+    <Panel>
       <Field label="卡號" required>
         <Input placeholder="1234  5678  9012  3456" inputMode="numeric" autoComplete="cc-number" />
       </Field>
@@ -113,7 +115,7 @@ function CardForm() {
         <InfoIcon size={14} className="mt-0.5 shrink-0" />
         付款採 3D 驗證，資料以加密方式傳輸，本店不留存完整卡號。
       </p>
-    </div>
+    </Panel>
   );
 }
 
@@ -121,7 +123,7 @@ function BankPanel({ last5, onLast5 }: { last5: string; onLast5: (v: string) => 
   const { deposit } = useBooking();
 
   return (
-    <div className="flex flex-col gap-4 border-t border-line-soft p-4">
+    <Panel>
       <dl className="flex flex-col gap-3">
         <SummaryRow label="收款銀行" value={BANK.bank} />
         <SummaryRow label="分行" value={BANK.branch} />
@@ -160,13 +162,13 @@ function BankPanel({ last5, onLast5 }: { last5: string; onLast5: (v: string) => 
         <br />
         匯款成功後，請於訂單查詢確認訂單狀態，如有任何問題請與我們聯繫。
       </Notice>
-    </div>
+    </Panel>
   );
 }
 
 function OnlineBankPanel() {
   return (
-    <div className="flex flex-col gap-3 border-t border-line-soft p-4">
+    <Panel>
       <p className="text-[13px] leading-[19.5px] text-ink-muted">
         將導向您選擇的網路銀行完成轉帳，完成後會自動返回本頁並更新訂單狀態。
       </p>
@@ -175,7 +177,7 @@ function OnlineBankPanel() {
           <button
             key={bank}
             type="button"
-            className="h-11 rounded-lg border border-line text-[13px] text-ink transition-colors hover:bg-brand-tint hover:text-brand"
+            className="h-11 rounded-control border border-line text-[13px] text-ink transition-colors hover:border-brand/60 hover:text-brand"
           >
             {bank}
           </button>
@@ -184,6 +186,6 @@ function OnlineBankPanel() {
       <Notice tone="neutral">
         轉帳完成後系統約需 5 分鐘同步對帳；若狀態未更新，請至訂位查詢頁重新整理。
       </Notice>
-    </div>
+    </Panel>
   );
 }

@@ -63,13 +63,13 @@ export default function Reserve({
 
       {/* Pulled up over the hero, so it needs to win the stacking order. */}
       <main className="relative z-10 mx-auto -mt-10 w-full max-w-content flex-1 px-5 pb-10 md:px-10">
-        <div className="rounded-md bg-white p-5 shadow-card md:p-8">
+        <div className="rounded-chip bg-white p-5 shadow-card md:p-8">
           <div className="flex flex-col gap-8 md:flex-row md:gap-10">
             {/* ── 用餐人數 ───────────────────────────────────────────── */}
             <section className="flex flex-col gap-4 md:w-[280px] md:shrink-0">
               <h2 className="text-[17px] font-bold leading-6 text-ink">用餐人數</h2>
 
-              <div className="flex flex-col gap-3 rounded-sm bg-black/[0.03] p-4">
+              <div className="flex flex-col gap-3 rounded-tile bg-black/[0.03] p-4">
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-sm text-ink">成人</span>
                   <Stepper label="成人" value={adults} min={1} max={8} onChange={(v) => set('adults', v)} />
@@ -101,7 +101,7 @@ export default function Reserve({
                       key={i}
                       type="button"
                       aria-label={i === 0 ? '上個月' : '下個月'}
-                      className="inline-flex size-7 items-center justify-center rounded-md border border-line text-ink-muted transition-colors hover:bg-brand-tint hover:text-brand"
+                      className="inline-flex size-7 items-center justify-center rounded-chip border border-line text-ink-muted transition-colors hover:bg-brand-tint hover:text-brand"
                     >
                       <Icon size={16} />
                     </button>
@@ -157,7 +157,7 @@ export default function Reserve({
                     aria-pressed={p === period}
                     onClick={() => setPeriod(p)}
                     className={cx(
-                      'h-8 rounded-lg px-3 text-[13px] font-medium transition-colors',
+                      'h-8 rounded-control px-3 text-[13px] font-medium transition-colors',
                       p === period
                         ? 'bg-brand text-white hover:bg-brand-hover'
                         : 'border border-line text-ink hover:bg-brand-tint',
@@ -182,7 +182,7 @@ export default function Reserve({
                         setTouched(true);
                       }}
                       className={cx(
-                        'h-9 rounded-lg border text-[13px] transition-colors',
+                        'h-9 rounded-control border text-[13px] transition-colors',
                         active
                           ? 'border-brand bg-brand-tint font-medium text-brand'
                           : slot.full
