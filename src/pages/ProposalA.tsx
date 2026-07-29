@@ -27,7 +27,7 @@ export default function ProposalA() {
     <Screen backLabel="全部畫面" backTo="/index" width="wide">
       <header className="flex flex-col gap-2">
         <h1 className="text-[24px] font-bold leading-8 text-ink">A 案改良 — 拿掉重複資訊與多餘控制項</h1>
-        <p className="text-sm leading-[21px] text-ink-muted">
+        <p className="text-sm leading-[21px] text-ink-secondary">
           套用兩點修正：① 展開後標題不再重複顯示 ×N，數量只由步進器承載　② 拿掉「移除」鍵，數量為 1 時「−」變垃圾桶。
         </p>
       </header>
@@ -80,10 +80,10 @@ function Variant({
     <section className="flex min-w-0 flex-1 flex-col gap-3">
       <div className="flex flex-col gap-1">
         <h2 className={cx('text-base font-bold', recommended ? 'text-brand' : 'text-ink')}>{title}</h2>
-        <p className="text-xs text-ink-muted">{caption}</p>
+        <p className="text-xs text-ink-secondary">{caption}</p>
       </div>
       {children}
-      <ul className="flex flex-col gap-1 rounded-tile border border-dashed border-line p-3 text-xs leading-[18px] text-ink-muted">
+      <ul className="flex flex-col gap-1 rounded-tile border border-dashed border-line p-3 text-xs leading-[18px] text-ink-secondary">
         {notes.map((n) => (
           <li key={n}>{n}</li>
         ))}
@@ -125,7 +125,7 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
                   aria-label={`${expanded(row.id) ? '收合' : '展開'} ${row.name}`}
                   aria-expanded={expanded(row.id)}
                   onClick={() => setOpen(open === row.id ? null : row.id)}
-                  className="rounded p-1 text-ink-muted transition-colors hover:bg-brand-tint hover:text-brand"
+                  className="rounded p-1 text-ink-secondary transition-colors hover:bg-brand/[0.08] hover:text-brand"
                 >
                   {expanded(row.id) ? <ChevronDownIcon size={16} /> : <ChevronRightIcon size={16} />}
                 </button>
@@ -140,7 +140,7 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
                   value={row.qty}
                   onChange={(qty) => setRows((p) => p.map((r) => (r.id === row.id ? { ...r, qty } : r)))}
                 />
-                <span className="text-xs text-ink-muted">${row.price.toLocaleString('en-US')} / 份</span>
+                <span className="text-xs text-ink-secondary">${row.price.toLocaleString('en-US')} / 份</span>
               </div>
             ) : null}
           </li>
@@ -151,12 +151,12 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
 
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-ink">客製化點餐（進行中）</span>
-        <Button variant="ghost" size="sm">
+        <Button variant="quiet">
           清除設定
         </Button>
       </div>
 
-      <dl className="flex flex-col gap-1.5 text-xs leading-[18px] text-ink-muted">
+      <dl className="flex flex-col gap-1.5 text-xs leading-[18px] text-ink-secondary">
         {[
           ['活動類型', '謝師宴'],
           ['整桌預算', '$10,800 / 桌'],
@@ -190,7 +190,7 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
                   aria-label={`${expanded(drink.id) ? '收合' : '展開'} ${drink.name}`}
                   aria-expanded={expanded(drink.id)}
                   onClick={() => setOpen(open === drink.id ? null : drink.id)}
-                  className="rounded p-1 text-ink-muted transition-colors hover:bg-brand-tint hover:text-brand"
+                  className="rounded p-1 text-ink-secondary transition-colors hover:bg-brand/[0.08] hover:text-brand"
                 >
                   {expanded(drink.id) ? <ChevronDownIcon size={16} /> : <ChevronRightIcon size={16} />}
                 </button>
@@ -205,14 +205,14 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
                   value={drink.qty}
                   onChange={(qty) => setDrinks((p) => p.map((d) => (d.id === drink.id ? { ...d, qty } : d)))}
                 />
-                <span className="text-xs text-ink-muted">${drink.unit} / 壺</span>
+                <span className="text-xs text-ink-secondary">${drink.unit} / 壺</span>
               </div>
             ) : null}
           </li>
         ))}
       </ul>
 
-      <div className="flex justify-between text-xs text-ink-muted">
+      <div className="flex justify-between text-xs text-ink-secondary">
         <span>加購飲品小計</span>
         <Money value={drinkTotal} className="text-ink" />
       </div>
@@ -224,7 +224,7 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
         <Money value={subtotal} className="text-[22px] font-bold text-brand" />
       </div>
 
-      <p className="text-xs leading-[18px] text-ink-muted">
+      <p className="text-xs leading-[18px] text-ink-secondary">
         客製化點餐：$10,800 / 桌 ＋ 加購飲品 ${drinkTotal.toLocaleString('en-US')}；金額以現場確認菜色為準。
       </p>
 

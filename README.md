@@ -56,19 +56,37 @@ npm run typecheck
 
 ## 設計 token 對應
 
-Figma 變數與畫面上的實際填色，映射到 `tailwind.config.js` 的 `brand` / `ink` /
-`line` / `canvas` 色階：
+`tailwind.config.js` 的 Restaurant 色階全部來自設計檔，分兩個來源：
 
-| Figma | Tailwind |
-| --- | --- |
-| `Restaurant/bg/brand` `#735C00` | `brand` |
-| `Restaurant/text/inverse` `#FFFFFF` | `text-white` |
-| 頁面底色 `#FBF9F9` | `canvas` |
-| 卡片 `rgba(255,255,255,0.84)` + `0 4px 20px rgba(0,0,0,.05)` | `bg-card shadow-card` |
-| 主文字 `#1B1C1C` / 次要 `#6E6252` / 第三層 `#4D4635` | `ink` / `ink-muted` / `ink-soft` |
-| 分隔線 `#D0C5AF`（及 35% / 22% 透明度） | `line` / `line-soft` / `line-faint` |
+**一、`Restaurant/*` 變數集合**
+
+| Figma 變數 | 值 | Tailwind |
+| --- | --- | --- |
+| `bg/brand`、`border/active`、`text/accent` | `#735C00` | `brand` |
+| `text/primary` / `secondary` / `tertiary` | `#1B1C1C` / `#6E6252` / `#4D4635` | `ink` / `ink-secondary` / `ink-tertiary` |
+| `border/default`、`bg/divider` | `#D0C5AF` | `line` |
+| `border/subtle` / `faint` | `#D0C5AF` @35% / @20% | `line-subtle` / `line-faint` |
+| `bg/veil` / `surface` / `footer` / `subtle` | `#FBF9F9`@70% / `#FFF`@84% / @72% / @5% | `veil` / `card` / `footerbg` / `subtle` |
+| `bg/muted` | `#EFEDED` | `muted` |
+
+字級同樣對應變數集合：`h2` `h2-loose` `h3` `h4` `h4-strong` `h5` `body-lg` `body`
+`body-sm` `label` `label-sm` `label-xs` `cap` `overline` `btn`。
+
+**二、元件published、但變數集合沒有的值**（每一個都在設定檔註明出處元件）
+
+| 來源元件 | 值 | Tailwind |
+| --- | --- | --- |
+| `[Comp] Radio` / `Checkbox` 選中態 | `#C9922A` | `selected` |
+| `[Comp] Button (確認取消訂位)` | `#C21400` | `destructive` |
+| pay-success 的「成功」 | `#007722` | `ok` |
+| `[Comp] Tag` 三態底色與框線 | rgba × 6 | `tag-*` |
+| `[Comp] Checkbox` 額滿鎖定態 | rgba × 4 | `off-*` |
+| `[Comp] TimeSlots` 不可選時段 | rgba × 2 | `unavailable-*` |
 
 原本 `tokens.css` 那組登入介面的語意 token 保留未動，兩組並存。
+
+**互動狀態**：Figma 沒有定義 hover／focus。這些狀態只從設計稿既有的顏色推導
+（hover 借用 `selected` 的框線、focus ring 借用 `brand`），不引入任何新色相。
 
 ## 已知落差
 

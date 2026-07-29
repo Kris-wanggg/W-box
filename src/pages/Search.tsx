@@ -32,7 +32,7 @@ export default function Search({ result }: { result?: 'unpaid' | 'paid' }) {
       <Card>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-base font-semibold leading-6 text-ink">查詢我的訂位</h1>
-          <p className="text-xs leading-[18px] text-ink-muted">輸入訂位編號或手機號碼，查詢您的訂位</p>
+          <p className="text-xs leading-[18px] text-ink-secondary">輸入訂位編號或手機號碼，查詢您的訂位</p>
         </div>
 
         <Field label="訂位編號">
@@ -48,7 +48,7 @@ export default function Search({ result }: { result?: 'unpaid' | 'paid' }) {
           />
         </Field>
 
-        <p className="text-xs leading-[18px] text-ink-muted">
+        <p className="text-xs leading-[18px] text-ink-secondary">
           查無資料時，請確認輸入是否正確，或洽店家客服 {SUPPORT_PHONE}。
         </p>
 

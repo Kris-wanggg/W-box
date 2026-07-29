@@ -94,7 +94,7 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
                 <div className="flex flex-col gap-2">
                   <span className="text-[13px] font-medium text-ink">已選餐點</span>
                   {cart.length === 0 ? (
-                    <p className="text-[13px] text-ink-muted">未加入餐點，將於現場點餐。</p>
+                    <p className="text-[13px] text-ink-secondary">未加入餐點，將於現場點餐。</p>
                   ) : (
                     cart.map((line) => {
                       const item = findItem(line.itemId);
@@ -133,7 +133,7 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
             </div>
 
             {closed ? (
-              <Notice tone="danger">
+              <Notice>
                 您選擇的時段為本店公休日（每週一），請返回上一步重新選擇日期。
               </Notice>
             ) : null}
@@ -142,7 +142,7 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
               {cta}
             </Button>
 
-            <p className="flex items-start gap-2 text-xs leading-[18px] text-ink-muted">
+            <p className="flex items-start gap-2 text-xs leading-[18px] text-ink-secondary">
               <span aria-hidden>ⓘ</span>
               送出後系統將自動配對桌位；若該時段已滿，將轉人工或提供候補。
             </p>

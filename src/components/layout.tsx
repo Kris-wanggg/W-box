@@ -25,12 +25,12 @@ export function Header({
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-line-soft bg-canvas/70 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-line-subtle bg-canvas/70 backdrop-blur">
       <div className="flex items-center justify-between gap-4 px-5 py-4 md:px-10 md:py-5">
         <button
           type="button"
           onClick={() => (backTo ? navigate(backTo) : navigate(-1))}
-          className="inline-flex items-center gap-2 rounded-chip px-2 py-1 text-brand transition-colors hover:bg-brand-tint active:bg-brand-tint"
+          className="inline-flex items-center gap-2 rounded-chip px-2 py-1 text-brand transition-colors hover:bg-brand/[0.08] active:bg-brand/[0.08]"
         >
           <ChevronLeftIcon size={20} />
           <span className="text-[17px] font-bold leading-6 md:text-[20px]">{backLabel}</span>
@@ -39,7 +39,7 @@ export function Header({
         <div className="flex items-center gap-3">
           {action}
           {step ? (
-            <span className="rounded-chip bg-badge px-2.5 py-[5px] text-xs font-medium leading-[18px] text-ink-soft">
+            <span className="rounded-chip bg-muted px-2.5 py-[5px] text-xs font-medium leading-[18px] text-ink-tertiary">
               {step}
             </span>
           ) : null}
@@ -57,7 +57,7 @@ export function Footer() {
           <p className="text-xs font-black uppercase leading-[18px] tracking-[2.4px] text-ink">
             Restaurant Booking Entrance
           </p>
-          <p className="text-[13px] leading-[19.5px] text-ink-muted">
+          <p className="text-[13px] leading-[19.5px] text-ink-secondary">
             © 2026 Restaurant Booking Entrance. All rights reserved.
           </p>
         </div>
@@ -67,7 +67,7 @@ export function Footer() {
             <a
               key={label}
               href="#/"
-              className="rounded-[2px] p-1 text-base leading-6 text-ink-soft transition-colors hover:text-brand"
+              className="rounded-[2px] p-1 text-base leading-6 text-ink-tertiary transition-colors hover:text-brand"
             >
               {label}
             </a>

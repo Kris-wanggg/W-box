@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeftIcon, ChevronRightIcon } from '../components/icons';
 import { Footer, Header } from '../components/layout';
-import { Button, Stepper, cx } from '../components/ui';
+import { Button, PeriodTab, Stepper, TimeSlot, cx } from '../components/ui';
 import {
   CALENDAR_MONTH,
   CALENDAR_YEAR,
@@ -67,7 +67,7 @@ export default function Reserve({
           <div className="flex flex-col gap-8 md:flex-row md:gap-10">
             {/* ── 用餐人數 ───────────────────────────────────────────── */}
             <section className="flex flex-col gap-4 md:w-[280px] md:shrink-0">
-              <h2 className="text-[17px] font-bold leading-6 text-ink">用餐人數</h2>
+              <h2 className="text-h4-strong text-ink">用餐人數</h2>
 
               <div className="flex flex-col gap-3 rounded-tile bg-black/[0.03] p-4">
                 <div className="flex items-center justify-between gap-4">
@@ -80,7 +80,7 @@ export default function Reserve({
                 </div>
               </div>
 
-              <p className="border-l-2 border-brand bg-brand-tint px-3 py-2.5 text-xs leading-[18px] text-ink-muted">
+              <p className="border-l-2 border-brand bg-brand/[0.08] px-3 py-2.5 text-xs leading-[18px] text-ink-secondary">
                 <span className="font-medium text-ink">預約說明：</span>
                 <br />
                 超過 8 人的團體預約，請直接撥打電話聯繫我們的專屬客服。
@@ -89,7 +89,7 @@ export default function Reserve({
 
             {/* ── 選擇日期 ───────────────────────────────────────────── */}
             <section className="flex flex-1 flex-col gap-4">
-              <h2 className="text-[17px] font-bold leading-6 text-ink">選擇日期</h2>
+              <h2 className="text-h4-strong text-ink">選擇日期</h2>
 
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-ink">
@@ -101,7 +101,7 @@ export default function Reserve({
                       key={i}
                       type="button"
                       aria-label={i === 0 ? '上個月' : '下個月'}
-                      className="inline-flex size-7 items-center justify-center rounded-chip border border-line text-ink-muted transition-colors hover:bg-brand-tint hover:text-brand"
+                      className="inline-flex size-7 items-center justify-center rounded-chip border border-line text-ink-secondary transition-colors hover:bg-brand/[0.08] hover:text-brand"
                     >
                       <Icon size={16} />
                     </button>
@@ -111,7 +111,7 @@ export default function Reserve({
 
               <div className="grid grid-cols-7 gap-y-1 text-center">
                 {WEEKDAYS.map((w) => (
-                  <span key={w} className="pb-1 text-xs font-medium text-ink-muted">
+                  <span key={w} className="pb-1 text-xs font-medium text-ink-secondary">
                     {w}
                   </span>
                 ))}
@@ -133,9 +133,9 @@ export default function Reserve({
                       className={cx(
                         'mx-auto flex size-8 items-center justify-center rounded-full text-sm transition-colors',
                         selected && 'bg-brand font-medium text-white',
-                        !selected && cell.outside && 'cursor-default text-ink-muted/40',
-                        !selected && cell.closed && !cell.outside && 'cursor-not-allowed text-danger/70',
-                        !selected && !disabled && 'text-ink hover:bg-brand-tint',
+                        !selected && cell.outside && 'cursor-default text-ink-secondary/40',
+                        !selected && cell.closed && !cell.outside && 'cursor-not-allowed text-destructive/70',
+                        !selected && !disabled && 'text-ink hover:bg-brand/[0.08]',
                       )}
                     >
                       {cell.day}
@@ -146,54 +146,33 @@ export default function Reserve({
             </section>
 
             {/* ── 選擇時段 ───────────────────────────────────────────── */}
-            <section className="flex flex-col gap-4 md:w-[300px] md:shrink-0">
-              <h2 className="text-[17px] font-bold leading-6 text-ink">選擇時段</h2>
+            <section className="flex flex-col gap-4 md:w-[412px] md:shrink-0">
+              <h2 className="text-h4-strong text-ink">選擇時段</h2>
 
+              {/* `[Comp] TimeSlots` — 36px meal-period pills over a 4-column
+                  grid of 41px slots. */}
               <div className="flex flex-wrap gap-2">
                 {MEAL_PERIODS.map((p) => (
-                  <button
-                    key={p}
-                    type="button"
-                    aria-pressed={p === period}
-                    onClick={() => setPeriod(p)}
-                    className={cx(
-                      'h-8 rounded-control px-3 text-[13px] font-medium transition-colors',
-                      p === period
-                        ? 'bg-brand text-white hover:bg-brand-hover'
-                        : 'border border-line text-ink hover:bg-brand-tint',
-                    )}
-                  >
+                  <PeriodTab key={p} active={p === period} onClick={() => setPeriod(p)}>
                     {p}
-                  </button>
+                  </PeriodTab>
                 ))}
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
-                {TIME_SLOTS[period].map((slot) => {
-                  const active = slot.time === selectedTime;
-                  return (
-                    <button
-                      key={slot.time}
-                      type="button"
-                      disabled={slot.full}
-                      aria-pressed={active}
-                      onClick={() => {
-                        set('time', slot.time);
-                        setTouched(true);
-                      }}
-                      className={cx(
-                        'h-9 rounded-control border text-[13px] transition-colors',
-                        active
-                          ? 'border-brand bg-brand-tint font-medium text-brand'
-                          : slot.full
-                            ? 'cursor-not-allowed border-line-soft text-ink-muted/40'
-                            : 'border-line text-ink hover:bg-brand-tint',
-                      )}
-                    >
-                      {slot.time}
-                    </button>
-                  );
-                })}
+              <div className="grid grid-cols-4 gap-2 pt-2">
+                {TIME_SLOTS[period].map((slot) => (
+                  <TimeSlot
+                    key={slot.time}
+                    active={slot.time === selectedTime}
+                    unavailable={slot.full}
+                    onClick={() => {
+                      set('time', slot.time);
+                      setTouched(true);
+                    }}
+                  >
+                    {slot.time}
+                  </TimeSlot>
+                ))}
               </div>
 
               {reschedule ? (

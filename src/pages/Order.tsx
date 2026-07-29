@@ -129,7 +129,7 @@ export default function Order({
           <Card>
             <div className="flex flex-col">
               <h1 className="text-[20px] font-bold leading-7 text-ink">選擇餐點</h1>
-              <p className="pt-[3px] text-sm leading-[21px] text-ink-muted">
+              <p className="pt-[3px] text-sm leading-[21px] text-ink-secondary">
                 {editing ? `編輯「${findItem(editing)?.name}」的內容：請完成主餐、附餐、飲料與甜點的選擇。` : '可先加入餐點，也可略過直接完成訂位。'}
               </p>
             </div>
@@ -154,11 +154,11 @@ export default function Order({
               <p className="text-sm font-medium leading-[21px] text-ink">
                 {editing ? '目前分類：套餐 ‧ 編輯套餐內容' : summaryLabel}
               </p>
-              {editing ? <span className="text-xs text-ink-muted">＊ 為必選組別</span> : null}
+              {editing ? <span className="text-xs text-ink-secondary">＊ 為必選組別</span> : null}
             </div>
 
             {category === 'drink' && !drinkEditing ? (
-              <p className="text-[13px] leading-[19.5px] text-ink-muted">
+              <p className="text-[13px] leading-[19.5px] text-ink-secondary">
                 飲品可設定冰塊、甜度與加料；冰塊／甜度為必選單選，加料為可複選。
               </p>
             ) : null}
@@ -241,7 +241,7 @@ function MealCard({
 
         <div className="flex min-w-0 flex-1 flex-col gap-[3px]">
           <p className="text-[15px] font-medium leading-[21px] text-ink">{item.name}</p>
-          <p className="text-[13px] leading-[19.5px] text-ink-muted">{item.description}</p>
+          <p className="text-[13px] leading-[19.5px] text-ink-secondary">{item.description}</p>
           {item.detail ? <p className="pt-px text-xs leading-[18px] text-brand-soft">{item.detail}</p> : null}
         </div>
 
@@ -253,7 +253,7 @@ function MealCard({
 
       <div className="flex flex-wrap items-center justify-end gap-2">
         {onCustomise ? (
-          <Button variant="outline" size="md" onClick={onCustomise} aria-expanded={customiseOpen}>
+          <Button variant="quiet" onClick={onCustomise} aria-expanded={customiseOpen}>
             {item.category === 'set' ? '自訂套餐' : '客製化'}
             <ChevronDownIcon size={20} className={cx('transition-transform', customiseOpen && 'rotate-180')} />
           </Button>
@@ -305,7 +305,7 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-[15px] font-medium text-ink">{item.name} ×{draft.qty}</p>
-            <p className="text-[13px] text-ink-muted">{item.description}｜編輯內容中</p>
+            <p className="text-[13px] text-ink-secondary">{item.description}｜編輯內容中</p>
           </div>
           <div className="shrink-0 text-right">
             <Money value={item.price} className="text-[15px] font-medium text-ink" />
@@ -314,7 +314,7 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
         </div>
       </Tile>
 
-      <p className="text-[13px] leading-[19.5px] text-ink-muted">
+      <p className="text-[13px] leading-[19.5px] text-ink-secondary">
         每組請依指定份數勾選，額滿後其餘選項會暫停選取；飲料勾選後可於下方各自設定冰塊與甜度。
       </p>
 
@@ -330,7 +330,7 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
               <h3 className="text-sm font-medium text-ink">
                 <FieldLegend required={group.required}>{group.label}</FieldLegend>
               </h3>
-              <span className={cx('text-xs', full ? 'text-brand-soft' : 'text-ink-muted')}>
+              <span className={cx('text-xs', full ? 'text-brand-soft' : 'text-ink-secondary')}>
                 已選 {picked.length} / {group.pick}
                 {full ? ` ‧ ${group.customisable ? '勾選後於下方設定冰塊與甜度' : '已額滿，其餘暫停選取'}` : ''}
               </span>
@@ -363,7 +363,7 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
                           {option.name}
                           {option.extra ? ` +$${option.extra}` : ''}
                         </span>
-                        <span className="text-xs text-ink-muted">{option.extra ? `+$${option.extra}` : '$0'}</span>
+                        <span className="text-xs text-ink-secondary">{option.extra ? `+$${option.extra}` : '$0'}</span>
                       </div>
                       <InlineRadioRow
                         label="冰塊"
@@ -392,7 +392,7 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
       <section className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-medium text-ink">整份套餐的其他需求（選填）</h3>
-          <span className="text-xs text-ink-muted">{note.length} / 50</span>
+          <span className="text-xs text-ink-secondary">{note.length} / 50</span>
         </div>
         <Textarea
           maxLength={50}
@@ -406,7 +406,7 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
         <span className="text-sm font-medium text-ink">
           此套餐小計 <Money value={item.price + extra} className="text-brand" />
         </span>
-        <span className="text-xs text-ink-muted">
+        <span className="text-xs text-ink-secondary">
           （套餐 ${item.price.toLocaleString('en-US')} ＋ 內容加價 ${extra}）
         </span>
       </div>
@@ -447,7 +447,7 @@ function DrinkCustomizer({ item, cups, onDone }: { item: MenuItem; cups: number;
   const total = Object.values(prefs).reduce((sum, p) => sum + item.price + toppingPrice(p.toppings), 0);
 
   return (
-    <div className="flex flex-col gap-4 border-t border-line-soft pt-4">
+    <div className="flex flex-col gap-4 border-t border-line-subtle pt-4">
       {Object.keys(prefs).map((cup, i) => {
         const pref = prefs[cup];
         const note = pref.note ?? '';
@@ -496,7 +496,7 @@ function DrinkCustomizer({ item, cups, onDone }: { item: MenuItem; cups: number;
             <section className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <FieldLegend qualifier="（選填）">其他自訂需求</FieldLegend>
-                <span className="text-xs text-ink-muted">{note.length} / 50</span>
+                <span className="text-xs text-ink-secondary">{note.length} / 50</span>
               </div>
               <Textarea
                 maxLength={50}
@@ -523,10 +523,10 @@ function DrinkCustomizer({ item, cups, onDone }: { item: MenuItem; cups: number;
               <span className="rounded-chip bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">
                 第 {i + 1} 杯
               </span>
-              <span className="flex-1 text-xs text-ink-muted">
+              <span className="flex-1 text-xs text-ink-secondary">
                 {i === 0 ? '冰塊、甜度、加料皆可單獨設定' : '沿用第 1 杯設定'}
               </span>
-              <Money value={item.price + toppingPrice(pref.toppings)} className="text-[13px] text-ink-muted" />
+              <Money value={item.price + toppingPrice(pref.toppings)} className="text-[13px] text-ink-secondary" />
             </div>
             {body}
           </Tile>
@@ -761,7 +761,7 @@ function AddOnDrinkPicker({
         {visible.map((drink) => {
           const count = qty[drink.id] ?? 0;
           return (
-            <li key={drink.id} className="flex items-center gap-3 border-b border-line-soft py-2.5 last:border-0">
+            <li key={drink.id} className="flex items-center gap-3 border-b border-line-subtle py-2.5 last:border-0">
               <input
                 type="checkbox"
                 className="size-4 shrink-0 accent-brand"
@@ -771,11 +771,11 @@ function AddOnDrinkPicker({
               />
               <div className="min-w-0 flex-1">
                 <p className="text-[13px] text-ink">{drink.name}</p>
-                <p className="text-xs text-ink-muted">
+                <p className="text-xs text-ink-secondary">
                   {drink.category} ‧ {drink.serves}
                 </p>
               </div>
-              <span className="shrink-0 text-[13px] text-ink-muted">
+              <span className="shrink-0 text-[13px] text-ink-secondary">
                 ${drink.price} / {drink.unit}
               </span>
               <Stepper
@@ -789,7 +789,7 @@ function AddOnDrinkPicker({
       </ul>
 
       <div className="flex items-center justify-between text-xs">
-        <span className="text-ink-muted">
+        <span className="text-ink-secondary">
           已選 {picked.length} 項 ‧ 共 {units} 件
         </span>
         <span className="font-medium text-brand">加購小計 ${total.toLocaleString('en-US')}</span>
@@ -815,7 +815,7 @@ function Fieldset({
         <FieldLegend required={required}>{legend}</FieldLegend>
       </legend>
       {children}
-      {hint ? <p className="pt-1 text-xs leading-[18px] text-ink-muted">{hint}</p> : null}
+      {hint ? <p className="pt-1 text-xs leading-[18px] text-ink-secondary">{hint}</p> : null}
     </fieldset>
   );
 }

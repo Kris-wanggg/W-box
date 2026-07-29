@@ -36,16 +36,16 @@ export default function Payment({ initialMethod = 'card' }: { initialMethod?: Pa
       {/* `應付訂金` is a centred stack in the design, not a label/value row. */}
       <Card className="text-center">
         <div className="flex flex-col items-center gap-1">
-          <span className="text-[13px] text-ink-muted">應付訂金</span>
+          <span className="text-[13px] text-ink-secondary">應付訂金</span>
           <Money value={deposit} className="text-[32px] font-bold leading-10 text-ink" />
-          <p className="text-xs text-ink-muted">
+          <p className="text-xs text-ink-secondary">
             {RESTAURANT} ‧ {slotLabel} ‧ {partyLabel}
           </p>
         </div>
       </Card>
 
       <div className="flex flex-col gap-3">
-        <span className="text-[13px] text-ink-muted">選擇支付方式（依店家設定顯示）</span>
+        <span className="text-[13px] text-ink-secondary">選擇支付方式（依店家設定顯示）</span>
 
         {METHODS.map(({ id, label }) => {
           const active = method === id;
@@ -111,7 +111,7 @@ function CardForm() {
         <Input placeholder="王" autoComplete="cc-name" />
       </Field>
 
-      <p className="flex items-start gap-2 text-xs leading-[18px] text-ink-muted">
+      <p className="flex items-start gap-2 text-xs leading-[18px] text-ink-secondary">
         <InfoIcon size={14} className="mt-0.5 shrink-0" />
         付款採 3D 驗證，資料以加密方式傳輸，本店不留存完整卡號。
       </p>
@@ -136,7 +136,7 @@ function BankPanel({ last5, onLast5 }: { last5: string; onLast5: (v: string) => 
                 type="button"
                 aria-label="複製帳號"
                 onClick={() => navigator.clipboard?.writeText(BANK.account)}
-                className="rounded p-1 text-ink-muted transition-colors hover:bg-brand-tint hover:text-brand"
+                className="rounded p-1 text-ink-secondary transition-colors hover:bg-brand/[0.08] hover:text-brand"
               >
                 <CopyIcon size={14} />
               </button>
@@ -169,7 +169,7 @@ function BankPanel({ last5, onLast5 }: { last5: string; onLast5: (v: string) => 
 function OnlineBankPanel() {
   return (
     <Panel>
-      <p className="text-[13px] leading-[19.5px] text-ink-muted">
+      <p className="text-[13px] leading-[19.5px] text-ink-secondary">
         將導向您選擇的網路銀行完成轉帳，完成後會自動返回本頁並更新訂單狀態。
       </p>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">

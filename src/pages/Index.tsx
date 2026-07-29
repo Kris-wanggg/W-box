@@ -11,11 +11,11 @@ import { FIGMA_FILE, GROUPS, SCREENS, figmaLink } from '../screens';
 export default function Index() {
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
-      <header className="border-b border-line-soft bg-canvas/70 px-5 py-6 backdrop-blur md:px-10 md:py-8">
+      <header className="border-b border-line-subtle bg-canvas/70 px-5 py-6 backdrop-blur md:px-10 md:py-8">
         <div className="mx-auto flex max-w-content flex-col gap-2">
           <p className="text-xs font-black uppercase tracking-[2.4px] text-brand">Frontend Test Build</p>
           <h1 className="text-[24px] font-bold leading-8 text-ink md:text-[28px]">餐廳訂位系統 — 全部畫面</h1>
-          <p className="text-sm leading-[21px] text-ink-muted">
+          <p className="text-sm leading-[21px] text-ink-secondary">
             共 {SCREENS.length} 個畫面，對應 Figma section「28 section v2」。點任一畫面即可開始測試；
             訂位流程可從「訂位首頁」一路點到付款完成。
           </p>
@@ -50,13 +50,13 @@ export default function Index() {
                           className="flex items-start justify-between gap-2 text-[15px] font-medium text-ink transition-colors hover:text-brand"
                         >
                           {screen.title}
-                          <ChevronRightIcon size={18} className="mt-0.5 shrink-0 text-ink-muted" />
+                          <ChevronRightIcon size={18} className="mt-0.5 shrink-0 text-ink-secondary" />
                         </Link>
 
-                        <p className="flex-1 text-xs leading-[18px] text-ink-muted">{screen.note}</p>
+                        <p className="flex-1 text-xs leading-[18px] text-ink-secondary">{screen.note}</p>
 
-                        <div className="flex items-center justify-between gap-2 border-t border-line-soft pt-2">
-                          <code className="min-w-0 truncate text-[11px] text-ink-muted" title={screen.figma}>
+                        <div className="flex items-center justify-between gap-2 border-t border-line-subtle pt-2">
+                          <code className="min-w-0 truncate text-[11px] text-ink-secondary" title={screen.figma}>
                             {screen.figma}
                           </code>
                           <a

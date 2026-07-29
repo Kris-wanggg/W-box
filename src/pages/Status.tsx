@@ -47,7 +47,7 @@ export function BookingFull() {
       <StatusHeader glyph="⟳" title="桌位自動配對中..." description="您選擇的時段目前已滿位" />
       <Card>
         <CardTitle size="sm">請稍後，將由專人為您服務</CardTitle>
-        <p className="text-sm leading-[21px] text-ink-muted">
+        <p className="text-sm leading-[21px] text-ink-secondary">
           店家將於營業時間內專人回電確認訂位，或為您安排最近的可用時段。
         </p>
       </Card>
@@ -74,7 +74,7 @@ export function WaitlistJoined() {
       <StatusHeader glyph="✓" title="已加入候補名單" description="釋出座位時，我們會第一時間通知您" />
       <Card>
         <CardTitle size="sm">候補資訊</CardTitle>
-        <p className="text-sm leading-[21px] text-ink-muted">
+        <p className="text-sm leading-[21px] text-ink-secondary">
           您已加入 {slotLabel} {partyLabel}的候補名單，目前候補順位為
           <span className="font-medium text-brand">第 3 位</span>
           ，有空位釋出時將以您留的手機號碼通知您。
@@ -151,7 +151,7 @@ export function CancelConfirm({ paid = false }: { paid?: boolean }) {
         <Notice tone="warn">
           <p className="font-medium">取消退款規則：</p>
           {CANCEL_RULES_SHORT.map((rule) => (
-            <p key={rule} className="text-ink-muted">
+            <p key={rule} className="text-ink-secondary">
               {rule}
             </p>
           ))}
@@ -202,10 +202,10 @@ export function PaySuccess() {
       <Card>
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <span className="text-sm font-semibold text-ink">{RESTAURANT}</span>
-          <span className="text-xs text-ink-muted">訂位編號 {BOOKING_ID}</span>
+          <span className="text-xs text-ink-secondary">訂位編號 {BOOKING_ID}</span>
         </div>
 
-        <div className="flex flex-col gap-1 rounded-control bg-black/[0.03] p-3 text-[13px] leading-[19.5px] text-ink-muted">
+        <div className="flex flex-col gap-1 rounded-control bg-black/[0.03] p-3 text-[13px] leading-[19.5px] text-ink-secondary">
           <p>
             【訂位成功通知】{contact.name} 您好，您的訂位已確認：
           </p>
@@ -227,7 +227,7 @@ export function PaySuccess() {
         </div>
       </Card>
 
-      <p className="text-center text-[13px] text-ink-muted">後續可至 Email 或預訂首頁查詢、修改或取消訂位。</p>
+      <p className="text-center text-[13px] text-ink-secondary">後續可至 Email 或預訂首頁查詢、修改或取消訂位。</p>
 
       <Actions>
         <Button onClick={() => navigate('/')}>完成</Button>

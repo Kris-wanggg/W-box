@@ -39,7 +39,7 @@ export function OrderSummaryCard({
       <CardTitle note={`共 ${itemCount} 項`}>已選餐點</CardTitle>
 
       {cart.length === 0 && !custom ? (
-        <p className="rounded-tile border border-dashed border-line py-8 text-center text-[13px] leading-[19.5px] text-ink-muted">
+        <p className="rounded-tile border border-dashed border-line py-8 text-center text-[13px] leading-[19.5px] text-ink-secondary">
           尚未加入任何餐點
           <br />
           可先完成訂位，到店再點餐。
@@ -63,7 +63,7 @@ export function OrderSummaryCard({
                   <Money value={linePrice(line, item) * line.qty} className="w-[52px] text-right text-sm font-medium text-brand" />
                 </div>
                 {extra > 0 ? (
-                  <div className="flex items-center justify-between text-xs leading-[18px] text-ink-muted">
+                  <div className="flex items-center justify-between text-xs leading-[18px] text-ink-secondary">
                     <span>└ 內容加價（升級 {countUpgrades(line, item)} 項）</span>
                     <span>+${extra}</span>
                   </div>
@@ -99,7 +99,7 @@ export function OrderSummaryCard({
         )}
       </div>
 
-      <p className="flex items-start gap-2 text-xs leading-[18px] text-ink-muted">
+      <p className="flex items-start gap-2 text-xs leading-[18px] text-ink-secondary">
         <span aria-hidden>ⓘ</span>
         套餐內容可於訂位成立前修改；加價項目以現場出餐為準。
       </p>
@@ -146,14 +146,14 @@ function CustomOrderBlock() {
             ] as const
           ).map(([label, value]) => (
             <div key={label} className="flex justify-between gap-3">
-              <dt className="text-ink-muted">{label}</dt>
+              <dt className="text-ink-secondary">{label}</dt>
               <dd className="text-right text-ink">{value}</dd>
             </div>
           ))}
 
           {drinks.map((drink) => (
             <div key={drink.id} className="flex justify-between gap-3">
-              <dt className="text-ink-muted">
+              <dt className="text-ink-secondary">
                 └ {drink.name} ×{custom.drinkQty[drink.id]}
               </dt>
               <dd className="text-right text-brand">${drink.price * custom.drinkQty[drink.id]}</dd>
@@ -162,7 +162,7 @@ function CustomOrderBlock() {
 
           {drinkTotal ? (
             <div className="flex justify-between gap-3 pt-1">
-              <dt className="text-ink-muted">加購飲品小計</dt>
+              <dt className="text-ink-secondary">加購飲品小計</dt>
               <dd className="text-right font-medium text-ink">${drinkTotal.toLocaleString('en-US')}</dd>
             </div>
           ) : null}
@@ -195,7 +195,7 @@ function EditingBreakdown({ line }: { line: CartLine }) {
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <span className="text-[13px] font-medium text-ink">{item.name} ‧ 內容</span>
-          <Badge tone="brand">編輯中</Badge>
+          <Badge tone="confirm">編輯中</Badge>
         </div>
         {item.groups.map((group) => {
           const picked = (line.selections[group.id] ?? [])
@@ -210,7 +210,7 @@ function EditingBreakdown({ line }: { line: CartLine }) {
             .join(' ‧ ');
           return (
             <div key={group.id} className="flex justify-between gap-3 text-xs leading-[18px]">
-              <span className="shrink-0 text-ink-muted">{group.label.replace(/（.*/, '')}</span>
+              <span className="shrink-0 text-ink-secondary">{group.label.replace(/（.*/, '')}</span>
               <span className="text-right text-ink">{picked || '—'}</span>
             </div>
           );
@@ -245,7 +245,7 @@ export function StatusHeader({
         {glyph}
       </span>
       <h1 className="text-[22px] font-bold leading-8 text-ink">{title}</h1>
-      {description ? <p className="max-w-[520px] text-[13px] leading-[19.5px] text-ink-muted">{description}</p> : null}
+      {description ? <p className="max-w-[520px] text-[13px] leading-[19.5px] text-ink-secondary">{description}</p> : null}
     </header>
   );
 }
@@ -296,7 +296,7 @@ export function ReservationInfoCard({
     <Card>
       <CardTitle
         size="sm"
-        note={status ? <Badge tone={status === '已取消' ? 'danger' : 'brand'}>{status}</Badge> : undefined}
+        note={status ? <Badge tone={status === '已取消' ? 'warning' : 'confirm'}>{status}</Badge> : undefined}
       >
         訂位資訊
       </CardTitle>
@@ -304,7 +304,7 @@ export function ReservationInfoCard({
       <dl className="flex flex-col gap-2.5">
         {rows.map(([label, value]) => (
           <div key={label} className="flex items-center justify-between gap-4">
-            <dt className="text-[13px] leading-[19.5px] text-ink-muted">{label}</dt>
+            <dt className="text-[13px] leading-[19.5px] text-ink-secondary">{label}</dt>
             <dd className="text-right text-[13px] leading-[19.5px] text-ink">{value}</dd>
           </div>
         ))}
@@ -313,10 +313,10 @@ export function ReservationInfoCard({
       <Divider />
 
       <div className="flex items-center justify-between">
-        <span className="text-[13px] text-ink-muted">訂金金額</span>
+        <span className="text-[13px] text-ink-secondary">訂金金額</span>
         <span className="flex items-center gap-2">
           <Money value={deposit} className="text-sm font-semibold text-brand" />
-          <Badge tone={paid ? 'ok' : 'warn'}>{paid ? '已付款' : '未付款'}</Badge>
+          <Badge tone={paid ? 'success' : 'warning'}>{paid ? '已付款' : '未付款'}</Badge>
         </span>
       </div>
     </Card>
@@ -329,7 +329,7 @@ export function DepositRulesCard() {
   return (
     <Card>
       <h2 className="text-sm font-semibold leading-5 text-ink">訂金付款規則</h2>
-      <ul className="flex flex-col gap-1.5 text-[13px] leading-[19.5px] text-ink-muted">
+      <ul className="flex flex-col gap-1.5 text-[13px] leading-[19.5px] text-ink-secondary">
         {DEPOSIT_RULES.map((rule) => (
           <li key={rule}>{rule}</li>
         ))}
@@ -338,13 +338,13 @@ export function DepositRulesCard() {
       <Divider />
 
       <h2 className="text-sm font-semibold leading-5 text-ink">訂位取消規則</h2>
-      <ul className="flex flex-col gap-1.5 text-[13px] leading-[19.5px] text-ink-muted">
+      <ul className="flex flex-col gap-1.5 text-[13px] leading-[19.5px] text-ink-secondary">
         {CANCEL_RULES.map((rule) => (
           <li key={rule}>{rule}</li>
         ))}
       </ul>
 
-      <p className="flex items-start gap-2 text-xs leading-[18px] text-ink-muted">
+      <p className="flex items-start gap-2 text-xs leading-[18px] text-ink-secondary">
         <InfoIcon size={14} className="mt-0.5 shrink-0" />
         {DEPOSIT_LEGAL}
       </p>
