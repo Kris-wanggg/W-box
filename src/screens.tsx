@@ -155,7 +155,7 @@ export const SCREENS: ScreenDef[] = [
     title: '飲品客製化 — 1 杯',
     note: '冰塊／甜度單選、加料複選',
     group: '② 選擇餐點',
-    element: <Order initialCategory="drink" openDrink="drink-orange" />,
+    element: <Order initialCategory="drink" openDrink="drink-orange" cups={1} />,
   },
   {
     path: '/order-drink-2cups',
@@ -164,7 +164,7 @@ export const SCREENS: ScreenDef[] = [
     title: '飲品客製化 — 2 杯',
     note: '每杯各自設定冰塊與甜度',
     group: '② 選擇餐點',
-    element: <Order initialCategory="drink" openDrink="drink-blacktea" />,
+    element: <Order initialCategory="drink" openDrink="drink-orange" cups={2} />,
   },
   {
     path: '/order-custom',

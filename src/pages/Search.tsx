@@ -5,10 +5,9 @@
  */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ReservationInfoCard } from '../components/blocks';
-import { AlertIcon, SearchIcon } from '../components/icons';
+import { ActionRow, ReservationInfoCard } from '../components/blocks';
 import { Screen } from '../components/layout';
-import { Button, Card, CardTitle, Field, Input, Notice } from '../components/ui';
+import { Button, Card, Field, Input, Notice } from '../components/ui';
 import { PAYMENT_DEADLINE, SUPPORT_PHONE } from '../data/reservation';
 
 export default function Search({ result }: { result?: 'unpaid' | 'paid' }) {
@@ -29,11 +28,11 @@ export default function Search({ result }: { result?: 'unpaid' | 'paid' }) {
   };
 
   return (
-    <Screen backLabel="訂位查詢" backTo="/" width="narrow">
+    <Screen backLabel="預約首頁" backTo="/" width="narrow">
       <Card>
-        <div className="flex flex-col gap-1">
-          <CardTitle>查詢我的訂位</CardTitle>
-          <p className="text-sm leading-[21px] text-ink-muted">輸入訂位編號或手機號碼，查詢您的訂位</p>
+        <div className="flex flex-col items-center gap-1 text-center">
+          <h1 className="text-base font-semibold leading-6 text-ink">查詢我的訂位</h1>
+          <p className="text-xs leading-[18px] text-ink-muted">輸入訂位編號或手機號碼，查詢您的訂位</p>
         </div>
 
         <Field label="訂位編號">
@@ -54,7 +53,6 @@ export default function Search({ result }: { result?: 'unpaid' | 'paid' }) {
         </p>
 
         <Button block onClick={search}>
-          <SearchIcon size={18} />
           立即查詢
         </Button>
       </Card>
@@ -64,19 +62,19 @@ export default function Search({ result }: { result?: 'unpaid' | 'paid' }) {
           <ReservationInfoCard status="已確認" paid={found === 'paid'} onReschedule="/reschedule" />
 
           {found === 'unpaid' ? (
-            <Notice tone="warn" icon={<AlertIcon size={16} />}>
+            <Notice tone="warn">
               付款期限：{PAYMENT_DEADLINE} 前完成轉帳，逾期訂位將自動釋出。
             </Notice>
           ) : null}
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <ActionRow>
             <Button variant="outline" onClick={() => navigate(found === 'paid' ? '/cancel-paid' : '/cancel')}>
               取消訂位
             </Button>
             <Button onClick={() => navigate(found === 'paid' ? '/' : '/payment')}>
               {found === 'paid' ? '完成' : '前往支付訂金'}
             </Button>
-          </div>
+          </ActionRow>
         </>
       ) : null}
     </Screen>

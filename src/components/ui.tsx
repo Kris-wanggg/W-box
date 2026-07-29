@@ -31,7 +31,7 @@ const BUTTON_VARIANT: Record<NonNullable<ButtonProps['variant']>, string> = {
   outline:
     'border border-line bg-white/5 text-ink hover:bg-brand-tint active:bg-brand-tint disabled:hover:bg-white/5',
   ghost: 'text-brand hover:bg-brand-tint active:bg-brand-tint',
-  danger: 'border border-danger/40 bg-white/5 text-danger hover:bg-danger/10 active:bg-danger/15',
+  danger: 'bg-danger text-white hover:bg-danger/90 active:bg-danger/90 disabled:hover:bg-danger',
 };
 
 const BUTTON_SIZE: Record<NonNullable<ButtonProps['size']>, string> = {
@@ -189,10 +189,22 @@ export function Tile({
   );
 }
 
-export function CardTitle({ children, note }: { children: ReactNode; note?: ReactNode }) {
+export function CardTitle({
+  children,
+  note,
+  size = 'lg',
+}: {
+  children: ReactNode;
+  note?: ReactNode;
+  /** `lg` is the 20px heading on the ordering screens; `sm` the 14px one the
+   *  訂位資訊 / 訂金狀態 / 聯絡資料 info cards use. */
+  size?: 'lg' | 'sm';
+}) {
   return (
     <header className="flex flex-wrap items-center justify-between gap-2">
-      <h2 className="text-[20px] font-bold leading-7 text-ink">{children}</h2>
+      <h2 className={cx(size === 'lg' ? 'text-[20px] font-bold leading-7' : 'text-sm font-semibold leading-5', 'text-ink')}>
+        {children}
+      </h2>
       {note ? <span className="text-xs leading-[18px] text-ink-muted">{note}</span> : null}
     </header>
   );
@@ -211,9 +223,9 @@ export function Badge({
 }) {
   const tones: Record<string, string> = {
     neutral: 'bg-badge text-ink-soft',
-    brand: 'bg-brand-tint text-brand',
+    brand: 'bg-brand/10 text-brand',
     ok: 'bg-ok/10 text-ok',
-    warn: 'bg-warn/10 text-warn',
+    warn: 'bg-warn/15 text-warn',
     danger: 'bg-danger/10 text-danger',
     info: 'bg-info/10 text-info',
   };
@@ -233,16 +245,18 @@ export function Notice({
   tone?: 'neutral' | 'ok' | 'warn' | 'danger' | 'info';
   icon?: ReactNode;
 }) {
-  const tones: Record<string, string> = {
-    neutral: 'border-line-soft bg-white/50 text-ink-muted',
-    ok: 'border-ok/25 bg-ok/5 text-ok',
-    warn: 'border-warn/25 bg-warn/5 text-warn',
-    danger: 'border-danger/25 bg-danger/5 text-danger',
-    info: 'border-info/25 bg-info/5 text-info',
+  const glyphTone: Record<string, string> = {
+    neutral: 'text-ink-muted',
+    ok: 'text-ok',
+    warn: 'text-warn',
+    danger: 'text-danger',
+    info: 'text-info',
   };
   return (
-    <div className={cx('flex items-start gap-2 rounded-tile border p-3 text-[13px] leading-[19.5px]', tones[tone])}>
-      {icon ? <span className="mt-px shrink-0">{icon}</span> : null}
+    <div className="flex items-start gap-2 rounded-control border border-line bg-white p-3 text-[13px] leading-[19.5px] text-ink">
+      <span className={cx('mt-px shrink-0', glyphTone[tone])} aria-hidden>
+        {icon ?? '⚠'}
+      </span>
       <div className="min-w-0 flex-1">{children}</div>
     </div>
   );

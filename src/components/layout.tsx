@@ -101,7 +101,7 @@ export function Screen({
         <div
           className={cx(
             'flex w-full flex-col gap-6 px-5 py-6 md:px-10 md:py-8',
-            width === 'wide' ? 'max-w-content' : 'max-w-[720px]',
+            width === 'wide' ? 'max-w-content' : 'max-w-[640px]',
           )}
         >
           {children}

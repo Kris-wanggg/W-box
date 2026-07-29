@@ -5,7 +5,7 @@
  */
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { CUSTOM_DRINK_GROUPS, findItem, type MenuItem } from '../data/menu';
+import { CUSTOM_DRINKS, findItem, type MenuItem } from '../data/menu';
 import {
   BOOKING_ID,
   CANCEL_RULES,
@@ -13,9 +13,9 @@ import {
   DEPOSIT_RULES,
   RESTAURANT,
 } from '../data/reservation';
-import { lineExtra, linePrice, useBooking, type CartLine } from '../store';
+import { customDrinkTotal, lineExtra, linePrice, useBooking, type CartLine } from '../store';
 import { InfoIcon } from './icons';
-import { Badge, Button, Card, CardTitle, Divider, Money, Stepper, cx } from './ui';
+import { Badge, Button, Card, CardTitle, Divider, Money, Stepper } from './ui';
 
 /* ── Order summary (right-hand column of the ordering screens) ───────────── */
 
@@ -115,8 +115,8 @@ function CustomOrderBlock() {
   const { custom, set } = useBooking();
   if (!custom) return null;
 
-  const drinks = CUSTOM_DRINK_GROUPS.flatMap((g) => g.options).filter((o) => custom.drinkIds.includes(o.id));
-  const drinkTotal = drinks.reduce((sum, o) => sum + o.extra, 0);
+  const drinks = CUSTOM_DRINKS.filter((d) => (custom.drinkQty[d.id] ?? 0) > 0);
+  const drinkTotal = customDrinkTotal(custom);
 
   return (
     <>
@@ -153,8 +153,10 @@ function CustomOrderBlock() {
 
           {drinks.map((drink) => (
             <div key={drink.id} className="flex justify-between gap-3">
-              <dt className="text-ink-muted">└ {drink.name}</dt>
-              <dd className="text-right text-brand">+${drink.extra}</dd>
+              <dt className="text-ink-muted">
+                └ {drink.name} ×{custom.drinkQty[drink.id]}
+              </dt>
+              <dd className="text-right text-brand">${drink.price * custom.drinkQty[drink.id]}</dd>
             </div>
           ))}
 
@@ -220,33 +222,37 @@ function EditingBreakdown({ line }: { line: CartLine }) {
 
 /* ── Status header (success / warning / error screens) ───────────────────── */
 
+/**
+ * `Status Header`. Every state — success, waiting, cancel-confirm — uses the
+ * same brand-olive ring with a brand glyph inside; the design does not switch
+ * the mark to a semantic colour, and the circle is an outline, not a fill.
+ */
 export function StatusHeader({
   glyph,
   title,
   description,
-  tone = 'ok',
 }: {
   glyph: string;
   title: string;
   description?: ReactNode;
-  tone?: 'ok' | 'warn' | 'danger' | 'info';
 }) {
-  const tones: Record<string, string> = {
-    ok: 'bg-ok/10 text-ok',
-    warn: 'bg-warn/10 text-warn',
-    danger: 'bg-danger/10 text-danger',
-    info: 'bg-info/10 text-info',
-  };
-
   return (
-    <header className="flex flex-col items-center gap-3 pt-2 text-center">
-      <span className={cx('flex size-16 items-center justify-center rounded-full text-[28px]', tones[tone])}>
+    <header className="flex flex-col items-center gap-3 pt-6 text-center">
+      <span
+        aria-hidden
+        className="flex size-11 items-center justify-center rounded-full border-[1.5px] border-brand text-[18px] text-brand"
+      >
         {glyph}
       </span>
-      <h1 className="text-[24px] font-bold leading-8 text-ink">{title}</h1>
-      {description ? <p className="max-w-[520px] text-sm leading-[21px] text-ink-muted">{description}</p> : null}
+      <h1 className="text-[22px] font-bold leading-8 text-ink">{title}</h1>
+      {description ? <p className="max-w-[520px] text-[13px] leading-[19.5px] text-ink-muted">{description}</p> : null}
     </header>
   );
+}
+
+/** `Action Buttons`: two equal-width controls spanning the content column. */
+export function ActionRow({ children }: { children: ReactNode }) {
+  return <div className="flex flex-col gap-3 sm:flex-row [&>*]:flex-1">{children}</div>;
 }
 
 /* ── Reservation info card ───────────────────────────────────────────────── */
@@ -274,7 +280,10 @@ export function ReservationInfoCard({
       <span className="flex items-center gap-3">
         {slotLabel}
         {onReschedule ? (
-          <Link to={onReschedule} className="text-[13px] font-semibold text-brand hover:text-brand-hover">
+          <Link
+            to={onReschedule}
+            className="rounded-chip border border-line px-2 py-0.5 text-xs text-ink transition-colors hover:border-brand/60 hover:text-brand"
+          >
             修改訂位
           </Link>
         ) : null}
@@ -285,20 +294,18 @@ export function ReservationInfoCard({
 
   return (
     <Card>
-      <CardTitle>
-        <span className="flex items-center gap-3">
-          訂位資訊
-          {status ? (
-            <Badge tone={status === '已取消' ? 'danger' : status === '已確認' ? 'ok' : 'warn'}>{status}</Badge>
-          ) : null}
-        </span>
+      <CardTitle
+        size="sm"
+        note={status ? <Badge tone={status === '已取消' ? 'danger' : 'brand'}>{status}</Badge> : undefined}
+      >
+        訂位資訊
       </CardTitle>
 
-      <dl className="flex flex-col gap-3">
+      <dl className="flex flex-col gap-2.5">
         {rows.map(([label, value]) => (
-          <div key={label} className="flex items-start justify-between gap-4">
-            <dt className="text-sm leading-[21px] text-ink-muted">{label}</dt>
-            <dd className="text-right text-sm leading-[21px] text-ink">{value}</dd>
+          <div key={label} className="flex items-center justify-between gap-4">
+            <dt className="text-[13px] leading-[19.5px] text-ink-muted">{label}</dt>
+            <dd className="text-right text-[13px] leading-[19.5px] text-ink">{value}</dd>
           </div>
         ))}
       </dl>
@@ -306,9 +313,9 @@ export function ReservationInfoCard({
       <Divider />
 
       <div className="flex items-center justify-between">
-        <span className="text-sm text-ink-muted">訂金金額</span>
-        <span className="flex items-center gap-3">
-          <Money value={deposit} className="text-base font-medium text-ink" />
+        <span className="text-[13px] text-ink-muted">訂金金額</span>
+        <span className="flex items-center gap-2">
+          <Money value={deposit} className="text-sm font-semibold text-brand" />
           <Badge tone={paid ? 'ok' : 'warn'}>{paid ? '已付款' : '未付款'}</Badge>
         </span>
       </div>
@@ -321,7 +328,7 @@ export function ReservationInfoCard({
 export function DepositRulesCard() {
   return (
     <Card>
-      <h2 className="text-base font-medium leading-6 text-ink">訂金付款規則</h2>
+      <h2 className="text-sm font-semibold leading-5 text-ink">訂金付款規則</h2>
       <ul className="flex flex-col gap-1.5 text-[13px] leading-[19.5px] text-ink-muted">
         {DEPOSIT_RULES.map((rule) => (
           <li key={rule}>{rule}</li>
@@ -330,7 +337,7 @@ export function DepositRulesCard() {
 
       <Divider />
 
-      <h2 className="text-base font-medium leading-6 text-ink">訂位取消規則</h2>
+      <h2 className="text-sm font-semibold leading-5 text-ink">訂位取消規則</h2>
       <ul className="flex flex-col gap-1.5 text-[13px] leading-[19.5px] text-ink-muted">
         {CANCEL_RULES.map((rule) => (
           <li key={rule}>{rule}</li>

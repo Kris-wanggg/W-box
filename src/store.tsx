@@ -6,7 +6,7 @@
  * the flow instead of drifting from the design's sample data.
  */
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
-import { CUSTOM_DRINK_GROUPS, TOPPING_OPTIONS, findItem, type MenuItem } from './data/menu';
+import { TOPPING_OPTIONS, findCustomDrink, findItem, type MenuItem } from './data/menu';
 import { CONTACT, DEPOSIT, formatSlot } from './data/reservation';
 
 export type DrinkPref = { ice: string; sugar: string; toppings: string[]; note?: string };
@@ -35,7 +35,8 @@ export type CustomOrder = {
   budget: string;
   privateRoom: '不需要' | '需要';
   addDrinks: '現場需求加購' | '需要加購';
-  drinkIds: string[];
+  /** drink id → quantity; the design prices add-ons per 壺/瓶. */
+  drinkQty: Record<string, number>;
 };
 
 type Booking = {
@@ -108,10 +109,16 @@ export function lineExtra(line: CartLine, item?: MenuItem): number {
 export function customTotal(custom: CustomOrder | null): number {
   if (!custom) return 0;
   const budget = Number(custom.budget.replace(/[^\d]/g, '')) || 0;
-  const drinks = CUSTOM_DRINK_GROUPS.flatMap((g) => g.options)
-    .filter((o) => custom.drinkIds.includes(o.id))
-    .reduce((sum, o) => sum + o.extra, 0);
-  return budget + drinks;
+  return budget + customDrinkTotal(custom);
+}
+
+/** 加購小計 — the per-unit price of each add-on drink times its quantity. */
+export function customDrinkTotal(custom: CustomOrder | null): number {
+  if (!custom) return 0;
+  return Object.entries(custom.drinkQty).reduce(
+    (sum, [id, qty]) => sum + (findCustomDrink(id)?.price ?? 0) * qty,
+    0,
+  );
 }
 
 export function BookingProvider({ children }: { children: ReactNode }) {

@@ -29,6 +29,13 @@ export const DEPOSIT_RULES = [
   '‧ 前一天訂位：最晚須於用餐當天三小時前轉帳成功',
 ];
 
+/** The three-line version the cancel-confirm screens show inline. */
+export const CANCEL_RULES_SHORT = [
+  '‧ 用餐日 7 日（含）前取消：全額退還訂金',
+  '‧ 用餐日前 3–6 日取消：退還訂金 50%',
+  '‧ 用餐日前 2 日內取消或未到店：恕不退還訂金',
+];
+
 export const CANCEL_RULES = [
   '‧ 用餐日 7 日（含）前取消：全額退還訂金',
   '‧ 用餐日前 3–6 日取消：退還訂金 50%',

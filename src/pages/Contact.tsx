@@ -17,7 +17,7 @@ type Variant = 'default' | 'coffee' | 'noworking' | 'custom';
 export default function Contact({ variant = 'default' }: { variant?: Variant }) {
   const navigate = useNavigate();
   const { cart, subtotal, slotLabel, partyLabel, contact, set, custom } = useBooking();
-  const [form, setForm] = useState(contact);
+  const [form, setForm] = useState({ name: '', phone: '', request: '' });
   const [submitted, setSubmitted] = useState(false);
 
   const showMeals = variant === 'default';
@@ -41,7 +41,7 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
       <TwoColumn
         main={
           <Card>
-            <CardTitle note="＊ 為必填欄位">聯絡資料</CardTitle>
+            <CardTitle size="sm" note="＊ 為必填欄位">聯絡資料</CardTitle>
 
             <Field label="姓名" required error={nameError}>
               <Input
@@ -64,8 +64,8 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
 
             <Field label="特製需求（選填）">
               <Textarea
-                value={form.request === '無' ? '' : form.request}
-                onChange={(e) => setForm({ ...form, request: e.target.value || '無' })}
+                value={form.request}
+                onChange={(e) => setForm({ ...form, request: e.target.value })}
                 placeholder="例：兒童座椅、輪椅友善座位、過敏原註記…"
               />
             </Field>
@@ -73,7 +73,7 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
         }
         aside={
           <Card>
-            <CardTitle>訂位摘要</CardTitle>
+            <CardTitle size="sm">訂位摘要</CardTitle>
 
             <div className="flex flex-col gap-3">
               <SummaryRow label="餐廳名稱" value={venue} />
@@ -81,8 +81,8 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
               <SummaryRow label="用餐人數" value={partyLabel} />
               {!showMeals ? (
                 <>
-                  <SummaryRow label="訂位人" value={form.name || '—'} />
-                  <SummaryRow label="手機號碼" value={form.phone || '—'} />
+                  <SummaryRow label="訂位人" value={form.name || contact.name} />
+                  <SummaryRow label="手機號碼" value={form.phone || contact.phone} />
                   <SummaryRow label="特製需求" value={form.request || '無'} />
                 </>
               ) : null}
@@ -92,7 +92,7 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
               <>
                 <Divider />
                 <div className="flex flex-col gap-2">
-                  <span className="text-sm font-medium text-ink">已選餐點</span>
+                  <span className="text-[13px] font-medium text-ink">已選餐點</span>
                   {cart.length === 0 ? (
                     <p className="text-[13px] text-ink-muted">未加入餐點，將於現場點餐。</p>
                   ) : (
@@ -103,7 +103,7 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
                         <SummaryRow
                           key={line.key}
                           label={`${item.name} x${line.qty}`}
-                          value={<Money value={linePrice(line, item) * line.qty} />}
+                          value={<Money value={linePrice(line, item) * line.qty} className="text-brand" />}
                         />
                       );
                     })
@@ -116,7 +116,7 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
               <>
                 <Divider />
                 <div className="flex flex-col gap-2">
-                  <span className="text-sm font-medium text-ink">客製化點餐</span>
+                  <span className="text-[13px] font-medium text-ink">客製化點餐</span>
                   <SummaryRow label="活動類型" value={custom.eventType} />
                   <SummaryRow label="整桌預算" value={`$${custom.budget} / 桌`} />
                   <SummaryRow label="包廂" value={custom.privateRoom} />
@@ -127,7 +127,10 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
 
             <Divider />
 
-            <SummaryRow label="合計" value={<Money value={subtotal} className="text-brand" />} strong />
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-ink">合計</span>
+              <Money value={subtotal} className="text-[20px] font-bold leading-7 text-brand" />
+            </div>
 
             {closed ? (
               <Notice tone="danger">

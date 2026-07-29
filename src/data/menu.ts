@@ -276,33 +276,30 @@ export const BUDGETS = ['6,800', '8,800', '10,800', '13,800', '15,000 以上'];
 
 export const ROOM_HINT = '包廂低消：10 人包廂 $11,000 ‧ 12 人包廂 $12,000 ‧ 15 人包廂 $15,000';
 
-export const CUSTOM_DRINK_GROUPS: Array<{ label: string; options: Option[] }> = [
-  {
-    label: '養身飲品（壺）',
-    options: [
-      { id: 'herbal', name: '漢方養身茶', extra: 380 },
-      { id: 'plum', name: '陳年梅子飲', extra: 320 },
-    ],
-  },
-  {
-    label: '酒（瓶）',
-    options: [
-      { id: 'sake', name: '純米吟釀清酒', extra: 1280 },
-      { id: 'redwine', name: '智利紅酒', extra: 980 },
-    ],
-  },
-  {
-    label: '熱飲（壺）',
-    options: [
-      { id: 'puer', name: '普洱茶', extra: 280 },
-      { id: 'chrys', name: '菊花枸杞茶', extra: 260 },
-    ],
-  },
-  {
-    label: '冷飲',
-    options: [
-      { id: 'wintermelon', name: '冬瓜檸檬（壺）', extra: 240 },
-      { id: 'soda', name: '氣泡水（瓶）', extra: 120 },
-    ],
-  },
+/**
+ * 加購飲品 on `custom/add drink`: a filter row over a list of add-on drinks,
+ * each with its own quantity stepper and per-unit price.
+ */
+export const CUSTOM_DRINK_CATEGORIES = ['全部', '養身飲品', '酒', '熱飲（壺）', '冷飲'] as const;
+export type CustomDrinkCategory = (typeof CUSTOM_DRINK_CATEGORIES)[number];
+
+export type CustomDrink = {
+  id: string;
+  name: string;
+  category: Exclude<CustomDrinkCategory, '全部'>;
+  /** e.g. 約 6 杯 */
+  serves: string;
+  price: number;
+  unit: string;
+};
+
+export const CUSTOM_DRINKS: CustomDrink[] = [
+  { id: 'longan', name: '桂圓紅棗茶（壺）', category: '養身飲品', serves: '約 6 杯', price: 320, unit: '壺' },
+  { id: 'oolong', name: '台灣高山烏龍（壺）', category: '熱飲（壺）', serves: '約 8 杯', price: 280, unit: '壺' },
+  { id: 'beer', name: '金牌台灣啤酒', category: '酒', serves: '冰鎮供應', price: 120, unit: '瓶' },
+  { id: 'plum', name: '冰鎮酸梅湯（壺）', category: '冷飲', serves: '約 6 杯', price: 260, unit: '壺' },
 ];
+
+export function findCustomDrink(id: string) {
+  return CUSTOM_DRINKS.find((d) => d.id === id);
+}

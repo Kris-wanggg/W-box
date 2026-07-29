@@ -31,7 +31,8 @@ import {
 import {
   BUDGETS,
   CATEGORY_TABS,
-  CUSTOM_DRINK_GROUPS,
+  CUSTOM_DRINKS,
+  CUSTOM_DRINK_CATEGORIES,
   EVENT_TYPES,
   ICE_OPTIONS,
   ICE_OPTIONS_COMPACT,
@@ -58,6 +59,7 @@ export default function Order({
   initialCategory = 'set',
   openEditor,
   openDrink,
+  cups,
   preset,
   empty = false,
 }: {
@@ -66,6 +68,8 @@ export default function Order({
   openEditor?: string;
   /** Item id whose drink customiser is open on load. */
   openDrink?: string;
+  /** Cup count to seed for `openDrink` — the 2-cup frame needs two. */
+  cups?: number;
   preset?: EditorPreset;
   empty?: boolean;
 }) {
@@ -77,6 +81,9 @@ export default function Order({
 
   useEffect(() => {
     if (empty) clearCart();
+    if (openDrink && cups) {
+      addLine({ key: openDrink, itemId: openDrink, qty: cups, selections: {}, drinkPrefs: {}, note: '' });
+    }
     if (openEditor && preset) {
       addLine({ key: openEditor, itemId: openEditor, qty: 1, note: '', ...preset });
     }
@@ -88,7 +95,7 @@ export default function Order({
         budget: '10,800',
         privateRoom: '不需要',
         addDrinks: openDrink ? '需要加購' : '現場需求加購',
-        drinkIds: [],
+        drinkQty: openDrink ? { longan: 2, oolong: 1 } : {},
       });
     }
     // Seeding is a one-off, to put the screen into the state its frame captures.
@@ -179,7 +186,10 @@ export default function Order({
                       customiseOpen={drinkEditing === item.id}
                     >
                       {drinkEditing === item.id ? (
+                        // Keyed by the cup count so the per-cup panels follow
+                        // the stepper — including the seeding effect's bump.
                         <DrinkCustomizer
+                          key={qtyOf(item.id)}
                           item={item}
                           onDone={() => setDrinkEditing(undefined)}
                           cups={Math.max(1, qtyOf(item.id))}
@@ -441,19 +451,8 @@ function DrinkCustomizer({ item, cups, onDone }: { item: MenuItem; cups: number;
       {Object.keys(prefs).map((cup, i) => {
         const pref = prefs[cup];
         const note = pref.note ?? '';
-        return (
-          <div key={cup} className="flex flex-col gap-3">
-            {cups > 1 ? (
-              <div className="flex items-center justify-between">
-                <span className="text-[13px] font-medium text-brand">
-                  {item.name} ‧ 第 {i + 1} 杯
-                </span>
-                <span className="text-xs text-ink-muted">
-                  {pref.toppings.length ? `+$${toppingPrice(pref.toppings)}` : '$0'}
-                </span>
-              </div>
-            ) : null}
-
+        const body = (
+          <>
             <StackedRadioRow
               legend="冰塊"
               qualifier="＊必選（單選）"
@@ -506,7 +505,31 @@ function DrinkCustomizer({ item, cups, onDone }: { item: MenuItem; cups: number;
                 placeholder="例：不要吸管、另附冰塊一杯"
               />
             </section>
-          </div>
+          </>
+        );
+
+        // With more than one cup each gets its own card, headed by a 第 N 杯 chip.
+        if (cups === 1) {
+          return (
+            <div key={cup} className="flex flex-col gap-3">
+              {body}
+            </div>
+          );
+        }
+
+        return (
+          <Tile key={cup} className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="rounded-chip bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">
+                第 {i + 1} 杯
+              </span>
+              <span className="flex-1 text-xs text-ink-muted">
+                {i === 0 ? '冰塊、甜度、加料皆可單獨設定' : '沿用第 1 杯設定'}
+              </span>
+              <Money value={item.price + toppingPrice(pref.toppings)} className="text-[13px] text-ink-muted" />
+            </div>
+            {body}
+          </Tile>
         );
       })}
 
@@ -621,7 +644,7 @@ function CustomMealForm() {
     budget: '10,800',
     privateRoom: '不需要' as const,
     addDrinks: '現場需求加購' as const,
-    drinkIds: [] as string[],
+    drinkQty: {} as Record<string, number>,
   };
 
   const patch = (next: Partial<typeof value>) => set('custom', { ...value, ...next });
@@ -691,32 +714,86 @@ function CustomMealForm() {
         </div>
 
         {value.addDrinks === '需要加購' ? (
-          <div className="mt-4 flex flex-col gap-4">
-            {CUSTOM_DRINK_GROUPS.map((group) => (
-              <div key={group.label} className="flex flex-col gap-2">
-                <FieldLegend>{group.label}</FieldLegend>
-                <div className="flex flex-wrap gap-2">
-                  {group.options.map((option) => (
-                    <OptionChip
-                      key={option.id}
-                      label={option.name}
-                      extra={option.extra}
-                      checked={value.drinkIds.includes(option.id)}
-                      onChange={() =>
-                        patch({
-                          drinkIds: value.drinkIds.includes(option.id)
-                            ? value.drinkIds.filter((id) => id !== option.id)
-                            : [...value.drinkIds, option.id],
-                        })
-                      }
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+          <AddOnDrinkPicker qty={value.drinkQty} onChange={(drinkQty) => patch({ drinkQty })} />
         ) : null}
       </Fieldset>
+    </div>
+  );
+}
+
+/** `custom/add drink`: category filter over a list of add-ons, each with a stepper. */
+function AddOnDrinkPicker({
+  qty,
+  onChange,
+}: {
+  qty: Record<string, number>;
+  onChange: (next: Record<string, number>) => void;
+}) {
+  const [filter, setFilter] = useState<(typeof CUSTOM_DRINK_CATEGORIES)[number]>('全部');
+  const visible = CUSTOM_DRINKS.filter((d) => filter === '全部' || d.category === filter);
+
+  const picked = CUSTOM_DRINKS.filter((d) => (qty[d.id] ?? 0) > 0);
+  const units = picked.reduce((sum, d) => sum + qty[d.id], 0);
+  const total = picked.reduce((sum, d) => sum + d.price * qty[d.id], 0);
+
+  return (
+    <div className="mt-4 flex flex-col gap-3 rounded-tile border border-line bg-white p-4">
+      <div className="flex flex-wrap gap-2">
+        {CUSTOM_DRINK_CATEGORIES.map((category) => (
+          <button
+            key={category}
+            type="button"
+            aria-pressed={category === filter}
+            onClick={() => setFilter(category)}
+            className={cx(
+              'h-7 rounded-chip px-2.5 text-xs transition-colors',
+              category === filter
+                ? 'bg-brand font-medium text-white'
+                : 'border border-line text-ink hover:border-brand/60',
+            )}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+
+      <ul className="flex flex-col">
+        {visible.map((drink) => {
+          const count = qty[drink.id] ?? 0;
+          return (
+            <li key={drink.id} className="flex items-center gap-3 border-b border-line-soft py-2.5 last:border-0">
+              <input
+                type="checkbox"
+                className="size-4 shrink-0 accent-brand"
+                checked={count > 0}
+                aria-label={drink.name}
+                onChange={() => onChange({ ...qty, [drink.id]: count > 0 ? 0 : 1 })}
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-[13px] text-ink">{drink.name}</p>
+                <p className="text-xs text-ink-muted">
+                  {drink.category} ‧ {drink.serves}
+                </p>
+              </div>
+              <span className="shrink-0 text-[13px] text-ink-muted">
+                ${drink.price} / {drink.unit}
+              </span>
+              <Stepper
+                label={drink.name}
+                value={count}
+                onChange={(next) => onChange({ ...qty, [drink.id]: next })}
+              />
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-ink-muted">
+          已選 {picked.length} 項 ‧ 共 {units} 件
+        </span>
+        <span className="font-medium text-brand">加購小計 ${total.toLocaleString('en-US')}</span>
+      </div>
     </div>
   );
 }
