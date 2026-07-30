@@ -400,7 +400,12 @@ export function Badge({
   );
 }
 
-/** The bordered advisory block used under status headers and inside panels. */
+/**
+ * `[Comp] Field` in its warning state (791:466) — the advisory block that sits
+ * under status headers and inside panels. White fill over border/default, an
+ * 8px radius, 17/13 padding and a 10px gap; the ⚠ is 14px in text/accent and
+ * the copy is 13/20.15 in text/primary.
+ */
 export function Notice({
   children,
   tone = 'warn',
@@ -411,11 +416,17 @@ export function Notice({
   icon?: ReactNode;
 }) {
   return (
-    <div className="flex items-start gap-2 rounded-control border border-line bg-white p-3 text-body-sm text-ink">
-      <span className={cx('mt-px shrink-0', tone === 'warn' ? 'text-selected' : 'text-ink-secondary')} aria-hidden>
+    <div className="flex items-start gap-[10px] rounded-control border border-line bg-white px-[17px] py-[13px]">
+      <span
+        className={cx(
+          'w-[14px] shrink-0 text-[14px] leading-[21px]',
+          tone === 'warn' ? 'text-brand' : 'text-ink-secondary',
+        )}
+        aria-hidden
+      >
         {icon ?? '⚠'}
       </span>
-      <div className="min-w-0 flex-1">{children}</div>
+      <div className="min-w-0 flex-1 text-[13px] leading-[20.15px] text-ink">{children}</div>
     </div>
   );
 }
@@ -576,8 +587,10 @@ export function FieldLegend({
 
 /* ── Form controls ───────────────────────────────────────────────────────── */
 
+/** `[Comp] Field` (822:459) — 44px, 8px radius, bg/input over border/default,
+ *  15px of horizontal padding, Restaurant/body with a text/placeholder hint. */
 const CONTROL =
-  'h-11 w-full rounded-control border border-line bg-white px-3 text-body text-ink transition-colors ' +
+  'h-11 w-full rounded-control border border-line bg-inputbg px-[15px] text-body text-ink transition-colors ' +
   'placeholder:text-ink-placeholder hover:border-selected focus:border-brand ' +
   'disabled:bg-off-bg disabled:text-off-text';
 
@@ -587,16 +600,20 @@ export function Field({
   error,
   required,
   children,
+  /** The 聯絡資料 and 訂位查詢 forms label at Restaurant/label (14/21); the
+   *  credit-card form drops to 13px. */
+  labelSize = 'label',
 }: {
   label: string;
   hint?: ReactNode;
   error?: ReactNode;
   required?: boolean;
   children: ReactNode;
+  labelSize?: 'label' | 'label-sm';
 }) {
   return (
-    <label className="flex w-full flex-col gap-1.5">
-      <span className="text-label-sm text-ink">
+    <label className="flex w-full flex-col gap-2">
+      <span className={cx(labelSize === 'label' ? 'text-label' : 'text-label-sm', 'text-ink')}>
         {label}
         {required ? <span className="ml-0.5 text-destructive">＊</span> : null}
       </span>

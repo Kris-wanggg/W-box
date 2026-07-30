@@ -77,6 +77,7 @@ export default {
           subtle: 'rgba(208,197,175,0.35)', // border/subtle
           faint: 'rgba(208,197,175,0.20)', // border/faint
           gold: 'rgba(201,146,42,0.35)', // border/gold-weak, at the alpha the Tag uses
+          'gold-weak': 'rgba(201,146,42,0.18)', // border/gold-weak, `Header Note` alpha
         },
 
         // ── Restaurant: values published by components, not the collection ─
@@ -104,6 +105,9 @@ export default {
           box: 'rgba(27,28,28,0.20)',
           text: 'rgba(27,28,28,0.25)',
         },
+        // The emphasised span inside `[Comp] Field` in its warning state
+        // (822:546, 「用餐前一天 18:00」).
+        emphasis: '#FF0A0A',
         // TimeSlots, unavailable slot.
         unavailable: {
           border: 'rgba(208,197,175,0.30)',
@@ -138,6 +142,8 @@ export default {
         content: '1240px',
         footer: '1280px',
         aside: '420px',
+        // `Search Form Card` / the 訂位查詢 `Content Stack`.
+        search: '560px',
       },
 
       fontFamily: {

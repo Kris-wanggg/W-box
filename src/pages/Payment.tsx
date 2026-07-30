@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { DepositRulesCard } from '../components/blocks';
 import { CopyIcon, InfoIcon } from '../components/icons';
 import { Screen } from '../components/layout';
-import { Button, Card, Field, Input, Money, Notice, SummaryRow, cx } from '../components/ui';
+import { Button, Card, Divider, Field, Input, Money, SummaryRow, cx } from '../components/ui';
 import { BANK, RESTAURANT } from '../data/reservation';
 import { useBooking, type PaymentMethod } from '../store';
 
@@ -69,8 +69,8 @@ export default function Payment({ initialMethod = 'card' }: { initialMethod?: Pa
 
               {/* The expanded details are their own card beneath the row. */}
               {active && id === 'card' ? <CardForm /> : null}
-              {active && id === 'bank' ? <BankPanel last5={last5} onLast5={setLast5} /> : null}
-              {active && id === 'online' ? <OnlineBankPanel /> : null}
+              {active && id === 'bank' ? <TransferPanel verb="匯款" last5={last5} onLast5={setLast5} /> : null}
+              {active && id === 'online' ? <TransferPanel verb="轉帳" last5={last5} onLast5={setLast5} /> : null}
             </div>
           );
         })}
@@ -119,7 +119,21 @@ function CardForm() {
   );
 }
 
-function BankPanel({ last5, onLast5 }: { last5: string; onLast5: (v: string) => void }) {
+/**
+ * 匯款 (668:5456) and 線上轉帳 (668:5574) publish the *same* panel — the
+ * restaurant's account details, a末-5-碼 reconciliation field and two note
+ * lines. Only the verb changes: 匯款 in one frame, 轉帳 in the other. Neither
+ * frame offers a bank picker.
+ */
+function TransferPanel({
+  verb,
+  last5,
+  onLast5,
+}: {
+  verb: '匯款' | '轉帳';
+  last5: string;
+  onLast5: (v: string) => void;
+}) {
   const { deposit } = useBooking();
 
   return (
@@ -147,7 +161,12 @@ function BankPanel({ last5, onLast5 }: { last5: string; onLast5: (v: string) => 
         <SummaryRow label="金額" value={<Money value={deposit} />} strong />
       </dl>
 
-      <Field label="匯款帳號後五碼（對帳用）" hint="用於核對您的匯款來源，加速對帳；請填寫您轉出帳戶的末 5 碼。">
+      <Divider />
+
+      <Field
+        label={`${verb}帳號後五碼（對帳用）`}
+        hint={`用於核對您的${verb}來源，加速對帳；請填寫您轉出帳戶的末 5 碼。`}
+      >
         <Input
           value={last5}
           maxLength={5}
@@ -157,35 +176,11 @@ function BankPanel({ last5, onLast5 }: { last5: string; onLast5: (v: string) => 
         />
       </Field>
 
-      <Notice tone="warn">
-        請於下單後 24 小時內完成匯款，並保留交易明細；逾期未完成，訂位將自動取消。
-        <br />
-        匯款成功後，請於訂單查詢確認訂單狀態，如有任何問題請與我們聯繫。
-      </Notice>
-    </Panel>
-  );
-}
-
-function OnlineBankPanel() {
-  return (
-    <Panel>
-      <p className="text-[13px] leading-[19.5px] text-ink-secondary">
-        將導向您選擇的網路銀行完成轉帳，完成後會自動返回本頁並更新訂單狀態。
-      </p>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {['玉山銀行', '國泰世華', '中國信託', '台新銀行'].map((bank) => (
-          <button
-            key={bank}
-            type="button"
-            className="h-11 rounded-control border border-line text-[13px] text-ink transition-colors hover:border-brand/60 hover:text-brand"
-          >
-            {bank}
-          </button>
-        ))}
+      {/* Two plain lines in the frame, not a bordered advisory. */}
+      <div className="flex flex-col gap-1 text-body-sm text-ink-secondary">
+        <p>請於下單後 24 小時內完成{verb}，並保留交易明細；逾期未完成，訂位將自動取消。</p>
+        <p>{verb}成功後，請於訂單查詢確認訂單狀態，如有任何問題請與我們聯繫。</p>
       </div>
-      <Notice tone="neutral">
-        轉帳完成後系統約需 5 分鐘同步對帳；若狀態未更新，請至訂位查詢頁重新整理。
-      </Notice>
     </Panel>
   );
 }
