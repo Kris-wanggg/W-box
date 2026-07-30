@@ -60,10 +60,14 @@ export default function Reserve({
         </div>
       </div>
 
-      {/* Pulled up over the hero, so it needs to win the stacking order. */}
-      <main className="relative z-10 mx-auto -mt-10 w-full max-w-content flex-1 px-5 pb-10 md:px-10">
-        <div className="rounded-chip bg-white p-5 shadow-card md:p-8">
-          <div className="flex flex-col gap-8 md:flex-row md:gap-10">
+      {/* Pulled up over the hero, so it needs to win the stacking order.
+          The booking card is 1358px wide in the design (779:2584), so this
+          page bumps past `max-w-content` (1240px) to keep the three columns
+          at their published widths (400/400/412). */}
+      <main className="relative z-10 mx-auto -mt-10 w-full max-w-[1358px] flex-1 px-5 pb-10 md:px-10">
+        <div className="rounded-chip bg-white p-5 shadow-card md:px-[41px] md:py-8">
+          {/* 41 · 400 · 32 · 400 · 32 · 412 · 41 = 1358. */}
+          <div className="flex flex-col gap-8 md:flex-row md:gap-8">
             {/* ── 用餐人數 ───────────────────────────────────────────── */}
             {/* `Stepper List` is 400px wide (779:2590) — the 199px size=L
                 stepper needs it, or the 小孩 label wraps. */}
@@ -89,7 +93,8 @@ export default function Reserve({
             </section>
 
             {/* ── 選擇日期 ───────────────────────────────────────────── */}
-            <section className="flex flex-col gap-4 md:flex-1">
+            {/* `Date Picker` (779:2614) — 400px, matching Party Size. */}
+            <section className="flex flex-col gap-4 md:w-[400px] md:shrink-0">
               <h2 className="text-h4-strong text-ink">選擇日期</h2>
 
               <div className="flex items-center justify-between">
