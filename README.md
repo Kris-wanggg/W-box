@@ -6,7 +6,10 @@
 
 ## 測試網址
 
-部署在 GitHub Pages：**https://kris-wanggg.github.io/w-box/**
+部署在 GitHub Pages：**https://kris-wanggg.github.io/W-box/**
+
+> repo 名稱是 `W-box`，Pages 的路徑會照原名帶大寫，`vite.config.ts` 的 `base`
+> 必須完全一致（含大小寫），否則資源路徑對不上、頁面會是空白的。
 
 > ⚠️ 首次部署需要在 repo 的 **Settings → Pages → Build and deployment → Source**
 > 選擇 **GitHub Actions**。設定完成後，每次推送到
@@ -19,7 +22,7 @@
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173/w-box/
+npm run dev        # http://localhost:5173/W-box/
 npm run build      # 產生 dist/
 npm run preview    # 預覽 production build
 npm run typecheck
