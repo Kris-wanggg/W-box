@@ -247,9 +247,15 @@ export function StatusHeader({
   );
 }
 
-/** `Action Buttons`: two equal-width controls spanning the content column. */
+/**
+ * `Action Buttons`: two equal-width controls spanning the content column.
+ *
+ * `flex-1` is scoped to the row breakpoint on purpose. In the stacked column
+ * it would land on the main axis, where `flex-basis: 0` overrides the button's
+ * own height — collapsing a 48px CTA to its text height on a phone.
+ */
 export function ActionRow({ children }: { children: ReactNode }) {
-  return <div className="flex flex-col gap-3 sm:flex-row [&>*]:flex-1">{children}</div>;
+  return <div className="flex flex-col gap-3 sm:flex-row sm:[&>*]:flex-1">{children}</div>;
 }
 
 /* ── Reservation info card ───────────────────────────────────────────────── */

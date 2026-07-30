@@ -137,7 +137,8 @@ export function Screen({
 export function TwoColumn({ main, aside }: { main: ReactNode; aside: ReactNode }) {
   return (
     <div className="flex flex-col gap-6 md:flex-row md:items-start">
-      <div className="min-w-0 flex-1 md:flex-[716_0_0]">{main}</div>
+      {/* Sized only once the columns sit side by side — see ActionRow. */}
+      <div className="min-w-0 md:flex-[716_0_0]">{main}</div>
       <div className="w-full md:sticky md:top-24 md:max-w-aside md:flex-[420_0_0]">{aside}</div>
     </div>
   );

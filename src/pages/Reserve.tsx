@@ -87,7 +87,7 @@ export default function Reserve({
             </section>
 
             {/* ── 選擇日期 ───────────────────────────────────────────── */}
-            <section className="flex flex-1 flex-col gap-4">
+            <section className="flex flex-col gap-4 md:flex-1">
               <h2 className="text-h4-strong text-ink">選擇日期</h2>
 
               <div className="flex items-center justify-between">
