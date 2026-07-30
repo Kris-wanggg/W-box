@@ -65,17 +65,19 @@ export default function Reserve({
         <div className="rounded-chip bg-white p-5 shadow-card md:p-8">
           <div className="flex flex-col gap-8 md:flex-row md:gap-10">
             {/* ── 用餐人數 ───────────────────────────────────────────── */}
-            <section className="flex flex-col gap-4 md:w-[280px] md:shrink-0">
+            {/* `Stepper List` is 400px wide (779:2590) — the 199px size=L
+                stepper needs it, or the 小孩 label wraps. */}
+            <section className="flex flex-col gap-4 md:w-[400px] md:shrink-0">
               <h2 className="text-h4-strong text-ink">用餐人數</h2>
 
               <div className="flex flex-col gap-3 rounded-tile bg-black/[0.03] p-4">
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-sm text-ink">成人</span>
-                  <Stepper label="成人" value={adults} min={1} max={8} onChange={(v) => set('adults', v)} />
+                  <Stepper size="L" label="成人" value={adults} min={1} max={8} onChange={(v) => set('adults', v)} />
                 </div>
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-sm text-ink">小孩 (0-7歲)</span>
-                  <Stepper label="小孩" value={children} min={0} max={8} onChange={(v) => set('children', v)} />
+                  <Stepper size="L" label="小孩" value={children} min={0} max={8} onChange={(v) => set('children', v)} />
                 </div>
               </div>
 
@@ -176,15 +178,15 @@ export default function Reserve({
 
               {reschedule ? (
                 <div className="mt-2 flex flex-col gap-2">
-                  <Button size="cta" block onClick={() => navigate(paid ? '/reschedule-paid-done' : '/reschedule-done')}>
+                  <Button block onClick={() => navigate(paid ? '/reschedule-paid-done' : '/reschedule-done')}>
                     儲存變更
                   </Button>
-                  <Button size="cta" block variant="outline" onClick={() => navigate(-1)}>
+                  <Button block state="Default" onClick={() => navigate(-1)}>
                     取消
                   </Button>
                 </div>
               ) : (
-                <Button size="cta" block className="mt-2" disabled={!touched} onClick={() => navigate('/order')}>
+                <Button block className="mt-2" disabled={!touched} onClick={() => navigate('/order')}>
                   下一步：選擇餐點
                 </Button>
               )}

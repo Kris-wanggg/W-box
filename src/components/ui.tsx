@@ -28,106 +28,116 @@ export function cx(...parts: Array<string | false | null | undefined>) {
 
 /* ── Buttons ─────────────────────────────────────────────────────────────── */
 
-type ButtonVariant = 'primary' | 'outline' | 'quiet' | 'danger';
 /**
- * `[Comp] Button` is placed at four distinct heights, and the design pairs each
- * height with its own type size and horizontal padding:
+ * `Button` in the `components` library (639:3612). Its own variant axes are
+ * `size` and `state`, so those are the prop names here — `state` keeps Figma's
+ * exact casing, capital `Default` included, so the code and the file can be
+ * read against each other without a translation table.
  *
- * - `cta`     48px — page-level actions: 下一步：選擇餐點 (835:663), the
- *                    `Action Buttons` rows (835:493 / 822:555), 立即付款
- *                    (839:1504), 立即查詢 (822:479), 完成 (835:527). 16px type.
- * - `md`      44px — actions living inside a card: 下一步：填寫聯絡資訊
- *                    (835:860), 所選時段已滿？查看候補流程 (840:1603),
- *                    自訂套餐／客製化 (791:467 / 835:1580). 16px (13px quiet).
- * - `compact` 44px — the paired footers and the 訂位查詢 result row:
- *                    更新套餐內容 (835:1173, px-24), 取消 (835:1184, px-25),
- *                    取消訂位 (822:513). 14/21.
- * - `mini`    28px — the inline chips 修改訂位 (839:1413) and 清除設定
- *                    (839:1192): 6px radius, px-11, 12/18.
+ * `style=dark|light` is the third axis. Every screen in the section is `light`,
+ * so only the light values are encoded; the dark set is still undecided.
  */
-type ButtonSize = 'cta' | 'md' | 'compact' | 'mini';
+export type ButtonSize = 'xs' | 'S' | 'M' | 'L';
+export type ButtonState = 'primary' | 'Default' | 'secondary' | 'danger';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: ButtonVariant;
   size?: ButtonSize;
+  state?: ButtonState;
   block?: boolean;
 };
 
-/** Fill / border / label colour — the part that is the same at every height. */
-const SKIN: Record<ButtonVariant, string> = {
-  primary: 'bg-brand text-white hover:bg-brand/90 active:bg-brand/90 disabled:hover:bg-brand',
-  outline:
-    'border border-ink-secondary text-ink ' +
-    'hover:border-selected active:border-selected disabled:hover:border-ink-secondary',
-  quiet:
-    'gap-3 border border-line bg-subtle text-ink ' +
-    'hover:border-selected active:border-selected disabled:hover:border-line',
-  danger: 'bg-destructive text-white hover:bg-destructive/90 active:bg-destructive/90 disabled:hover:bg-destructive',
-};
-
 /**
- * At 28px the design also swaps the colourway: 修改訂位 outlines in
- * border/active with a primary label, and 清除設定 outlines in border/default
- * over no fill with a secondary label.
+ * The nine `style=light` combinations the library publishes, each copied from
+ * its symbol. Sizes carry their own type and padding, so the two are not
+ * separable: `size=M` is 44px *and* 14/21 *and* 24px of padding.
  */
-const MINI_SKIN: Record<ButtonVariant, string> = {
-  primary: 'bg-brand text-white hover:bg-brand/90',
-  outline: 'border border-brand text-ink hover:border-selected',
-  quiet: 'border border-line text-ink-secondary hover:border-selected',
-  danger: 'bg-destructive text-white hover:bg-destructive/90',
+const BUTTON: Partial<Record<`${ButtonSize}/${ButtonState}`, string>> = {
+  // 791:453 — 修改訂位: border/active, primary label
+  'xs/Default':
+    'h-7 rounded-chip border border-brand px-[11px] text-[12px] font-medium leading-[18px] text-ink ' +
+    'hover:border-selected disabled:hover:border-brand',
+  // 838:1102 — 清除設定: border/default, secondary label, no fill
+  'xs/secondary':
+    'h-7 rounded-chip border border-line px-[11px] text-[12px] font-medium leading-[18px] text-ink-secondary ' +
+    'hover:border-selected disabled:hover:border-line',
+  // 835:2251 — the 活動類型 chip when picked: the #C9922A selection outline
+  'S/primary':
+    'h-9 rounded-control border-2 border-selected bg-white px-[14px] text-[13px] font-medium leading-[19.5px] text-ink',
+  // 835:2252
+  'S/Default':
+    'h-9 rounded-control border border-line bg-subtle px-[13px] text-[13px] font-normal leading-[19.5px] text-ink ' +
+    'hover:border-selected',
+  // 835:1171
+  'M/primary':
+    'h-11 rounded-control bg-brand px-6 text-[14px] font-medium leading-[21px] text-white ' +
+    'hover:bg-brand/90 disabled:hover:bg-brand',
+  // 835:1172 — border is text/secondary, not border/default
+  'M/Default':
+    'h-11 rounded-control border border-ink-secondary px-[25px] text-[14px] font-medium leading-[21px] text-ink ' +
+    'hover:border-selected disabled:hover:border-ink-secondary',
+  // 791:455
+  'L/primary':
+    'h-12 rounded-control bg-brand px-3 text-btn text-white hover:bg-brand/90 disabled:hover:bg-brand',
+  // 791:454
+  'L/Default':
+    'h-12 rounded-control border border-ink-secondary px-3 text-[16px] font-medium leading-[22.5px] text-ink ' +
+    'hover:border-selected disabled:hover:border-ink-secondary',
+  // 892:1288 — Medium, matching the library. The 確認取消訂位 instance on
+  // `success-*/cancel-order` is Bold, and the library is the authority.
+  'L/danger':
+    'h-12 rounded-control bg-destructive px-3 text-[16px] font-medium leading-[22.5px] text-white ' +
+    'hover:bg-destructive/90 disabled:hover:bg-destructive',
 };
 
-/** Box height and radius. */
-const BOX: Record<ButtonSize, string> = {
-  cta: 'h-12 rounded-control',
-  md: 'h-11 rounded-control',
-  compact: 'h-11 rounded-control',
-  mini: 'h-7 rounded-chip',
-};
-
-/** Padding and type, which the design ties to the size rather than the skin. */
-const TYPE: Record<ButtonSize, Record<ButtonVariant, string>> = {
-  cta: {
-    primary: 'px-3 text-btn',
-    outline: 'px-3 text-[16px] font-medium leading-[22.5px]',
-    quiet: 'px-[13px] text-[13px] font-medium leading-[19.5px]',
-    danger: 'px-3 text-[16px] font-bold leading-[22.5px]',
-  },
-  md: {
-    primary: 'px-3 text-btn',
-    outline: 'px-3 text-[16px] font-medium leading-[22.5px]',
-    quiet: 'px-[13px] text-[13px] font-medium leading-[19.5px]',
-    danger: 'px-3 text-[16px] font-bold leading-[22.5px]',
-  },
-  compact: {
-    primary: 'px-6 text-[14px] font-medium leading-[21px]',
-    outline: 'px-[25px] text-[14px] font-medium leading-[21px]',
-    quiet: 'px-[13px] text-[14px] font-medium leading-[21px]',
-    danger: 'px-6 text-[14px] font-bold leading-[21px]',
-  },
-  mini: {
-    primary: 'px-[11px] text-[12px] font-medium leading-[18px]',
-    outline: 'px-[11px] text-[12px] font-medium leading-[18px]',
-    quiet: 'px-[11px] text-[12px] font-medium leading-[18px]',
-    danger: 'px-[11px] text-[12px] font-medium leading-[18px]',
-  },
-};
-
-export function Button({ variant = 'primary', size = 'md', block, className, ...props }: ButtonProps) {
+export function Button({ size = 'L', state = 'primary', block, className, ...props }: ButtonProps) {
+  const spec = BUTTON[`${size}/${state}`];
+  if (!spec && import.meta.env.DEV) {
+    // Guard against silently inventing a combination: the library publishes
+    // nine, and anything else has to be drawn in Figma first.
+    console.warn(`Button: size=${size} state=${state} is not published in the library`);
+  }
   return (
     <button
       type="button"
+      data-comp={`Button/${size}/${state}`}
       className={cx(
         'inline-flex items-center justify-center gap-2 transition-colors',
         'disabled:cursor-not-allowed disabled:opacity-45',
-        BOX[size],
-        TYPE[size][variant],
-        size === 'mini' ? MINI_SKIN[variant] : SKIN[variant],
+        spec ?? BUTTON['L/primary'],
         block && 'w-full',
         className,
       )}
       {...props}
     />
+  );
+}
+
+/**
+ * `Button/dropdown` (649:3622) — its own component, not a Button state: 44px
+ * with a 20px chevron, `state=active` flipping the chevron once the panel it
+ * discloses is open (791:456 / 791:457).
+ */
+export function Dropdown({
+  active,
+  children,
+  className,
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean }) {
+  return (
+    <button
+      type="button"
+      aria-expanded={active}
+      data-comp="Button/dropdown"
+      className={cx(
+        'inline-flex h-11 items-center gap-3 rounded-control border border-line bg-subtle px-[13px]',
+        'text-[13px] font-medium leading-[19.5px] text-ink transition-colors hover:border-selected',
+        className,
+      )}
+      {...props}
+    >
+      {children}
+      <ChevronDownIcon size={20} className={cx('transition-transform', active && 'rotate-180')} />
+    </button>
   );
 }
 
@@ -184,31 +194,15 @@ export function PeriodTab({
 }
 
 /**
- * The 活動類型 chip in the 客製化料理 form — `[Comp] Button` again, but the
- * single-select colourway (835:2253 / 835:2256): 36px tall, an 8px radius, and
- * the same #C9922A selection outline the Radio and Checkbox use. Padding shifts
- * by 1px between states to absorb the extra border width.
+ * The 活動類型 chip is `Button` at `size=S`: `state=primary` when picked,
+ * `state=Default` otherwise. This wrapper exists only to add `aria-pressed`,
+ * since the chips are a single-select group rather than nine separate actions.
  */
 export function SelectChip({
   active,
-  children,
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean }) {
-  return (
-    <button
-      type="button"
-      aria-pressed={active}
-      className={cx(
-        'h-9 rounded-control text-[13px] leading-[19.5px] text-ink transition-colors',
-        active
-          ? 'border-2 border-selected bg-white px-[14px] font-medium'
-          : 'border border-line bg-subtle px-[13px] font-normal hover:border-selected',
-      )}
-      {...props}
-    >
-      {children}
-    </button>
-  );
+  return <Button size="S" state={active ? 'primary' : 'Default'} aria-pressed={active} {...props} />;
 }
 
 /**
@@ -245,54 +239,61 @@ export function TimeSlot({
 
 /* ── Quantity stepper ────────────────────────────────────────────────────── */
 
+/**
+ * `stepper` (791:459) — three published `style=light` sizes, and they differ by
+ * more than height:
+ *
+ * | | `s` 32px (791:462) | `M` 44px (791:465) | `L` 48px (835:554) |
+ * |---|---|---|---|
+ * | shell | bg/subtle, 4px radius | bg/subtle, 8px radius | **no fill**, 8px radius |
+ * | keys | 32px, 6px radius | 36px, 8px radius | **40px, 6px radius** |
+ * | − key | no fill | no fill | **text/primary at 6%** |
+ * | value | 13/19.5, 28px wide | 15/22.5, 40px wide | **16/24, 109px wide** |
+ *
+ * `s` is the order-summary line, whose decrement key becomes a delete at 1;
+ * `M` sits on the meal cards and `L` on the 用餐人數 rows of reservation-v2.
+ */
+type StepperSize = 's' | 'M' | 'L';
+
 type StepperProps = {
   value: number;
   onChange: (next: number) => void;
   min?: number;
   max?: number;
-  size?: 'sm' | 'md';
+  size?: StepperSize;
   label: string;
 };
 
-/**
- * `[Comp] Stepper`. `md` is the 44px control on meal cards (36px keys, an 8px
- * radius, the increment key filled with bg/brand); `sm` is the 32px variant in
- * the order summary, whose decrement key becomes a delete once the count is 1.
- */
-export function Stepper({ value, onChange, min = 0, max = 99, size = 'md', label }: StepperProps) {
-  const compact = size === 'sm';
-  const key = compact ? 'size-8 rounded-chip' : 'size-9 rounded-control';
-  const icon = compact ? 16 : 20;
+const STEPPER: Record<StepperSize, { shell: string; key: string; value: string; icon: number }> = {
+  s: { shell: 'h-8 rounded-box border-line bg-subtle', key: 'size-8 rounded-chip', value: 'w-7 text-[13px] leading-[19.5px]', icon: 16 },
+  M: { shell: 'h-11 rounded-control border-line bg-subtle px-[5px]', key: 'size-9 rounded-control', value: 'w-10 text-[15px] leading-[22.5px]', icon: 20 },
+  L: { shell: 'h-12 rounded-control border-line px-[5px]', key: 'size-10 rounded-chip', value: 'w-[109px] text-[16px] leading-6', icon: 20 },
+};
+
+export function Stepper({ value, onChange, min = 0, max = 99, size = 'M', label }: StepperProps) {
+  const spec = STEPPER[size];
+  /** Only the order-summary size turns its decrement key into a delete. */
+  const deletes = size === 's' && value <= 1;
 
   return (
-    <div
-      className={cx(
-        'inline-flex items-center border border-line bg-subtle',
-        compact ? 'h-8 rounded-box' : 'h-11 rounded-control px-[5px]',
-      )}
-    >
+    <div data-comp={`stepper/${size}`} className={cx('inline-flex items-center border', spec.shell)}>
       <button
         type="button"
-        aria-label={value <= 1 && compact ? `移除 ${label}` : `減少 ${label}`}
+        aria-label={deletes ? `移除 ${label}` : `減少 ${label}`}
         disabled={value <= min}
         onClick={() => onChange(Math.max(min, value - 1))}
         className={cx(
-          key,
+          spec.key,
           'inline-flex items-center justify-center text-ink transition-colors',
-          'hover:bg-brand/[0.08] disabled:opacity-35 disabled:hover:bg-transparent',
+          // L fills its decrement key; the smaller two leave it bare.
+          size === 'L' ? 'bg-ink/[0.06] hover:bg-ink/[0.10]' : 'hover:bg-brand/[0.08] disabled:hover:bg-transparent',
+          'disabled:opacity-30',
         )}
       >
-        {compact && value <= 1 ? <TrashIcon size={icon} /> : <MinusIcon size={icon} />}
+        {deletes ? <TrashIcon size={spec.icon} /> : <MinusIcon size={spec.icon} />}
       </button>
 
-      <span
-        className={cx(
-          'text-center font-medium text-ink',
-          compact ? 'w-7 text-[13px] leading-[19.5px]' : 'w-10 text-[15px] leading-[22.5px]',
-        )}
-      >
-        {value}
-      </span>
+      <span className={cx('text-center font-medium text-ink', spec.value)}>{value}</span>
 
       <button
         type="button"
@@ -300,12 +301,12 @@ export function Stepper({ value, onChange, min = 0, max = 99, size = 'md', label
         disabled={value >= max}
         onClick={() => onChange(Math.min(max, value + 1))}
         className={cx(
-          key,
+          spec.key,
           'inline-flex items-center justify-center transition-colors disabled:opacity-40',
-          compact ? 'text-ink hover:bg-brand/[0.08]' : 'bg-brand text-white hover:bg-brand/90',
+          size === 's' ? 'text-ink hover:bg-brand/[0.08]' : 'bg-brand text-white hover:bg-brand/90',
         )}
       >
-        <PlusIcon size={icon} />
+        <PlusIcon size={spec.icon} />
       </button>
     </div>
   );
@@ -374,27 +375,27 @@ export function Divider({ className }: { className?: string }) {
 }
 
 /**
- * `[Comp] Tag`. Three states, each 24px tall with 9px padding:
- * confirm (791:440) is a gold wash with accent text on a full pill; success
- * (822:540) and warning (835:482) are 6px-radius washes with primary text.
+ * `tag` (649:3617) — four published `style=light` states. Three are 24px status
+ * washes: confirm (791:440) is a gold wash with accent text on a full pill,
+ * success (791:438) and warning (791:439) are 6px-radius washes with primary
+ * text. `info` (791:441) is the odd one — **32px** tall with 10px of padding,
+ * bg/muted and text/tertiary — and it is the step badge in the header.
  */
 export function Badge({
   children,
-  tone = 'neutral',
+  tone = 'info',
 }: {
   children: ReactNode;
-  tone?: 'neutral' | 'confirm' | 'success' | 'warning';
+  tone?: 'info' | 'confirm' | 'success' | 'warning';
 }) {
   const tones: Record<string, string> = {
-    neutral: 'rounded-chip bg-muted text-ink-tertiary',
-    confirm: 'rounded-pill border border-tag-confirm-border bg-tag-confirm-bg text-brand',
-    success: 'rounded-chip border border-tag-success-border bg-tag-success-bg text-ink',
-    warning: 'rounded-chip border border-tag-warning-border bg-tag-warning-bg text-ink',
+    info: 'h-8 rounded-chip bg-muted px-[10px] text-ink-tertiary',
+    confirm: 'h-6 rounded-pill border border-tag-confirm-border bg-tag-confirm-bg px-[9px] text-brand',
+    success: 'h-6 rounded-chip border border-tag-success-border bg-tag-success-bg px-[9px] text-ink',
+    warning: 'h-6 rounded-chip border border-tag-warning-border bg-tag-warning-bg px-[9px] text-ink',
   };
   return (
-    <span
-      className={cx('inline-flex h-6 items-center px-[9px] text-[12px] font-medium leading-4', tones[tone])}
-    >
+    <span data-comp={`tag/${tone}`} className={cx('inline-flex items-center text-[12px] font-medium leading-[18px]', tones[tone])}>
       {children}
     </span>
   );
@@ -490,80 +491,99 @@ export function OptionChip({
 }
 
 /**
- * `[Comp] Radio` (835:1742 / 835:1038) — 32px tall, 8px radius. Selected is a
- * **2px** #C9922A outline with a filled 8px dot and a Medium label; unselected
- * is a 1px border/default outline with a Regular label. The label colour does
- * not change between states.
+ * `Radio` (658:3637) — three published `style=light` sizes, and the mark itself
+ * changes shape between them:
+ *
+ * | | `S` 32px (791:444) | `M` 44px (835:2250) | `L` 48px (839:1428) |
+ * |---|---|---|---|
+ * | mark | 16px, **8px radius** | 18px, **circle** | 18px, **circle** |
+ * | dot | 8px, 4px radius | 8px, circle | 8px, circle |
+ * | gap | 8px | 10px | 12px |
+ * | label | 13/19.5 | 14/21 | 14/21 |
+ * | picked fill | none | none | **white** |
+ *
+ * `S` is the 冰塊／甜度 chip, `M` the 包廂／加購飲品 pair, `L` the payment-method
+ * rows. Horizontal padding shifts by 1px between states to absorb the 2px
+ * selected border.
  */
-export function RadioChip({
+type RadioSize = 'S' | 'M' | 'L';
+
+const RADIO: Record<RadioSize, { box: string; picked: string; unpicked: string; mark: string; dot: string; label: string }> = {
+  S: {
+    box: 'h-8 gap-2',
+    picked: 'border-2 border-selected pl-[14px] pr-[18px]',
+    unpicked: 'border border-line pl-[13px] pr-[17px] hover:border-selected',
+    mark: 'size-4 rounded-control',
+    dot: 'size-2 rounded-box',
+    label: 'text-[13px] leading-[19.5px]',
+  },
+  M: {
+    box: 'h-11 gap-2.5',
+    picked: 'border-2 border-selected px-4',
+    unpicked: 'border border-line bg-subtle px-[17px] hover:border-selected',
+    mark: 'size-[18px] rounded-full',
+    dot: 'size-2 rounded-full',
+    label: 'text-[14px] leading-[21px]',
+  },
+  L: {
+    box: 'h-12 gap-3',
+    picked: 'border-2 border-selected bg-white px-4',
+    unpicked: 'border border-line bg-subtle px-[15px] hover:border-selected',
+    mark: 'size-[18px] rounded-full',
+    dot: 'size-2 rounded-full',
+    label: 'text-[14px] leading-[21px]',
+  },
+};
+
+export function Radio({
   label,
   checked,
   onChange,
   name,
+  size = 'S',
+  block,
 }: {
-  label: string;
+  label: ReactNode;
   checked: boolean;
   onChange: () => void;
   name: string;
+  size?: RadioSize;
+  /** Spans its container, as the 包廂 pair and the payment rows do. */
+  block?: boolean;
 }) {
+  const spec = RADIO[size];
   return (
     <label
+      data-comp={`Radio/${size}`}
       className={cx(
-        'inline-flex h-8 cursor-pointer items-center gap-2 rounded-control transition-colors',
-        checked
-          ? 'border-2 border-selected pl-[14px] pr-[18px]'
-          : 'border border-line pl-[13px] pr-[17px] hover:border-selected',
+        'cursor-pointer items-center rounded-control transition-colors',
+        block ? 'flex w-full' : 'inline-flex',
+        spec.box,
+        checked ? spec.picked : spec.unpicked,
       )}
     >
       <span
-        className={cx(
-          'flex size-4 shrink-0 items-center justify-center rounded-control border p-px',
-          checked ? 'border-selected' : 'border-line',
-        )}
+        className={cx('flex shrink-0 items-center justify-center border p-px', spec.mark, checked ? 'border-selected' : 'border-line')}
         aria-hidden
       >
-        {checked ? <span className="size-2 rounded-box bg-selected" /> : null}
+        {checked ? <span className={cx('bg-selected', spec.dot)} /> : null}
       </span>
       <input type="radio" name={name} className="sr-only" checked={checked} onChange={onChange} />
-      <span className={cx('text-[13px] leading-[19.5px] text-ink', checked ? 'font-medium' : 'font-normal')}>
+      <span className={cx(spec.label, 'text-ink', checked || size !== 'S' ? 'font-medium' : 'font-normal')}>
         {label}
       </span>
     </label>
   );
 }
 
-/** The full-width radio the 客製化料理 form uses, sharing the Radio's marks. */
-export function RadioBox({
-  label,
-  checked,
-  onChange,
-  name,
-}: {
-  label: string;
-  checked: boolean;
-  onChange: () => void;
-  name: string;
-}) {
-  return (
-    <label
-      className={cx(
-        'flex h-11 flex-1 cursor-pointer items-center gap-2.5 rounded-control px-3 transition-colors',
-        checked ? 'border-2 border-selected' : 'border border-line hover:border-selected',
-      )}
-    >
-      <span
-        className={cx(
-          'flex size-4 shrink-0 items-center justify-center rounded-control border p-px',
-          checked ? 'border-selected' : 'border-line',
-        )}
-        aria-hidden
-      >
-        {checked ? <span className="size-2 rounded-box bg-selected" /> : null}
-      </span>
-      <input type="radio" name={name} className="sr-only" checked={checked} onChange={onChange} />
-      <span className={cx('text-body text-ink', checked && 'font-medium')}>{label}</span>
-    </label>
-  );
+/** `size=S` — the 冰塊／甜度 chips. */
+export function RadioChip(props: Omit<Parameters<typeof Radio>[0], 'size' | 'block'>) {
+  return <Radio {...props} size="S" />;
+}
+
+/** `size=M` — the full-width 包廂／加購飲品 pair in 客製化料理. */
+export function RadioBox(props: Omit<Parameters<typeof Radio>[0], 'size'>) {
+  return <Radio {...props} size="M" block />;
 }
 
 /** Label + required mark + optional qualifier, above a group of options. */

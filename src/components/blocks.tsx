@@ -55,7 +55,7 @@ export function OrderSummaryCard({
                 <div className="flex items-center gap-3">
                   <span className="min-w-0 flex-1 text-sm leading-[21px] text-ink">{item.name}</span>
                   <Stepper
-                    size="sm"
+                    size="s"
                     label={item.name}
                     value={line.qty}
                     onChange={(next) => setQty(line.key, next)}
@@ -86,13 +86,15 @@ export function OrderSummaryCard({
       </div>
 
       <div className="pt-1">
+        {/* 835:860 — L's type and padding at M's height. The library has no
+            such combination, so the 44px is an explicit override here. */}
         {onCta ? (
-          <Button block onClick={onCta}>
+          <Button block className="!h-11" onClick={onCta}>
             {cta}
           </Button>
         ) : (
           <Link to={ctaTo} className="block">
-            <Button block tabIndex={-1}>
+            <Button block className="!h-11" tabIndex={-1}>
               {cta}
             </Button>
           </Link>
@@ -127,7 +129,7 @@ function CustomOrderBlock() {
           <span className="flex items-center gap-3">
             <span className="text-[13px] font-semibold text-brand">整桌預訂</span>
             {/* `[Comp] Button (清除設定)` 839:1192 — 28px, border/default, 12/18. */}
-            <Button size="mini" variant="quiet" onClick={() => set('custom', null)}>
+            <Button size="xs" state="secondary" onClick={() => set('custom', null)}>
               清除設定
             </Button>
           </span>
@@ -285,7 +287,7 @@ export function ReservationInfoCard({
         {/* `[Comp] Button (修改訂位)` 839:1413 — 28px, border/active, 12/18. */}
         {onReschedule ? (
           <Link to={onReschedule}>
-            <Button size="mini" variant="outline" tabIndex={-1}>
+            <Button size="xs" state="Default" tabIndex={-1}>
               修改訂位
             </Button>
           </Link>

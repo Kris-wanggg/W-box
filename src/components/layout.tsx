@@ -9,7 +9,7 @@
 import type { ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeftIcon } from './icons';
-import { cx } from './ui';
+import { Badge, cx } from './ui';
 
 export function Header({
   backLabel,
@@ -40,11 +40,9 @@ export function Header({
 
         <div className="flex items-center gap-3">
           {action}
-          {step ? (
-            <span className="rounded-chip bg-muted px-2.5 py-[5px] text-xs font-medium leading-[18px] text-ink-tertiary">
-              {step}
-            </span>
-          ) : null}
+          {/* The step badge is `tag state=info` (791:441) — 32px, not the 24px
+              the three status washes use. */}
+          {step ? <Badge tone="info">{step}</Badge> : null}
         </div>
       </div>
     </header>

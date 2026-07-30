@@ -156,7 +156,7 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
               </Notice>
             ) : null}
 
-            <Button size={closed ? 'md' : 'cta'} block onClick={closed ? () => navigate('/booking-full') : submit}>
+            <Button block className={closed ? '!h-11' : undefined} onClick={closed ? () => navigate('/booking-full') : submit}>
               {cta}
             </Button>
 

@@ -9,13 +9,13 @@
  */
 import { useEffect, useState, type ReactNode } from 'react';
 import { OrderSummaryCard } from '../components/blocks';
-import { ChevronDownIcon } from '../components/icons';
 import { Screen, TwoColumn } from '../components/layout';
 import {
   Badge,
   Button,
   Card,
   Divider,
+  Dropdown,
   FieldLegend,
   Money,
   OptionChip,
@@ -254,10 +254,9 @@ function MealCard({
 
       <div className="flex flex-wrap items-center justify-end gap-2">
         {onCustomise ? (
-          <Button variant="quiet" onClick={onCustomise} aria-expanded={customiseOpen}>
+          <Dropdown active={customiseOpen} onClick={onCustomise}>
             {item.category === 'set' ? '自訂套餐' : '客製化'}
-            <ChevronDownIcon size={20} className={cx('transition-transform', customiseOpen && 'rotate-180')} />
-          </Button>
+          </Dropdown>
         ) : null}
         <Stepper label={item.name} value={qty} onChange={onQty} />
       </div>
@@ -322,10 +321,9 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
           </p>
         </div>
 
-        <Button variant="quiet" className="shrink-0" onClick={onClose} aria-expanded>
+        <Dropdown active className="shrink-0" onClick={onClose}>
           自訂套餐
-          <ChevronDownIcon size={20} className="rotate-180" />
-        </Button>
+        </Dropdown>
 
         <div className="shrink-0 pt-0.5 text-right">
           <Money value={item.price} className="text-[15px] font-medium leading-[22.5px] text-ink" />
@@ -432,11 +430,11 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
 
       {/* Two equal-width 44px actions spanning the card (835:1173 / 835:1184). */}
       <div className="flex gap-3">
-        <Button size="compact" variant="outline" className="flex-1" onClick={onClose}>
+        <Button size="M" state="Default" className="flex-1" onClick={onClose}>
           取消
         </Button>
         <Button
-          size="compact"
+          size="M"
           className="flex-1"
           onClick={() => {
             addLine({ key: itemId, itemId, qty: draft.qty, selections, drinkPrefs: prefs, note });
@@ -559,11 +557,11 @@ function DrinkCustomizer({ item, cups, onDone }: { item: MenuItem; cups: number;
 
       {/* 44px pair, same as the set editor (835:1878 / 835:1879). */}
       <div className="flex gap-3">
-        <Button size="compact" variant="outline" className="flex-1" onClick={onDone}>
+        <Button size="M" state="Default" className="flex-1" onClick={onDone}>
           取消
         </Button>
         <Button
-          size="compact"
+          size="M"
           className="flex-1"
           onClick={() => {
             addLine({

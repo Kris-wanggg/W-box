@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { DepositRulesCard } from '../components/blocks';
 import { CopyIcon, InfoIcon } from '../components/icons';
 import { Screen } from '../components/layout';
-import { Button, Card, Divider, Field, Input, Money, SummaryRow, cx } from '../components/ui';
+import { Button, Card, Divider, Field, Input, Money, Radio, SummaryRow } from '../components/ui';
 import { BANK, RESTAURANT } from '../data/reservation';
 import { useBooking, type PaymentMethod } from '../store';
 
@@ -52,21 +52,16 @@ export default function Payment({ initialMethod = 'card' }: { initialMethod?: Pa
           const active = method === id;
           return (
             <div key={id} className="flex flex-col gap-3">
-              <label
-                className={cx(
-                  'flex cursor-pointer items-center gap-3 rounded-control border bg-white px-4 py-3 transition-colors',
-                  active ? 'border-brand' : 'border-line hover:border-brand/60',
-                )}
-              >
-                <input
-                  type="radio"
-                  name="payment-method"
-                  className="size-4 accent-brand"
-                  checked={active}
-                  onChange={() => setMethod(id)}
-                />
-                <span className={cx('text-sm', active ? 'font-medium text-ink' : 'text-ink')}>{label}</span>
-              </label>
+              {/* `Radio size=L` (839:1428 / 839:1433) — the 48px row, whose mark
+                  is a circle rather than the rounded square the S chip uses. */}
+              <Radio
+                size="L"
+                block
+                name="payment-method"
+                label={label}
+                checked={active}
+                onChange={() => setMethod(id)}
+              />
 
               {/* The expanded details are their own card beneath the row. */}
               {active && id === 'card' ? <CardForm /> : null}
@@ -79,7 +74,7 @@ export default function Payment({ initialMethod = 'card' }: { initialMethod?: Pa
 
       <DepositRulesCard />
 
-      <Button size="cta" block onClick={submit}>
+      <Button block onClick={submit}>
         {method === 'card' ? `立即付款 $${deposit}` : '完成'}
       </Button>
     </Screen>

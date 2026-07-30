@@ -112,7 +112,7 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
               <span className="min-w-0 flex-1 text-sm text-ink">{row.name}</span>
               {!collapsible ? (
                 <Stepper
-                  size="sm"
+                  size="s"
                   label={row.name}
                   value={row.qty}
                   onChange={(qty) => setRows((p) => p.map((r) => (r.id === row.id ? { ...r, qty } : r)))}
@@ -135,7 +135,7 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
             {collapsible && expanded(row.id) ? (
               <div className="flex items-center justify-between rounded-tile bg-black/[0.03] px-3 py-2">
                 <Stepper
-                  size="sm"
+                  size="s"
                   label={row.name}
                   value={row.qty}
                   onChange={(qty) => setRows((p) => p.map((r) => (r.id === row.id ? { ...r, qty } : r)))}
@@ -151,7 +151,7 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
 
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-ink">客製化點餐（進行中）</span>
-        <Button size="mini" variant="quiet">
+        <Button size="xs" state="secondary">
           清除設定
         </Button>
       </div>
@@ -177,7 +177,7 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
               <span className="min-w-0 flex-1 text-[13px] text-ink">└ {drink.name}</span>
               {!collapsible ? (
                 <Stepper
-                  size="sm"
+                  size="s"
                   label={drink.name}
                   value={drink.qty}
                   onChange={(qty) => setDrinks((p) => p.map((d) => (d.id === drink.id ? { ...d, qty } : d)))}
@@ -200,7 +200,7 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
             {collapsible && expanded(drink.id) ? (
               <div className="flex items-center justify-between rounded-tile bg-black/[0.03] px-3 py-2">
                 <Stepper
-                  size="sm"
+                  size="s"
                   label={drink.name}
                   value={drink.qty}
                   onChange={(qty) => setDrinks((p) => p.map((d) => (d.id === drink.id ? { ...d, qty } : d)))}

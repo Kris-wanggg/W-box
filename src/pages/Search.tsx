@@ -60,7 +60,7 @@ export default function Search({ result }: { result?: 'unpaid' | 'paid' }) {
             查無資料時，請確認輸入是否正確，或洽店家客服 {SUPPORT_PHONE}。
           </p>
 
-          <Button size="cta" block onClick={search}>
+          <Button block onClick={search}>
             立即查詢
           </Button>
         </div>
@@ -88,10 +88,10 @@ export default function Search({ result }: { result?: 'unpaid' | 'paid' }) {
 
           {/* 44px with 14/21 labels, unlike the 48px status rows (822:513). */}
           <ActionRow>
-            <Button size="compact" variant="outline" onClick={() => navigate(paid ? '/cancel-paid' : '/cancel')}>
+            <Button size="M" state="Default" onClick={() => navigate(paid ? '/cancel-paid' : '/cancel')}>
               取消訂位
             </Button>
-            <Button size="compact" onClick={() => navigate(paid ? '/reschedule-paid' : '/payment')}>
+            <Button size="M" onClick={() => navigate(paid ? '/reschedule-paid' : '/payment')}>
               {paid ? '修改訂位' : '前往支付訂金'}
             </Button>
           </ActionRow>
