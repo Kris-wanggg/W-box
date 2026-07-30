@@ -32,7 +32,8 @@ export default function Payment({ initialMethod = 'card' }: { initialMethod?: Pa
   };
 
   return (
-    <Screen backLabel="訂位詳情" backTo="/booking-success" width="narrow">
+    /* 668:5110 / 668:5456 / 668:5574 all label it 訂位成立. */
+    <Screen backLabel="訂位成立" backTo="/booking-success" width="narrow">
       {/* `應付訂金` is a centred stack in the design, not a label/value row. */}
       <Card className="text-center">
         <div className="flex flex-col items-center gap-1">

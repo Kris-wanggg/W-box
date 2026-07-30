@@ -43,11 +43,10 @@ export default function Reserve({
 
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
-      <Header
-        backLabel={reschedule ? '訂位詳情' : '訂位查詢'}
-        backTo={reschedule ? '/booking-success' : '/'}
-        step={reschedule ? undefined : '步驟 1 / 3'}
-      />
+      {/* All four frames on this screen label the back button 訂位查詢
+          (779:2572 / 788:992 / 778:450 / 778:722), so it goes to the lookup
+          form — not back to this page. */}
+      <Header backLabel="訂位查詢" backTo="/search" step={reschedule ? undefined : '步驟 1 / 3'} />
 
       {/* `Hero Carousel`. The Figma slide is a photograph that the build
           environment cannot fetch, so it is stood in for by the warm gradient

@@ -70,7 +70,8 @@ export function WaitlistJoined() {
   const navigate = useNavigate();
   const { slotLabel, partyLabel } = useBooking();
   return (
-    <Screen backLabel="預約首頁" backTo="/" width="narrow">
+    /* 668:4509 — the candidate screens carry on from the contact form. */
+    <Screen backLabel="填寫聯絡資料" backTo="/contact" width="narrow">
       <StatusHeader glyph="✓" title="已加入候補名單" description="釋出座位時，我們會第一時間通知您" />
       <Card>
         <CardTitle size="sm">候補資訊</CardTitle>
@@ -96,7 +97,8 @@ export function WaitlistJoined() {
 export function WaitlistReleased() {
   const navigate = useNavigate();
   return (
-    <Screen backLabel="預約首頁" backTo="/" width="narrow">
+    /* 668:4559 — likewise 填寫聯絡資料. */
+    <Screen backLabel="填寫聯絡資料" backTo="/contact" width="narrow">
       <StatusHeader
         glyph="✓"
         title="好消息！座位已釋出"
@@ -121,7 +123,8 @@ export function WaitlistReleased() {
 export function RescheduleDone({ paid = false }: { paid?: boolean }) {
   const navigate = useNavigate();
   return (
-    <Screen backLabel="預約首頁" backTo="/" width="narrow">
+    /* 668:4273 / 668:4652 — the whole reschedule branch backs out to 訂位查詢. */
+    <Screen backLabel="訂位查詢" backTo="/search" width="narrow">
       <StatusHeader glyph="✓" title="修改訂位成功！" />
       <ReservationInfoCard status="已確認" paid={paid} onReschedule="/reschedule" />
       <Actions>

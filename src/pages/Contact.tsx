@@ -48,7 +48,14 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
   };
 
   return (
-    <Screen backLabel="選擇餐點" backTo="/order" step="步驟 3 / 3">
+    /* 咖啡廳 (714:327) and 公休日 (668:4062) skip meal selection, so their back
+       button reads 選擇日期 and returns to the date picker; the other two
+       (668:3955 / 668:4170) come from 選擇餐點. */
+    <Screen
+      backLabel={variant === 'coffee' || closed ? '選擇日期' : '選擇餐點'}
+      backTo={variant === 'coffee' || closed ? '/' : '/order'}
+      step="步驟 3 / 3"
+    >
       <TwoColumn
         main={
           <Card>
