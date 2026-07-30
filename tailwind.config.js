@@ -37,6 +37,15 @@ module.exports = {
         divider: 'var(--color-divider)',
         // color/primary
         primary: 'var(--color-primary)',
+        // Restaurant Reservation System brand ramp (see ./tokens.css)
+        brand: {
+          DEFAULT: 'var(--color-brand)',
+          hover: 'var(--color-brand-hover)',
+          active: 'var(--color-brand-active)',
+          tint: 'var(--color-brand-tint)',
+          'tint-strong': 'var(--color-brand-tint-strong)',
+          contrast: 'var(--color-brand-contrast)',
+        },
         // color/text-*
         text: {
           primary: 'var(--color-text-primary)',
@@ -83,6 +92,21 @@ module.exports = {
         'label-medium': ['13px', { lineHeight: '1', fontWeight: '500', letterSpacing: '0' }], // Label/Medium
         'link-semibold': ['13px', { lineHeight: '1', fontWeight: '600', letterSpacing: '0' }], // Link/SemiBold
         'caption': ['12px', { lineHeight: '1', fontWeight: '500', letterSpacing: '0' }], // Caption
+
+        // Restaurant Reservation System text styles. Unlike the presets
+        // above these carry a real line-height, because the copy is
+        // Traditional Chinese and wraps across multiple lines.
+        'r-h1': ['20px', { lineHeight: '28px', fontWeight: '600' }],   // 選擇餐點 / 聯絡資料
+        'r-h2': ['17px', { lineHeight: '24px', fontWeight: '600' }],   // card headings
+        'r-body': ['15px', { lineHeight: '22px', fontWeight: '400' }],
+        'r-label': ['14px', { lineHeight: '20px', fontWeight: '500' }],
+        'r-note': ['13px', { lineHeight: '19.5px', fontWeight: '400' }],
+        'r-button': ['16px', { lineHeight: '23.2px', fontWeight: '500' }], // Figma: Inter Medium 16 / 23.2
+      },
+
+      maxWidth: {
+        // Figma "Content Row" — 1240px inside a 1550px frame
+        content: '1240px',
       },
     },
   },

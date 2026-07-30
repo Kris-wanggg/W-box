@@ -30,6 +30,24 @@
   --color-status-error: #EF4444;
   --color-status-success: #22C55E;
   --color-status-warning: #F59E0B;
+
+  /* ------------------------------------------------------------------
+   * Restaurant Reservation System — brand ramp
+   *
+   * Source: Figma file f27j5bQ9NnxC6aiUPxt5Ip
+   * ("Rastaurant Reservation system", section 668:1064), variable
+   * collection read via Figma MCP `get_variable_defs`.
+   *
+   * `--color-brand` is the literal Figma variable value. The -hover,
+   * -active, -tint and -tint-strong steps are DERIVED from it (no Figma
+   * variable exists for them) so that components never hard-code a hex.
+   * ------------------------------------------------------------------ */
+  --color-brand: #735C00;
+  --color-brand-hover: #5C4A00;
+  --color-brand-active: #453800;
+  --color-brand-tint: #F6F2E2;
+  --color-brand-tint-strong: #E8E0BF;
+  --color-brand-contrast: #FFFFFF;
 }
 
 .dark {
@@ -48,4 +66,14 @@
   --color-status-error: #EF4444;
   --color-status-success: #22C55E;
   --color-status-warning: #F59E0B;
+
+  /* Restaurant brand ramp — dark mode. The Figma file only defines a
+   * Light mode for this collection, so these are derived: the brand hue
+   * is lifted for contrast against the dark surface. */
+  --color-brand: #C4A62E;
+  --color-brand-hover: #D6B94A;
+  --color-brand-active: #E3CA6B;
+  --color-brand-tint: #2A2410;
+  --color-brand-tint-strong: #3D3418;
+  --color-brand-contrast: #13111E;
 }
