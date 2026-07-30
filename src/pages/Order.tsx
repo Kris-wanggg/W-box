@@ -179,7 +179,7 @@ export default function Order({
                       onQty={(next) => changeQty(item, next)}
                       onCustomise={
                         item.category === 'set'
-                          ? () => setEditing(item.id)
+                          ? () => setEditing(editing === item.id ? undefined : item.id)
                           : item.category === 'drink'
                             ? () => setDrinkEditing(drinkEditing === item.id ? undefined : item.id)
                             : undefined
@@ -298,22 +298,40 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <Tile className="flex flex-col gap-3">
-        <div className="flex gap-3">
-          <span aria-hidden className="flex size-14 shrink-0 items-center justify-center rounded-control border border-brand/15 bg-gradient-to-br from-[#DCD6D3] to-[#D8D1D4] text-[20px]">
-            {item.glyph}
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="text-[15px] font-medium text-ink">{item.name} ×{draft.qty}</p>
-            <p className="text-[13px] text-ink-secondary">{item.description}｜編輯內容中</p>
-          </div>
-          <div className="shrink-0 text-right">
-            <Money value={item.price} className="text-[15px] font-medium text-ink" />
-            {extra > 0 ? <p className="text-xs text-brand-soft">＋內容加價 ${extra}</p> : null}
-          </div>
+    /* `Meal Card (雙人分享套餐 ×1)` 668:2576 — the expanded state is one card:
+       the same header row as the collapsed card, then the groups, the 小計 and
+       the actions. The 自訂套餐 disclosure stays put with its chevron flipped,
+       so the control that opened the card is the one that closes it; the design
+       drops only the stepper, moving the count into the title as ×N. */
+    <Tile className="flex flex-col gap-4">
+      {/* With the stepper gone the header fits on one row, which is how the
+          frame lays it out: icon · 名稱 ×N · 自訂套餐 · 金額. */}
+      <div className="flex flex-wrap items-start gap-3">
+        <span aria-hidden className="flex size-14 shrink-0 items-center justify-center rounded-control border border-brand/15 bg-gradient-to-br from-[#DCD6D3] to-[#D8D1D4] text-[20px]">
+          {item.glyph}
+        </span>
+
+        <div className="min-w-0 flex-1">
+          <p className="text-[15px] font-medium leading-[21px] text-ink">
+            {item.name} ×{draft.qty}
+          </p>
+          {/* The frame swaps the qualifier out rather than appending to it:
+              「…甜點｜建議 2 位」 becomes 「…甜點｜編輯內容中」. */}
+          <p className="text-[13px] leading-[19.5px] text-ink-secondary">
+            {item.description.replace(/｜.*$/, '')}｜編輯內容中
+          </p>
         </div>
-      </Tile>
+
+        <Button variant="quiet" className="shrink-0" onClick={onClose} aria-expanded>
+          自訂套餐
+          <ChevronDownIcon size={20} className="rotate-180" />
+        </Button>
+
+        <div className="shrink-0 pt-0.5 text-right">
+          <Money value={item.price} className="text-[15px] font-medium leading-[22.5px] text-ink" />
+          {extra > 0 ? <p className="text-xs text-brand-soft">＋內容加價 ${extra}</p> : null}
+        </div>
+      </div>
 
       <p className="text-[13px] leading-[19.5px] text-ink-secondary">
         每組請依指定份數勾選，額滿後其餘選項會暫停選取；飲料勾選後可於下方各自設定冰塊與甜度。
@@ -428,7 +446,7 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
           更新套餐內容
         </Button>
       </div>
-    </div>
+    </Tile>
   );
 }
 
