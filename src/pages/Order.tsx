@@ -721,7 +721,11 @@ function CustomMealForm() {
   );
 }
 
-/** `custom/add drink`: category filter over a list of add-ons, each with a stepper. */
+/**
+ * `custom/add drink` — `Drink Add-on Card` (668:3548). A `[Comp] Tab` filter row
+ * over `Drink List`, whose rows are the chips themselves: this frame does not
+ * use `[Comp] Checkbox` at all, it draws its own 18px `Drink Option Icon`.
+ */
 function AddOnDrinkPicker({
   qty,
   onChange,
@@ -737,58 +741,81 @@ function AddOnDrinkPicker({
   const total = picked.reduce((sum, d) => sum + d.price * qty[d.id], 0);
 
   return (
-    <div className="mt-4 flex flex-col gap-3 rounded-tile border border-line bg-white p-4">
+    <div className="mt-4 flex flex-col gap-3 rounded-control border border-line bg-white p-4">
       <div className="flex flex-wrap gap-2">
         {CUSTOM_DRINK_CATEGORIES.map((category) => (
-          <button
-            key={category}
-            type="button"
-            aria-pressed={category === filter}
-            onClick={() => setFilter(category)}
-            className={cx(
-              'h-7 rounded-chip px-2.5 text-xs transition-colors',
-              category === filter
-                ? 'bg-brand font-medium text-white'
-                : 'border border-line text-ink hover:border-brand/60',
-            )}
-          >
+          <Tab key={category} active={category === filter} onClick={() => setFilter(category)}>
             {category}
-          </button>
+          </Tab>
         ))}
       </div>
 
-      <ul className="flex flex-col">
+      <ul className="flex flex-col gap-2">
         {visible.map((drink) => {
           const count = qty[drink.id] ?? 0;
+          const on = count > 0;
           return (
-            <li key={drink.id} className="flex items-center gap-3 border-b border-line-subtle py-2.5 last:border-0">
-              <input
-                type="checkbox"
-                className="size-4 shrink-0 accent-brand"
-                checked={count > 0}
-                aria-label={drink.name}
-                onChange={() => onChange({ ...qty, [drink.id]: count > 0 ? 0 : 1 })}
-              />
-              <div className="min-w-0 flex-1">
-                <p className="text-[13px] text-ink">{drink.name}</p>
-                <p className="text-xs text-ink-secondary">
-                  {drink.category} ‧ {drink.serves}
-                </p>
+            <li key={drink.id}>
+              {/* `Drink Option`. Selected lifts to white with a 2px #C9922A
+                  outline; unselected sits on the same 3%-white wash the
+                  locked-out checkbox uses. Padding shifts 1px to absorb the
+                  border, as in the frame. */}
+              <div
+                className={cx(
+                  'flex flex-wrap items-center justify-end gap-x-3 gap-y-2 rounded-control transition-colors',
+                  on
+                    ? 'border-2 border-selected bg-white px-[14px] py-[12px]'
+                    : 'border border-off-border bg-off-bg px-[13px] py-[11px]',
+                )}
+              >
+                <label className="flex min-w-[140px] flex-1 cursor-pointer items-center gap-3">
+                  <span
+                    className={cx(
+                      'flex size-[18px] shrink-0 items-center justify-center rounded-box border p-px',
+                      'text-[11px] font-bold leading-[11px]',
+                      on ? 'border-selected bg-white text-ink' : 'border-line text-transparent',
+                    )}
+                    aria-hidden
+                  >
+                    ✓
+                  </span>
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={on}
+                    onChange={() => onChange({ ...qty, [drink.id]: on ? 0 : 1 })}
+                  />
+                  <span className="flex min-w-0 flex-col">
+                    <span className="text-[14px] font-medium leading-[18.9px] text-ink">{drink.name}</span>
+                    <span className="text-cap text-ink-secondary">
+                      {drink.category} ‧ {drink.serves}
+                    </span>
+                  </span>
+                </label>
+
+                <div className="flex shrink-0 items-center gap-3">
+                  <span
+                    className={cx(
+                      'text-[14px] font-medium leading-[21px]',
+                      on ? 'text-brand' : 'text-ink-secondary',
+                    )}
+                  >
+                    ${drink.price} / {drink.unit}
+                  </span>
+                  <Stepper
+                    label={drink.name}
+                    value={count}
+                    onChange={(next) => onChange({ ...qty, [drink.id]: next })}
+                  />
+                </div>
               </div>
-              <span className="shrink-0 text-[13px] text-ink-secondary">
-                ${drink.price} / {drink.unit}
-              </span>
-              <Stepper
-                label={drink.name}
-                value={count}
-                onChange={(next) => onChange({ ...qty, [drink.id]: next })}
-              />
             </li>
           );
         })}
       </ul>
 
-      <div className="flex items-center justify-between text-xs">
+      {/* `Drink Add-on Footer` */}
+      <div className="flex items-center justify-between text-cap">
         <span className="text-ink-secondary">
           已選 {picked.length} 項 ‧ 共 {units} 件
         </span>
