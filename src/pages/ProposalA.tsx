@@ -151,7 +151,7 @@ function SummaryCard({ collapsible }: { collapsible?: boolean }) {
 
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-ink">客製化點餐（進行中）</span>
-        <Button variant="quiet">
+        <Button size="mini" variant="quiet">
           清除設定
         </Button>
       </div>

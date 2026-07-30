@@ -177,15 +177,15 @@ export default function Reserve({
 
               {reschedule ? (
                 <div className="mt-2 flex flex-col gap-2">
-                  <Button block onClick={() => navigate(paid ? '/reschedule-paid-done' : '/reschedule-done')}>
+                  <Button size="cta" block onClick={() => navigate(paid ? '/reschedule-paid-done' : '/reschedule-done')}>
                     儲存變更
                   </Button>
-                  <Button block variant="outline" onClick={() => navigate(-1)}>
+                  <Button size="cta" block variant="outline" onClick={() => navigate(-1)}>
                     取消
                   </Button>
                 </div>
               ) : (
-                <Button block className="mt-2" disabled={!touched} onClick={() => navigate('/order')}>
+                <Button size="cta" block className="mt-2" disabled={!touched} onClick={() => navigate('/order')}>
                   下一步：選擇餐點
                 </Button>
               )}

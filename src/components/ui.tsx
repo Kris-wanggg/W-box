@@ -28,42 +28,101 @@ export function cx(...parts: Array<string | false | null | undefined>) {
 
 /* ── Buttons ─────────────────────────────────────────────────────────────── */
 
+type ButtonVariant = 'primary' | 'outline' | 'quiet' | 'danger';
+/**
+ * `[Comp] Button` is placed at four distinct heights, and the design pairs each
+ * height with its own type size and horizontal padding:
+ *
+ * - `cta`     48px — page-level actions: 下一步：選擇餐點 (835:663), the
+ *                    `Action Buttons` rows (835:493 / 822:555), 立即付款
+ *                    (839:1504), 立即查詢 (822:479), 完成 (835:527). 16px type.
+ * - `md`      44px — actions living inside a card: 下一步：填寫聯絡資訊
+ *                    (835:860), 所選時段已滿？查看候補流程 (840:1603),
+ *                    自訂套餐／客製化 (791:467 / 835:1580). 16px (13px quiet).
+ * - `compact` 44px — the paired footers and the 訂位查詢 result row:
+ *                    更新套餐內容 (835:1173, px-24), 取消 (835:1184, px-25),
+ *                    取消訂位 (822:513). 14/21.
+ * - `mini`    28px — the inline chips 修改訂位 (839:1413) and 清除設定
+ *                    (839:1192): 6px radius, px-11, 12/18.
+ */
+type ButtonSize = 'cta' | 'md' | 'compact' | 'mini';
+
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'outline' | 'quiet' | 'danger';
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   block?: boolean;
 };
 
-/**
- * `[Comp] Button`. Four variants exist in the file:
- *
- * - primary  — 835:860, bg/brand, 16/23.2 Medium, inverse text
- * - outline  — 835:493, hairline in text/secondary, 16/22.5 Medium
- * - quiet    — 791:467, bg/subtle over border/default, 13/19.5 Medium
- * - danger   — 822:555, #C21400, 16/22.5 **Bold**, inverse text
- *
- * All four are 44px tall with an 8px radius.
- */
-const BUTTON_VARIANT: Record<NonNullable<ButtonProps['variant']>, string> = {
-  primary: 'bg-brand px-3 text-btn text-white hover:bg-brand/90 active:bg-brand/90 disabled:hover:bg-brand',
+/** Fill / border / label colour — the part that is the same at every height. */
+const SKIN: Record<ButtonVariant, string> = {
+  primary: 'bg-brand text-white hover:bg-brand/90 active:bg-brand/90 disabled:hover:bg-brand',
   outline:
-    'border border-ink-secondary px-3 text-[16px] font-medium leading-[22.5px] text-ink ' +
+    'border border-ink-secondary text-ink ' +
     'hover:border-selected active:border-selected disabled:hover:border-ink-secondary',
   quiet:
-    'gap-3 border border-line bg-subtle px-[13px] text-[13px] font-medium leading-[19.5px] text-ink ' +
+    'gap-3 border border-line bg-subtle text-ink ' +
     'hover:border-selected active:border-selected disabled:hover:border-line',
-  danger:
-    'bg-destructive px-3 text-[16px] font-bold leading-[22.5px] text-white ' +
-    'hover:bg-destructive/90 active:bg-destructive/90 disabled:hover:bg-destructive',
+  danger: 'bg-destructive text-white hover:bg-destructive/90 active:bg-destructive/90 disabled:hover:bg-destructive',
 };
 
-export function Button({ variant = 'primary', block, className, ...props }: ButtonProps) {
+/**
+ * At 28px the design also swaps the colourway: 修改訂位 outlines in
+ * border/active with a primary label, and 清除設定 outlines in border/default
+ * over no fill with a secondary label.
+ */
+const MINI_SKIN: Record<ButtonVariant, string> = {
+  primary: 'bg-brand text-white hover:bg-brand/90',
+  outline: 'border border-brand text-ink hover:border-selected',
+  quiet: 'border border-line text-ink-secondary hover:border-selected',
+  danger: 'bg-destructive text-white hover:bg-destructive/90',
+};
+
+/** Box height and radius. */
+const BOX: Record<ButtonSize, string> = {
+  cta: 'h-12 rounded-control',
+  md: 'h-11 rounded-control',
+  compact: 'h-11 rounded-control',
+  mini: 'h-7 rounded-chip',
+};
+
+/** Padding and type, which the design ties to the size rather than the skin. */
+const TYPE: Record<ButtonSize, Record<ButtonVariant, string>> = {
+  cta: {
+    primary: 'px-3 text-btn',
+    outline: 'px-3 text-[16px] font-medium leading-[22.5px]',
+    quiet: 'px-[13px] text-[13px] font-medium leading-[19.5px]',
+    danger: 'px-3 text-[16px] font-bold leading-[22.5px]',
+  },
+  md: {
+    primary: 'px-3 text-btn',
+    outline: 'px-3 text-[16px] font-medium leading-[22.5px]',
+    quiet: 'px-[13px] text-[13px] font-medium leading-[19.5px]',
+    danger: 'px-3 text-[16px] font-bold leading-[22.5px]',
+  },
+  compact: {
+    primary: 'px-6 text-[14px] font-medium leading-[21px]',
+    outline: 'px-[25px] text-[14px] font-medium leading-[21px]',
+    quiet: 'px-[13px] text-[14px] font-medium leading-[21px]',
+    danger: 'px-6 text-[14px] font-bold leading-[21px]',
+  },
+  mini: {
+    primary: 'px-[11px] text-[12px] font-medium leading-[18px]',
+    outline: 'px-[11px] text-[12px] font-medium leading-[18px]',
+    quiet: 'px-[11px] text-[12px] font-medium leading-[18px]',
+    danger: 'px-[11px] text-[12px] font-medium leading-[18px]',
+  },
+};
+
+export function Button({ variant = 'primary', size = 'md', block, className, ...props }: ButtonProps) {
   return (
     <button
       type="button"
       className={cx(
-        'inline-flex h-11 items-center justify-center gap-2 rounded-control transition-colors',
+        'inline-flex items-center justify-center gap-2 transition-colors',
         'disabled:cursor-not-allowed disabled:opacity-45',
-        BUTTON_VARIANT[variant],
+        BOX[size],
+        TYPE[size][variant],
+        size === 'mini' ? MINI_SKIN[variant] : SKIN[variant],
         block && 'w-full',
         className,
       )}
@@ -116,6 +175,34 @@ export function PeriodTab({
         active
           ? 'bg-brand font-medium text-white hover:bg-brand/90'
           : 'border border-line font-normal text-ink hover:border-selected active:border-selected',
+      )}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+/**
+ * The 活動類型 chip in the 客製化料理 form — `[Comp] Button` again, but the
+ * single-select colourway (835:2253 / 835:2256): 36px tall, an 8px radius, and
+ * the same #C9922A selection outline the Radio and Checkbox use. Padding shifts
+ * by 1px between states to absorb the extra border width.
+ */
+export function SelectChip({
+  active,
+  children,
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean }) {
+  return (
+    <button
+      type="button"
+      aria-pressed={active}
+      className={cx(
+        'h-9 rounded-control text-[13px] leading-[19.5px] text-ink transition-colors',
+        active
+          ? 'border-2 border-selected bg-white px-[14px] font-medium'
+          : 'border border-line bg-subtle px-[13px] font-normal hover:border-selected',
       )}
       {...props}
     >

@@ -22,6 +22,7 @@ import {
   RadioBox,
   RadioChip,
   Select,
+  SelectChip,
   Stepper,
   Tab,
   Textarea,
@@ -411,12 +412,13 @@ function SetEditor({ itemId, preset, onClose }: { itemId: string; preset?: Edito
         </span>
       </div>
 
-      {/* Two equal-width actions spanning the card, as in the frame. */}
+      {/* Two equal-width 44px actions spanning the card (835:1173 / 835:1184). */}
       <div className="flex gap-3">
-        <Button variant="outline" className="flex-1" onClick={onClose}>
+        <Button size="compact" variant="outline" className="flex-1" onClick={onClose}>
           取消
         </Button>
         <Button
+          size="compact"
           className="flex-1"
           onClick={() => {
             addLine({ key: itemId, itemId, qty: draft.qty, selections, drinkPrefs: prefs, note });
@@ -537,11 +539,13 @@ function DrinkCustomizer({ item, cups, onDone }: { item: MenuItem; cups: number;
         此品項小計 <Money value={total} className="text-brand" />
       </span>
 
+      {/* 44px pair, same as the set editor (835:1878 / 835:1879). */}
       <div className="flex gap-3">
-        <Button variant="outline" className="flex-1" onClick={onDone}>
+        <Button size="compact" variant="outline" className="flex-1" onClick={onDone}>
           取消
         </Button>
         <Button
+          size="compact"
           className="flex-1"
           onClick={() => {
             addLine({
@@ -654,20 +658,13 @@ function CustomMealForm() {
       <Fieldset legend="活動類型（單選）" required>
         <div className="flex flex-wrap gap-2">
           {EVENT_TYPES.map((type) => (
-            <button
+            <SelectChip
               key={type}
-              type="button"
-              aria-pressed={type === value.eventType}
+              active={type === value.eventType}
               onClick={() => patch({ eventType: type })}
-              className={cx(
-                'h-9 rounded-chip border px-3 text-[13px] transition-colors',
-                type === value.eventType
-                  ? 'border-brand font-medium text-brand'
-                  : 'border-line text-ink hover:border-brand/60',
-              )}
             >
               {type}
-            </button>
+            </SelectChip>
           ))}
         </div>
       </Fieldset>

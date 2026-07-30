@@ -52,14 +52,20 @@ export default function Search({ result }: { result?: 'unpaid' | 'paid' }) {
           查無資料時，請確認輸入是否正確，或洽店家客服 {SUPPORT_PHONE}。
         </p>
 
-        <Button block onClick={search}>
+        <Button size="cta" block onClick={search}>
           立即查詢
         </Button>
       </Card>
 
       {found ? (
         <>
-          <ReservationInfoCard status="已確認" paid={found === 'paid'} onReschedule="/reschedule" />
+          {/* The 已付款 frame moves 修改訂位 out of the card and into the action
+              row (822:534), so the card only carries the 28px chip when unpaid. */}
+          <ReservationInfoCard
+            status="已確認"
+            paid={found === 'paid'}
+            onReschedule={found === 'paid' ? undefined : '/reschedule'}
+          />
 
           {found === 'unpaid' ? (
             <Notice tone="warn">
@@ -67,12 +73,14 @@ export default function Search({ result }: { result?: 'unpaid' | 'paid' }) {
             </Notice>
           ) : null}
 
+          {/* Unlike the status screens, the 訂位查詢 result row is 44px with
+              14/21 labels (822:513 / 822:516). */}
           <ActionRow>
-            <Button variant="outline" onClick={() => navigate(found === 'paid' ? '/cancel-paid' : '/cancel')}>
+            <Button size="compact" variant="outline" onClick={() => navigate(found === 'paid' ? '/cancel-paid' : '/cancel')}>
               取消訂位
             </Button>
-            <Button onClick={() => navigate(found === 'paid' ? '/' : '/payment')}>
-              {found === 'paid' ? '完成' : '前往支付訂金'}
+            <Button size="compact" onClick={() => navigate(found === 'paid' ? '/reschedule-paid' : '/payment')}>
+              {found === 'paid' ? '修改訂位' : '前往支付訂金'}
             </Button>
           </ActionRow>
         </>

@@ -78,7 +78,7 @@ export default function Payment({ initialMethod = 'card' }: { initialMethod?: Pa
 
       <DepositRulesCard />
 
-      <Button block onClick={submit}>
+      <Button size="cta" block onClick={submit}>
         {method === 'card' ? `立即付款 $${deposit}` : '完成'}
       </Button>
     </Screen>

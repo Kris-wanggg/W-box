@@ -23,7 +23,18 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
   const showMeals = variant === 'default';
   const venue = variant === 'coffee' ? RESTAURANT_ALT : RESTAURANT;
   const closed = variant === 'noworking';
-  const cta = variant === 'default' ? '確認，開始配對桌位' : '訂位完成';
+  /**
+   * Each variant publishes its own CTA: 確認，開始配對桌位 (839:1402),
+   * 訂位完成 (840:1592) and 由專人為您服務 (839:1381) are 48px, while the
+   * 公休日 screen swaps in a 44px 所選時段已滿？查看候補流程 (840:1603).
+   */
+  const cta = closed
+    ? '所選時段已滿？查看候補流程'
+    : variant === 'default'
+      ? '確認，開始配對桌位'
+      : variant === 'custom'
+        ? '由專人為您服務'
+        : '訂位完成';
 
   const nameError = submitted && !form.name.trim() ? '請填寫訂位人姓名' : undefined;
   const phoneError =
@@ -138,7 +149,7 @@ export default function Contact({ variant = 'default' }: { variant?: Variant }) 
               </Notice>
             ) : null}
 
-            <Button block disabled={closed} onClick={submit}>
+            <Button size={closed ? 'md' : 'cta'} block onClick={closed ? () => navigate('/booking-full') : submit}>
               {cta}
             </Button>
 

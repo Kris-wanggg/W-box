@@ -29,10 +29,10 @@ export function BookingSuccess() {
         付款期限：{PAYMENT_DEADLINE} 前完成轉帳，逾期訂位將自動釋出。
       </Notice>
       <Actions>
-        <Button variant="outline" onClick={() => navigate('/cancel')}>
+        <Button size="cta" variant="outline" onClick={() => navigate('/cancel')}>
           取消訂位
         </Button>
-        <Button onClick={() => navigate('/payment')}>前往支付訂金</Button>
+        <Button size="cta" onClick={() => navigate('/payment')}>前往支付訂金</Button>
       </Actions>
     </Screen>
   );
@@ -55,10 +55,10 @@ export function BookingFull() {
         您也可以加入候補名單，釋出座位時將以簡訊通知。
       </Notice>
       <Actions>
-        <Button variant="outline" onClick={() => navigate('/')}>
+        <Button size="cta" variant="outline" onClick={() => navigate('/')}>
           更改時段
         </Button>
-        <Button onClick={() => navigate('/waitlist')}>加入候補名單</Button>
+        <Button size="cta" onClick={() => navigate('/waitlist')}>加入候補名單</Button>
       </Actions>
     </Screen>
   );
@@ -84,10 +84,10 @@ export function WaitlistJoined() {
         候補為免費登記；釋出座位後需於通知起 30 分鐘內完成確認。
       </Notice>
       <Actions>
-        <Button variant="outline" onClick={() => navigate('/')}>
+        <Button size="cta" variant="outline" onClick={() => navigate('/')}>
           更改時段
         </Button>
-        <Button onClick={() => navigate('/waitlist-released')}>完成</Button>
+        <Button size="cta" onClick={() => navigate('/waitlist-released')}>完成</Button>
       </Actions>
     </Screen>
   );
@@ -107,10 +107,10 @@ export function WaitlistReleased() {
         付款期限：{PAYMENT_DEADLINE} 前完成轉帳，逾期訂位將自動釋出。
       </Notice>
       <Actions>
-        <Button variant="outline" onClick={() => navigate('/cancel')}>
+        <Button size="cta" variant="outline" onClick={() => navigate('/cancel')}>
           取消訂位
         </Button>
-        <Button onClick={() => navigate('/payment')}>前往支付訂金</Button>
+        <Button size="cta" onClick={() => navigate('/payment')}>前往支付訂金</Button>
       </Actions>
     </Screen>
   );
@@ -125,10 +125,10 @@ export function RescheduleDone({ paid = false }: { paid?: boolean }) {
       <StatusHeader glyph="✓" title="修改訂位成功！" />
       <ReservationInfoCard status="已確認" paid={paid} onReschedule="/reschedule" />
       <Actions>
-        <Button variant="outline" onClick={() => navigate(paid ? '/cancel-paid' : '/cancel')}>
+        <Button size="cta" variant="outline" onClick={() => navigate(paid ? '/cancel-paid' : '/cancel')}>
           取消訂位
         </Button>
-        <Button onClick={() => navigate(paid ? '/' : '/payment')}>{paid ? '完成' : '前往支付訂金'}</Button>
+        <Button size="cta" onClick={() => navigate(paid ? '/' : '/payment')}>{paid ? '完成' : '前往支付訂金'}</Button>
       </Actions>
     </Screen>
   );
@@ -161,10 +161,10 @@ export function CancelConfirm({ paid = false }: { paid?: boolean }) {
       )}
 
       <Actions>
-        <Button variant="outline" onClick={() => navigate(-1)}>
+        <Button size="cta" variant="outline" onClick={() => navigate(-1)}>
           返回
         </Button>
-        <Button variant="danger" onClick={() => navigate(paid ? '/cancel-paid-done' : '/cancel-done')}>
+        <Button size="cta" variant="danger" onClick={() => navigate(paid ? '/cancel-paid-done' : '/cancel-done')}>
           確認取消訂位
         </Button>
       </Actions>
@@ -182,7 +182,7 @@ export function CancelDone({ paid = false }: { paid?: boolean }) {
         <Notice tone="neutral">您的訂位已成功取消，訂金將依退款規則處理。</Notice>
       ) : null}
       <Actions>
-        <Button onClick={() => navigate('/')}>完成</Button>
+        <Button size="cta" onClick={() => navigate('/')}>完成</Button>
       </Actions>
     </Screen>
   );
@@ -230,7 +230,7 @@ export function PaySuccess() {
       <p className="text-center text-[13px] text-ink-secondary">後續可至 Email 或預訂首頁查詢、修改或取消訂位。</p>
 
       <Actions>
-        <Button onClick={() => navigate('/')}>完成</Button>
+        <Button size="cta" onClick={() => navigate('/')}>完成</Button>
       </Actions>
     </Screen>
   );

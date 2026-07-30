@@ -126,13 +126,10 @@ function CustomOrderBlock() {
           <span className="text-[13px] font-medium text-ink">客製化點餐（進行中）</span>
           <span className="flex items-center gap-3">
             <span className="text-[13px] font-semibold text-brand">整桌預訂</span>
-            <button
-              type="button"
-              onClick={() => set('custom', null)}
-              className="rounded-chip border border-line px-2 py-0.5 text-xs text-ink transition-colors hover:border-brand/60 hover:text-brand"
-            >
+            {/* `[Comp] Button (清除設定)` 839:1192 — 28px, border/default, 12/18. */}
+            <Button size="mini" variant="quiet" onClick={() => set('custom', null)}>
               清除設定
-            </button>
+            </Button>
           </span>
         </div>
 
@@ -279,12 +276,12 @@ export function ReservationInfoCard({
       '日期時段',
       <span className="flex items-center gap-3">
         {slotLabel}
+        {/* `[Comp] Button (修改訂位)` 839:1413 — 28px, border/active, 12/18. */}
         {onReschedule ? (
-          <Link
-            to={onReschedule}
-            className="rounded-chip border border-line px-2 py-0.5 text-xs text-ink transition-colors hover:border-brand/60 hover:text-brand"
-          >
-            修改訂位
+          <Link to={onReschedule}>
+            <Button size="mini" variant="outline" tabIndex={-1}>
+              修改訂位
+            </Button>
           </Link>
         ) : null}
       </span>,
