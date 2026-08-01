@@ -1,25 +1,38 @@
-# Claude Code 專案設計規範 (UI/UX Designer Profile)
+# W-box — 共用實驗沙盒
 
-## 🛠 核心技術棧 (Tech Stack)
-- 框架: React (Vite) + TypeScript
-- 樣式: Tailwind CSS (嚴格不使用原生內聯 CSS)
-- 元件庫: 原生自建元件 或 shadcn/ui
+## 這個目錄是什麼
+沙盒。用來試東西、做一次性實驗、驗證想法。
+**不對應任何正式專案**，這裡的產出不會直接進 production。
 
-## 🎨 設計系統與 Figma MCP 對齊規範
-當你透過 Figma MCP 讀取我的設計稿並產生程式碼時，請務必遵守以下「像素級」對齊規則：
+## 最重要的一條：沒有固定的 design system
+本目錄沒有專屬的 design token 或設計規範。
 
-1. **色彩 Token 映射**:
-   - 只要在 Figma 看到 `#3B82F6` 或 `Primary-500`，程式碼一律使用 Tailwind 的 `text-blue-500` 或 `bg-blue-500`。
-   - 嚴禁在程式碼中自行發明 `#HEX` 色碼，必須對齊專案的 `tailwind.config.js`。
+開工前一定要先問使用者：
+「這次實驗要用哪個專案的 token？還是全新一組？」
 
-2. **間距與排版 (Layout & Spacing)**:
-   - 看到 Figma 的 Auto Layout 間距，請自動轉譯為 Tailwind 的 spacing (例如：8px -> `gap-2`, 16px -> `gap-4`, 24px -> `gap-6`)。
-   - 所有的卡片與容器必須預設帶有響應式佈局 (`flex flex-col md:flex-row`)。
+- 正例：使用者說「做個訂位卡片試試」→ 先問「用餐廳專案的 token，還是這次隨便挑一組？」
+- 反例：看到 tokens.css 就直接拿來用，沒問使用者 ❌
 
-3. **Figma 圖層名稱「對號入座」**:
-   - 如果 Figma 圖層名稱叫做 `[Comp] PrimaryButton` -> 請在程式碼中直接調用 `<Button size="lg" />`。
-   - 如果圖層名稱叫做 `[Comp] TopNavbar` -> 請直接 import 專案內的 `<Navbar />` 元件，不要重新手刻。
+目錄裡現有的 tokens.css 與 tailwind.config.js 是上一次實驗的殘留，
+不是本目錄的正式規範。除非使用者明講要沿用，否則不要預設使用。
 
-## 🧪 檢查清單 (Definition of Done)
-- 產出的 UI 必須具備豐富的互動狀態（Hover, Active, Focus, Disabled 樣式）。
-- 程式碼元件結構必須乾淨，語意化標籤（<nav>, <main>, <header>）必須正確。
+## 技術預設（可隨時被使用者覆寫）
+- React + Tailwind
+- 單檔優先，不要為了架構而拆檔
+- 沙盒重速度，不要寫測試、不要建資料夾結構
+
+## 品質標準（比正式專案寬鬆，但這幾項還是要）
+- 互動狀態：Hover / Active / Focus / Disabled
+- 假資料用合理的中文內容，不要 Lorem ipsum
+- 語意化標籤正確
+
+## 不適用的東西
+以下規則在正式專案成立，但在沙盒不強制：
+- 嚴格的 token 命名規範
+- 完整的 Empty / Loading / Error 狀態
+- 跨平台交接文件
+
+## 實驗成功之後
+若某次實驗要轉成正式專案的產出：
+先提醒使用者切換到對應的 slash command，
+再依該專案的 token 重寫一次，不要直接搬沙盒程式碼。
