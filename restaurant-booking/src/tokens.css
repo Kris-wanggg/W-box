@@ -1,0 +1,53 @@
+/**
+ * Design token CSS variables
+ *
+ * Generated from the Figma file f27j5bQ9NnxC6aiUPxt5Ip
+ * ("Rastaurant Reservation system"), section "28 section v3".
+ *
+ * :root  = Light mode
+ * .dark  = Dark mode  (toggled via Tailwind `darkMode: 'class'`)
+ */
+
+:root {
+  --color-background: #fbf9f9;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f5f3f3;
+  --color-surface-muted: #efeded;
+  --color-border: #d0c5af;
+  --color-divider: #efeded;
+  --color-primary: #735c00;
+  --color-primary-soft: rgba(208, 197, 175, 0.3);
+  --color-text-primary: #1b1c1c;
+  --color-text-secondary: #4d4635;
+  --color-text-muted: rgba(77, 70, 53, 0.7);
+  --color-text-inverse: #ffffff;
+  --color-placeholder: rgba(77, 70, 53, 0.5);
+  --color-input-bg: #ffffff;
+  --color-input-border: #d0c5af;
+  --color-overlay: rgba(77, 70, 53, 0.3);
+  --color-status-error: #c03a2b;
+  --color-status-success: #735c00;
+  --color-status-warning: #c03a2b;
+}
+
+.dark {
+  --color-background: #1b1c1c;
+  --color-surface: #262524;
+  --color-surface-alt: #2f2d2a;
+  --color-surface-muted: #3a3733;
+  --color-border: #4d4635;
+  --color-divider: #3a3733;
+  --color-primary: #d0c5af;
+  --color-primary-soft: rgba(115, 92, 0, 0.3);
+  --color-text-primary: #fbf9f9;
+  --color-text-secondary: #d0c5af;
+  --color-text-muted: rgba(208, 197, 175, 0.7);
+  --color-text-inverse: #1b1c1c;
+  --color-placeholder: rgba(208, 197, 175, 0.5);
+  --color-input-bg: #262524;
+  --color-input-border: #4d4635;
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --color-status-error: #c03a2b;
+  --color-status-success: #d0c5af;
+  --color-status-warning: #c03a2b;
+}
